@@ -40,7 +40,9 @@ const isLastContent = computed(() => {
 </script>
 
 <template>
-  <div class="carousel-container relative w-[100vw] h-[30rem] overflow-hidden">
+  <div
+    class="carousel-container relative w-[100vw] h-[30rem] overflow-hidden select-none"
+  >
     <div
       class="carousel-slide flex transition-transform duration-1000 h-full"
       :style="{ transform: `translateX(-${100 * curIndex}%)` }"
@@ -130,12 +132,12 @@ const isLastContent = computed(() => {
   mask-image: radial-gradient(
     circle,
     rgba(0, 0, 0, 1) 50%,
-    rgba(0, 0, 0, 0) 85%
+    rgba(0, 0, 0, 0) 80%
   );
   -webkit-mask-image: radial-gradient(
     circle,
     rgba(0, 0, 0, 1) 50%,
-    rgba(0, 0, 0, 0) 85%
+    rgba(0, 0, 0, 0) 80%
   );
   mask-repeat: no-repeat;
   mask-size: cover;

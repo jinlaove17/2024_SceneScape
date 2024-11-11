@@ -2,6 +2,7 @@
 import VMainCarousel from "./VMainCarousel.vue";
 import VMainHotPlace from "./VMainHotPlace.vue";
 import VMainPhotoFilm from "./VMainPhotoFilm.vue";
+import VTopButton from "../VTopButton.vue";
 </script>
 
 <template>
@@ -9,6 +10,7 @@ import VMainPhotoFilm from "./VMainPhotoFilm.vue";
     <VMainCarousel class="mb-16" />
     <VMainHotPlace class="mb-16" />
     <VMainPhotoFilm />
+    <VTopButton />
   </main>
 </template>
 

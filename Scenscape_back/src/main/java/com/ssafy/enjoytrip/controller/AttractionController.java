@@ -7,9 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -62,5 +60,17 @@ public class AttractionController {
         response.put("results", attractions);
 
         return ResponseEntity.ok(response);
+    }
+    
+    @GetMapping("/titles.do")
+    public ResponseEntity<List<String>> getTitles() {
+    	List<String> titles = attractionService.getTitles();
+    	return ResponseEntity.ok(titles);
+    }
+    
+    @GetMapping("searchByTitle.do")
+    public ResponseEntity<List<AttractionDTO>> searchBySceneTitle(@RequestParam("title") String title) {
+    	List<AttractionDTO> attractions = attractionService.searchBySceneTitle(title);
+    	return ResponseEntity.ok(attractions);
     }
 }

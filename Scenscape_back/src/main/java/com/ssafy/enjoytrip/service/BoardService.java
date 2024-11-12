@@ -1,5 +1,6 @@
 package com.ssafy.enjoytrip.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +48,9 @@ public class BoardService {
 	}
 	
 	public int setPostThumbnail(int postNo, String fileName) {
-		return boardDao.setThumbnail(postNo, fileName);
+		Map<String, Object> params = new HashMap<>();
+		params.put("no", postNo);
+		params.put("fileName", fileName);
+		return boardDao.setThumbnail(params);
 	}
 }

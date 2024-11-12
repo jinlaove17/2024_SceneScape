@@ -119,6 +119,19 @@
 		</where>
 	</select>
 
+	<select id="selectTitles" resultType="String">
+		select TRIM(scene_title) as scene_title
+		from attractions
+		where scene_title IS NOT NULL
+		group by scene_title;
+	</select>
+	
+	<select id="selectBySceneTitle" resultMap="AttractionMap">
+		select *
+		from attractions
+		where scene_title = #{title}
+	</select>
+
 	<resultMap id="AttractionMap" type="AttractionDTO">
 		<result property="no" column="no" />
 		<result property="title" column="title" />

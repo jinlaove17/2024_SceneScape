@@ -15,5 +15,6 @@ public interface BoardDAO {
 	PostDTO select(int no);
 	List<PostDTO> selectAll(Map<String, Object> filter);
 	int countAll(Map<String, Object> filter);
-	int setThumbnail(int no, String fileName);
+	int setThumbnail(Map<String, Object> params);
+	List<String> getSceneTitles();
 }

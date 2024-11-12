@@ -1,7 +1,5 @@
 package com.ssafy.enjoytrip.service;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -65,34 +63,12 @@ public class AttractionService {
 		
 		return attractions;
 	}
-
-	// 정렬 기준에 따라 Attraction 리스트를 정렬하는 메서드
-	private void sortAttractions(List<AttractionDTO> attractions, String sortOrder) {
-		if ("view".equals(sortOrder)) {
-			System.out.println("조회순으로 정렬");
-			Collections.sort(attractions, Comparator.comparing(AttractionDTO::getViewCount).reversed());
-		} else if ("like".equals(sortOrder)) {
-			System.out.println("좋아요순으로 정렬");
-			Collections.sort(attractions, Comparator.comparing(AttractionDTO::getLikeCount).reversed());
-		} else {
-			System.out.println("최신순으로 정렬");
-			Collections.sort(attractions, Comparator.comparing(AttractionDTO::getNo)); // 기본 정렬: 오름차순
-		}
+	
+	public List<String> getTitles() {
+		return attractionDao.selectTitles();
 	}
-
-	//	정렬된 데이터를 페이지네이션 처리하는 메서드
-//	private List<AttractionDTO> paginate(List<AttractionDTO> attractions, String pageNum) {
-//		int start = (Integer.parseInt(pageNum) - 1) * PAGE_SIZE;
-//		int end = Math.min(start + PAGE_SIZE, attractions.size());
-//
-//		if (start > end || start >= attractions.size()) {
-//			return Collections.emptyList();
-//		}
-//
-//		return attractions.subList(start, end);
-//	}
-//
-//	public int getTotalCount() {
-//		return totalCount;
-//	}
+	
+	public List<AttractionDTO> searchBySceneTitle(String title) {
+		return attractionDao.selectBySceneTitle(title);
+	}
 }

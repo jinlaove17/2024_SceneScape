@@ -25,5 +25,11 @@
   		where no = #{no}
   	</delete>
   	
+  	<update id="setThumbnail" parameterType="Map">
+  		update posts
+  		set
+  		thumbnail_url = #{fileName}
+  		where no = #{no}
+  	</update>
   	
   </mapper>

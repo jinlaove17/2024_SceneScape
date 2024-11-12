@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.model.dao.AttractionDAO">
+	<insert id="insert" parameterType="AttractionDTO">
+		insert into attractions
+		values
+		(null, #{contentID}, #{title}, #{contentTypeID}, #{areaCode},
+		#{sigunguCode},
+		#{firstImage1}, #{firstImage2}, #{mapLevel},
+		#{latitude}, #{longitude}, #{tel},
+		#{addr1}, #{addr2}, #{homepage},
+		#{overview}, #{likeCount},
+		#{viewCount});
+	</insert>
+
+	<update id="update" parameterType="AttractionDTO">
+		update attractions
+		set
+		content_id = #{contentID}, title = #{title}, content_type_id =
+		#{content_type_id},
+		area_code = #{areaCode}, si_gun_gu_code =
+		#{sigunguCode}, first_image1 =
+		#{firstImage1}, first_image2 =
+		#{firstImage2},
+		map_level = #{mapLevel}, latitude = #{latitude},
+		longitude = #{longitude}, tel
+		= #{tel}, addr1 = #{addr1}, addr2 =
+		#{addr2},
+		hompage = #{homepage}, overview = #{overview}
+		where no = #{no}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete
+		from attractions
+		where no
+		= #{no}
+	</delete>
+
+	<select id="selectAll" parameterType="map"
+		resultMap="AttractionMap" useCache="false">
+		select *
+		from attractions
+		<where>
+			<!-- area가 존재할 경우 조건 추가 -->
+			<if test="area != null and area != ''">
+				area_code = #{area}
+			</if>
+
+			<!-- subArea가 존재할 경우 조건 추가 -->
+			<if test="subArea != null and subArea != ''">
+				<if test="area != null and area != ''">
+					and
+				</if>
+				si_gun_gu_code = #{subArea}
+			</if>
+
+			<!-- contents가 존재할 경우 조건 추가 -->
+			<if test="contents != null and contents.length > 0">
+				<if
+					test="(area != null and area != '') or (subArea != null and subArea != '')">
+					and
+				</if>
+				content_type_id IN
+				<foreach item="content" index="index" collection="contents"
+					open="(" separator="," close=")">
+					#{content}
+				</foreach>
+			</if>
+		</where>
+
+		<!-- 정렬 기준 추가 -->
+		<if test="sortType != null and sortType != ''">
+			order by
+			<choose>
+				<when test="sortType == 'view'">
+					view_count
+				</when>
+				<when test="sortType == 'like'">
+					like_count
+				</when>
+			</choose>
+			desc
+		</if>
+
+		<!-- 페이지네이션 -->
+		limit #{pageSize} offset #{offset}
+	</select>
+
+	<!-- 전체 검색 결과 수를 계산하는 쿼리 -->
+	<select id="countAll" parameterType="map" resultType="int">
+		select count(*)
+		from attractions
+		<where>
+			<!-- 조건이 있을 경우 추가 -->
+			<if test="area != null and area != ''">
+				area_code = #{area}
+			</if>
+			<if test="subArea != null and subArea != ''">
+				<if test="area != null and area != ''">
+					AND
+				</if>
+				si_gun_gu_code = #{subArea}
+			</if>
+			<if test="contents != null and contents.length > 0">
+				<if
+					test="(area != null and area != '') or (subArea != null and subArea != '')">
+					AND
+				</if>
+				content_type_id IN
+				<foreach item="content" index="index" collection="contents"
+					open="(" separator="," close=")">
+					#{content}
+				</foreach>
+			</if>
+		</where>
+	</select>
+
+	<resultMap id="AttractionMap" type="AttractionDTO">
+		<result property="no" column="no" />
+		<result property="title" column="title" />
+		<result property="sceneTitle" column="scene_title" />
+		<result property="contentTypeID" column="content_type_id" />
+		<result property="areaCode" column="area_code" />
+		<result property="sigunguCode" column="si_gun_gu_code" />
+		<result property="address" column="address" />
+		<result property="latitude" column="latitude" />
+		<result property="longitude" column="longitude" />
+		<result property="overview" column="overview" />
+		<result property="img" column="img" />
+		<result property="tel" column="tel" />
+		<result property="likeCount" column="like_count" />
+		<result property="viewCount" column="view_count" />
+	</resultMap>
+
+</mapper>

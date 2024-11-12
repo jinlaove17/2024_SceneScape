@@ -1,15 +1,22 @@
 <script setup>
 import VHeader from "@/components/VHeader.vue";
-import VMainView from "@/components/VMain/VMainView.vue";
 import VFooter from "@/components/VFooter.vue";
-import VSearchView from "@/components/VSearch/VSearchView.vue";
 </script>
 
 <template>
-  <VHeader />
-  <VMainView />
-  <!-- <VSearchView /> -->
-  <VFooter />
+  <div class="flex flex-col min-h-screen">
+    <header class="w-screen">
+      <VHeader />
+    </header>
+
+    <main class="w-screen flex-grow">
+      <RouterView />
+    </main>
+
+    <footer class="w-screen">
+      <VFooter />
+    </footer>
+  </div>
 </template>
 
 <style scoped></style>

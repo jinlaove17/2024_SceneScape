@@ -35,22 +35,39 @@ const isFirstContent = computed(() => {
   return curIndex.value === 0;
 });
 const isLastContent = computed(() => {
-  return curIndex.value === carouselContents.value.length - 1;
+  return curIndex.value === carouselContents.value.length;
 });
 </script>
 
 <template>
-  <div
-    class="carousel-container relative w-[100vw] h-[30rem] overflow-hidden select-none"
-  >
+  <div class="relative w-[100vw] h-[30rem] overflow-hidden select-none">
     <div
-      class="carousel-slide flex transition-transform duration-1000 h-full"
+      class="flex transition-transform duration-1000 h-full"
       :style="{ transform: `translateX(-${100 * curIndex}%)` }"
     >
       <div
+        class="min-w-full min-h-full animate-wave bg-gradient-to-r from-main-200 from-30% via-indigo-200 via-60% to-violet-200 to-90%"
+      >
+        <div class="inline absolute left-36 top-28 z-10">
+          <p class="text-3xl text-gray-500">당신의 여정이 영화가 되는 곳</p>
+          <h1 class="text-7xl ms-24 my-4">
+            SCENE SCAPE<span class="text-3xl text-gray-500">에서</span>
+          </h1>
+          <p class="text-3xl ms-44 text-gray-500">
+            당신만의 한 장면을 담아보세요.
+          </p>
+        </div>
+        <img
+          src="/img/Seoul.jpg"
+          alt="Slide image"
+          class="absolute top-1/2 right-0 transform -translate-y-1/2 min-w-[45rem] max-w-[45rem] mask-gradient"
+        />
+      </div>
+
+      <div
         v-for="content in carouselContents"
         :key="content.title"
-        class="relative carousel-item min-w-full"
+        class="relative min-w-full"
       >
         <div class="inline absolute left-28 top-24 z-10">
           <p class="text-2xl text-white">이곳은 어떠세요?</p>
@@ -78,10 +95,10 @@ const isLastContent = computed(() => {
       :disabled="isFirstContent"
     >
       <span
-        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-main-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-main-200/70 group-focus:outline-none"
+        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none"
       >
         <svg
-          class="w-4 h-4 text-white dark:text-main-200 rtl:rotate-180"
+          class="w-4 h-4 text-white rtl:rotate-180"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -105,10 +122,10 @@ const isLastContent = computed(() => {
       :disabled="isLastContent"
     >
       <span
-        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-main-300/70 group-focus:outline-none"
+        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none"
       >
         <svg
-          class="w-4 h-4 text-white dark:text-main-200 rtl:rotate-180"
+          class="w-4 h-4 text-white rtl:rotate-180"
           aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -128,6 +145,12 @@ const isLastContent = computed(() => {
 </template>
 
 <style scoped>
+.mask-gradient {
+  mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), transparent);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+}
+
 .mask-radial-opacity {
   mask-image: radial-gradient(
     circle,
@@ -141,5 +164,22 @@ const isLastContent = computed(() => {
   );
   mask-repeat: no-repeat;
   mask-size: cover;
+}
+
+@keyframes wave-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-wave {
+  background-size: 200% 200%;
+  animation: wave-animation 10s ease-in-out infinite;
 }
 </style>

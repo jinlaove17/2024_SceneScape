@@ -26,9 +26,7 @@
           <h5 class="mb-2 text-2xl font-bold tracking-tight text-black">
             🥇 부산 광안리 해수욕장
           </h5>
-          <p class="mb-3 font-normal text-gray-700 dark:text-gray-500">
-            설명을 입력하세요.
-          </p>
+          <p class="mb-3 font-normal text-gray-700">설명을 입력하세요.</p>
           <a
             href="#"
             class="inline-flex items-end px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400 focus:ring-4 focus:outline-none focus:ring-main-100"
@@ -51,9 +49,7 @@
           <h5 class="mb-2 text-2xl font-bold tracking-tight text-black">
             🥈 충주 호암지 생태공원
           </h5>
-          <p class="mb-3 font-normal text-gray-700 dark:text-gray-500">
-            설명을 입력하세요.
-          </p>
+          <p class="mb-3 font-normal text-gray-700">설명을 입력하세요.</p>
           <a
             href="#"
             class="inline-flex items-end px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400 focus:ring-4 focus:outline-none focus:ring-main-100"
@@ -76,9 +72,7 @@
           <h5 class="mb-2 text-2xl font-bold tracking-tight text-black">
             🥉 전주 연우당
           </h5>
-          <p class="mb-3 font-normal text-gray-700 dark:text-gray-500">
-            설명을 입력하세요.
-          </p>
+          <p class="mb-3 font-normal text-gray-700">설명을 입력하세요.</p>
           <a
             href="#"
             class="inline-flex items-end px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400 focus:ring-4 focus:outline-none focus:ring-main-100"

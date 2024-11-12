@@ -19,7 +19,7 @@ const onLoadMap = (mapObject) => {
 <template>
   <div class="flex">
     <naver-map
-      class="grow h-[50rem] mx-auto border-t-2 border-r-2 border-b-2 border-main-200"
+      class="grow h-[54rem] mx-auto border-t-2 border-r-2 border-b-2 border-main-200"
       :mapOptions="mapOptions"
       @onLoad="onLoadMap($event)"
     >

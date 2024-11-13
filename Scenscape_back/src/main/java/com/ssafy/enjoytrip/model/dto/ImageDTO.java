@@ -2,7 +2,7 @@ package com.ssafy.enjoytrip.model.dto;
 
 public class ImageDTO {
 	private int no;
-	private int postNo;
+	private long postNo;
 	private String url;
 	private MediaType mediaType;
 	private String altText;
@@ -12,7 +12,7 @@ public class ImageDTO {
 		super();
 	}
 
-	public ImageDTO(int postNo, String url, MediaType mediaType, String altText) {
+	public ImageDTO(long postNo, String url, MediaType mediaType, String altText) {
 		super();
 		this.postNo = postNo;
 		this.url = url;
@@ -20,7 +20,7 @@ public class ImageDTO {
 		this.altText = altText;
 	}
 
-	public ImageDTO(int no, int postNo, String url, MediaType mediaType, String altText, int order) {
+	public ImageDTO(int no, long postNo, String url, MediaType mediaType, String altText, int order) {
 		super();
 		this.no = no;
 		this.postNo = postNo;
@@ -38,11 +38,11 @@ public class ImageDTO {
 		this.no = no;
 	}
 
-	public int getPostNo() {
+	public long getPostNo() {
 		return postNo;
 	}
 
-	public void setPostNo(int postNo) {
+	public void setPostNo(long postNo) {
 		this.postNo = postNo;
 	}
 

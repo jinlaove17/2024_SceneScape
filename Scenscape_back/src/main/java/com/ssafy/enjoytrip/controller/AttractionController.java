@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,7 +69,7 @@ public class AttractionController {
     	return ResponseEntity.ok(titles);
     }
     
-    @GetMapping("searchByTitle.do")
+    @GetMapping("/searchByTitle.do")
     public ResponseEntity<List<AttractionDTO>> searchBySceneTitle(@RequestParam("title") String title) {
     	List<AttractionDTO> attractions = attractionService.searchBySceneTitle(title);
     	return ResponseEntity.ok(attractions);

@@ -3,7 +3,7 @@ package com.ssafy.enjoytrip.model.dto;
 import java.sql.Timestamp;
 
 public class PostDTO {
-    private int no;
+    private long no;
     private String title;
     private String content;
     private String userId;
@@ -50,11 +50,18 @@ public class PostDTO {
 		this.category = category;
 	}
 
-	public int getNo() {
+	public PostDTO(Long no, String title, String content) {
+		super();
+		this.no = no;
+		this.title = title;
+		this.content = content;
+	}
+
+	public long getNo() {
 		return no;
 	}
 
-	public void setNo(int no) {
+	public void setNo(long no) {
 		this.no = no;
 	}
 

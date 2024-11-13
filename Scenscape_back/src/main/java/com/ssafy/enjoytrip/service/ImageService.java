@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.enjoytrip.model.dao.ImageDAO;
+import com.ssafy.enjoytrip.model.dto.ImageDTO;
+import com.ssafy.enjoytrip.model.dto.MediaType;
 
 @Service
 public class ImageService {
@@ -29,12 +31,12 @@ public class ImageService {
         }
     }
 
-    public String upload(String dirName, MultipartFile image) {
-        // 1. media/dirName 경로 생성
-        String directoryPath = mediaPath + "/" + dirName;
+    public String upload(Long postNo, MultipartFile image) {
+        // 1. 저장할 디렉토리 경로 설정
+        String directoryPath = mediaPath + "/" + postNo;
         File directory = new File(directoryPath);
         if (!directory.exists()) {
-            directory.mkdirs();
+            directory.mkdirs(); // 경로가 없으면 생성
         }
 
         // 2. 고유한 파일 이름 생성
@@ -48,8 +50,18 @@ public class ImageService {
             e.printStackTrace();
             throw new RuntimeException("이미지 저장 중 오류 발생");
         }
+        
+        String url = directoryPath + "/" + fileName;
+        System.out.println("imageService: " + url);
+        
+        ImageDTO imageDTO = new ImageDTO();
+        imageDTO.setPostNo(postNo);
+        imageDTO.setUrl(url);
+        imageDTO.setMediaType(MediaType.IMAGE);
+
+        imageDao.insert(imageDTO); // 데이터베이스에 이미지 정보 저장
 
         // 4. 저장된 파일의 URL 반환
-        return "/" + directoryPath + "/" + fileName;
+        return url;
     }
 }

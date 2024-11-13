@@ -76,28 +76,43 @@ public class BoardController {
 		return ResponseEntity.ok(response);
 	}
 	
+	@PostMapping("/createTempPost.do")
+	public ResponseEntity<Map<String, Integer>> createTempPost(HttpSession session) {
+		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+		String userId = "ssafy";
+		if(userInfo != null) {
+			userId = userInfo.getId();
+		}
+		int postNo = boardService.createPost(new PostDTO(null, null, userId, null));
+		
+		System.out.println("boardController.createTempPost: new PostNo " + postNo);
+		
+		Map<String, Integer> response = new HashMap<>();
+		response.put("postNo", postNo);
+		
+		return ResponseEntity.ok(response);
+	}
+	
 	@Transactional
 	@PostMapping("/createScenePost.do")
-	public ResponseEntity<Map<String, Object>> createPost(
+	public ResponseEntity<Map<String, Object>> createScenePost(
+			@RequestParam("postNo") Long postNo,
 	        @RequestParam("title") String title,
 	        @RequestParam("content") String content,
-	        @RequestParam(value = "image", required = false) MultipartFile imageFile,
 	        HttpSession session) {
 	    
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
 		String userId = userInfo.getId();
 		
 		if(userId == null) {
-			userId = "ssafy Kim";
+			userId = "ssafy";
 		}
 		
 	    System.out.println("title: " + title);
 	    System.out.println("content: " + content);
-	    System.out.println("image:" + imageFile);
 	    
-	    int postNo = boardService.createPost(new PostDTO(title, content, userId, PostCategory.SCENE));
-	    String filePath = imageService.upload(Integer.toString(postNo), imageFile);
-	    boardService.setPostThumbnail(postNo, filePath);
+	    System.out.println("새 게시글 번호: "+postNo);
+	    boardService.updatePost(new PostDTO(postNo, title, content));
 	    
 	    // JSON 응답으로 반환할 데이터 구성
 	    Map<String, Object> response = new HashMap<>();

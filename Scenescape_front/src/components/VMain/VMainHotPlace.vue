@@ -75,7 +75,7 @@
           <p class="mb-3 font-normal text-gray-700">설명을 입력하세요.</p>
           <a
             href="#"
-            class="inline-flex items-end px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400 focus:ring-4 focus:outline-none focus:ring-main-100"
+            class="inline-flex items-end px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
           >
             상세 보기
           </a>

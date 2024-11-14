@@ -15,7 +15,7 @@
   		update posts
   		set
   		title = #{title}, content = #{content},
-  		thumbnail_url = #{thumbnail_Url}
+  		thumbnail_url = #{thumbnailUrl}
   		where no = #{no}
   	</update>
   	

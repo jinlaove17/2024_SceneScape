@@ -31,8 +31,9 @@ public class BoardService {
 		return posts;
 	}
 	
-	public int createPost(PostDTO post) {
-		return boardDao.insert(post);
+	public long createPost(PostDTO post) {
+		boardDao.insert(post);
+		return post.getNo();
 	}
 	
 	public int deletePost(int postNo) {

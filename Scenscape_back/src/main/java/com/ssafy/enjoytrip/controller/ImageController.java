@@ -33,6 +33,8 @@ public class ImageController {
             @RequestParam("postNo") Long postNo) {
 
         Map<String, Object> response = new HashMap<>();
+        
+        System.out.println("uploadImage: " + postNo);
 
         try {
             // 서비스에서 이미지 업로드 처리

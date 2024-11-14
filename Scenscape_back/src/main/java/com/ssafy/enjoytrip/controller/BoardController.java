@@ -77,17 +77,17 @@ public class BoardController {
 	}
 	
 	@PostMapping("/createTempPost.do")
-	public ResponseEntity<Map<String, Integer>> createTempPost(HttpSession session) {
+	public ResponseEntity<Map<String, Long>> createTempPost(HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
 		String userId = "ssafy";
 		if(userInfo != null) {
 			userId = userInfo.getId();
 		}
-		int postNo = boardService.createPost(new PostDTO(null, null, userId, null));
+		long postNo = boardService.createPost(new PostDTO(null, null, userId, null));
 		
 		System.out.println("boardController.createTempPost: new PostNo " + postNo);
 		
-		Map<String, Integer> response = new HashMap<>();
+		Map<String, Long> response = new HashMap<>();
 		response.put("postNo", postNo);
 		
 		return ResponseEntity.ok(response);
@@ -96,24 +96,22 @@ public class BoardController {
 	@Transactional
 	@PostMapping("/createScenePost.do")
 	public ResponseEntity<Map<String, Object>> createScenePost(
-			@RequestParam("postNo") Long postNo,
-	        @RequestParam("title") String title,
-	        @RequestParam("content") String content,
+	        @RequestBody Map<String, Object> payload, // JSON 데이터를 Map으로 받음
 	        HttpSession session) {
-	    
-		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
-		String userId = userInfo.getId();
-		
-		if(userId == null) {
-			userId = "ssafy";
-		}
-		
+
+	    Long postNo = Long.valueOf(payload.get("postNo").toString());
+	    String title = payload.get("title").toString();
+	    String content = payload.get("content").toString();
+
 	    System.out.println("title: " + title);
 	    System.out.println("content: " + content);
-	    
-	    System.out.println("새 게시글 번호: "+postNo);
+	    System.out.println("새 게시글 번호: " + postNo);
+
+	    UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+	    String userId = (userInfo != null) ? userInfo.getId() : "ssafy";
+
 	    boardService.updatePost(new PostDTO(postNo, title, content));
-	    
+
 	    // JSON 응답으로 반환할 데이터 구성
 	    Map<String, Object> response = new HashMap<>();
 	    response.put("message", "게시글이 성공적으로 생성되었습니다.");

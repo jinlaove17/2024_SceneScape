@@ -13,15 +13,13 @@ public class PostDTO {
     private Timestamp created;
     private Timestamp updated;
     private String thumbnailUrl;
-    
-    // ENUM type (게시글이 올라가는 게시판 종류)
-    private PostCategory category;
+    private String category;
 
     public PostDTO() {
         super();
     }
 
-	public PostDTO(String title, String content, String userId, String thumbnailUrl, PostCategory category) {
+	public PostDTO(String title, String content, String userId, String thumbnailUrl, String category) {
 		super();
 		this.title = title;
 		this.content = content;
@@ -30,12 +28,12 @@ public class PostDTO {
 		this.category = category;
 	}
 	
-	public PostDTO(String title, String content, String userId, PostCategory category) {
+	public PostDTO(String title, String content, String userId, String category) {
 		this(title, content, userId, null, category);
 	}
 
 	public PostDTO(int no, String title, String content, String userId, int viewCount, int likeCount, int dislikeCount,
-			Timestamp created, Timestamp updated, String thumbnailUrl, PostCategory category) {
+			Timestamp created, Timestamp updated, String thumbnailUrl, String category) {
 		super();
 		this.no = no;
 		this.title = title;
@@ -50,11 +48,13 @@ public class PostDTO {
 		this.category = category;
 	}
 
-	public PostDTO(Long no, String title, String content) {
+	public PostDTO(Long no, String title, String content, String thumbnailUrl, String category) {
 		super();
 		this.no = no;
 		this.title = title;
 		this.content = content;
+		this.thumbnailUrl = thumbnailUrl;
+		this.category = category;
 	}
 
 	public long getNo() {
@@ -137,11 +137,11 @@ public class PostDTO {
 		this.thumbnailUrl = thumbnailUrl;
 	}
 
-	public PostCategory getCategory() {
+	public String getCategory() {
 		return category;
 	}
 
-	public void setCategory(PostCategory category) {
+	public void setCategory(String category) {
 		this.category = category;
 	}
     

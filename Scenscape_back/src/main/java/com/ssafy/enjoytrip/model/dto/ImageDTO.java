@@ -6,7 +6,6 @@ public class ImageDTO {
 	private String url;
 	private MediaType mediaType;
 	private String altText;
-	private int order;
 	
 	public ImageDTO() {
 		super();
@@ -20,14 +19,13 @@ public class ImageDTO {
 		this.altText = altText;
 	}
 
-	public ImageDTO(int no, long postNo, String url, MediaType mediaType, String altText, int order) {
+	public ImageDTO(int no, long postNo, String url, MediaType mediaType, String altText) {
 		super();
 		this.no = no;
 		this.postNo = postNo;
 		this.url = url;
 		this.mediaType = mediaType;
 		this.altText = altText;
-		this.order = order;
 	}
 
 	public int getNo() {
@@ -68,13 +66,5 @@ public class ImageDTO {
 
 	public void setAltText(String altText) {
 		this.altText = altText;
-	}
-
-	public int getOrder() {
-		return order;
-	}
-
-	public void setOrder(int order) {
-		this.order = order;
 	}
 }

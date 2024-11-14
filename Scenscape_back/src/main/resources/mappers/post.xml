@@ -2,34 +2,76 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
-  <mapper namespace="com.ssafy.enjoytrip.model.dao.BoardDAO">
-  	<insert id="insert" useGeneratedKeys="true" keyProperty="no" parameterType="PostDTO">
-  		insert into posts
-  		values
-  		(null, #{title}, #{content}, #{userId},
-  		0, 0, 0, null, null, #{category}, #{thumbnailUrl})
-  	</insert>
-  	
-  	<update id="update" parameterType="PostDTO">
-  		update posts
-  		set
-  		title = #{title}, content = #{content},
-  		thumbnail_url = #{thumbnailUrl}
-  		where no = #{no}
-  	</update>
-  	
-  	<delete id="delete" parameterType="int">
-  		delete
-  		from posts
-  		where no = #{no}
-  	</delete>
-  	
-  	<update id="setThumbnail" parameterType="Map">
-  		update posts
-  		set
-  		thumbnail_url = #{fileName}
-  		where no = #{no}
-  	</update>
-  	
-  </mapper>
+
+<mapper namespace="com.ssafy.enjoytrip.model.dao.BoardDAO">
+	<insert id="insert" useGeneratedKeys="true" keyProperty="no"
+		parameterType="PostDTO">
+		insert into posts (title, content, user_id, view_count, like_count,
+		dislike_count, category, thumbnail_url)
+		values (#{title}, #{content}, #{userId}, 0, 0, 0, #{category},
+		#{thumbnailUrl})
+	</insert>
+
+
+	<update id="update" parameterType="PostDTO">
+		update posts
+		set
+		title =
+		#{title}, content = #{content},
+		thumbnail_url = #{thumbnailUrl},
+		category = #{category}
+		where no
+		= #{no}
+	</update>
+
+	<delete id="delete" parameterType="int">
+		delete
+		from posts
+		where no =
+		#{no}
+	</delete>
+
+	<update id="setThumbnail" parameterType="Map">
+		update posts
+		set
+		thumbnail_url = #{fileName}
+		where no = #{no}
+	</update>
+
+	<select id="select" parameterType="int" resultMap="PostMap">
+		select *
+		from
+		posts
+		where no = #{no}
+	</select>
+
+	<select id="selectAll" parameterType="map" resultMap="PostMap"
+		useCache="false">
+		select *
+		from posts
+		<!-- 페이지네이션 -->
+		limit #{pageSize} offset #{offset}
+	</select>
+
+	<!-- 전체 검색 결과 수를 계산하는 쿼리 -->
+	<select id="countAll" parameterType="map" resultType="int">
+		select
+		count(*)
+		from posts
+	</select>
+
+	<resultMap id="PostMap" type="PostDTO">
+		<result property="no" column="no" />
+		<result property="title" column="title" />
+		<result property="content" column="content" />
+		<result property="userId" column="user_id" />
+		<result property="viewCount" column="view_count" />
+		<result property="likeCount" column="like_count" />
+		<result property="dislikeCount" column="dislike_count" />
+		<result property="created" column="created" />
+		<result property="updated" column="updated" />
+		<result property="category" column="category" />
+		<result property="thumbnailUrl" column="thumbnail_url" />
+	</resultMap>
+
+</mapper>

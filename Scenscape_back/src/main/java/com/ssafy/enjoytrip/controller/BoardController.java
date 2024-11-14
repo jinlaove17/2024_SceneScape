@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.enjoytrip.model.dto.PostCategory;
 import com.ssafy.enjoytrip.model.dto.PostDTO;
 import com.ssafy.enjoytrip.model.dto.UserDTO;
 import com.ssafy.enjoytrip.service.BoardService;
@@ -56,8 +55,8 @@ public class BoardController {
 		Map<String, Object> filter = new HashMap<>();
 		filter.put("searchType", searchType);
 		filter.put("searchKeyword", searchKeyword);
-		filter.put("page", page);
-		filter.put("pageSize", pageSize);
+		filter.put("page", Integer.parseInt(page));
+		filter.put("pageSize", Integer.parseInt(pageSize));
 		
         // 페이지네이션을 위한 offset 계산
         int offset = (Integer.parseInt(page) - 1) * Integer.parseInt(pageSize);
@@ -102,6 +101,7 @@ public class BoardController {
 	    Long postNo = Long.valueOf(payload.get("postNo").toString());
 	    String title = payload.get("title").toString();
 	    String content = payload.get("content").toString();
+	    String thumbnailUrl = payload.get("imageUrl").toString();
 
 	    System.out.println("title: " + title);
 	    System.out.println("content: " + content);
@@ -110,7 +110,7 @@ public class BoardController {
 	    UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
 	    String userId = (userInfo != null) ? userInfo.getId() : "ssafy";
 
-	    boardService.updatePost(new PostDTO(postNo, title, content));
+	    boardService.updatePost(new PostDTO(postNo, title, content, thumbnailUrl, "SCENE"));
 
 	    // JSON 응답으로 반환할 데이터 구성
 	    Map<String, Object> response = new HashMap<>();

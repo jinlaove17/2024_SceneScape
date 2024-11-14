@@ -5,6 +5,7 @@ window.onload = function () {
   var titleSelect = document.getElementById("titleSelect");
   var attractionSelect = document.getElementById("attractionSelect");
   var postNo = null;
+  var imageUrl;
 
   // 컨텐츠 제목 전체 받아와 select의 옵션에 추가
   fetch("http://localhost:8080/attraction/titles.do", {
@@ -12,6 +13,7 @@ window.onload = function () {
   })
     .then((response) => response.json())
     .then((data) => {
+      console.log(data);
       // Populate titleSelect dropdown with received titles
       data.forEach((title) => {
         var option = document.createElement("option");
@@ -47,6 +49,8 @@ window.onload = function () {
           defaultOption.selected = true;
           defaultOption.textContent = "촬영지를 선택해 주세요.";
           attractionSelect.appendChild(defaultOption);
+
+          console.log(attractions);
 
           // Populate attractionSelect dropdown with received attractions
           attractions.forEach((attraction) => {
@@ -115,7 +119,7 @@ window.onload = function () {
           });
 
           const imageData = await imageResponse.json();
-          const imageUrl = imageData.url;
+          imageUrl = imageData.url;
           insertImageMarkdown(imageUrl);
         }
       }
@@ -130,6 +134,8 @@ window.onload = function () {
 
     var postTitle = title.value;
     var markdownContent = simplemde.value();
+    var sceneTitle = titleSelect.value;
+    var attractionNo = attractionSelect.value;
 
     // 이미지 개수 확인
     const imageCount = (markdownContent.match(/!\[image description]\(/g) || []).length;
@@ -143,6 +149,7 @@ window.onload = function () {
     console.log(markdownContent);
     console.log(imageCount);
     console.log(postNo);
+    console.log(imageUrl);
 
     fetch("http://localhost:8080/board/createScenePost.do", {
       method: "POST",
@@ -153,6 +160,7 @@ window.onload = function () {
         title: postTitle,
         content: markdownContent,
         postNo: postNo,
+        imageUrl: imageUrl,
       }),
     })
       .then((response) => {
@@ -164,6 +172,8 @@ window.onload = function () {
       })
       .then((data) => {
         console.log("게시글 작성 성공:", data);
+        // 게시글 작성 성공 후 boardTest.html로 이동
+        window.location.href = "boardTest.html";
       })
       .catch((error) => {
         console.error("게시글 작성 실패:", error);

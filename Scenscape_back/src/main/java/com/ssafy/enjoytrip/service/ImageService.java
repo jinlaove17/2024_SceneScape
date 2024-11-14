@@ -18,6 +18,7 @@ import com.ssafy.enjoytrip.model.dto.MediaType;
 @Service
 public class ImageService {
     private ImageDAO imageDao;
+    private String basePath = "http://localhost:8080/";
     private String mediaPath = "src/main/resources/static/media";
     
     @Autowired
@@ -51,7 +52,8 @@ public class ImageService {
             throw new RuntimeException("이미지 저장 중 오류 발생");
         }
         
-        String url = directoryPath + "/" + fileName;
+        // 브라우저 접근 가능한 URL로 변경
+        String url = basePath + "media/" + postNo + "/" + fileName;
         System.out.println("imageService: " + url);
         
         ImageDTO imageDTO = new ImageDTO();
@@ -64,4 +66,5 @@ public class ImageService {
         // 4. 저장된 파일의 URL 반환
         return url;
     }
+
 }

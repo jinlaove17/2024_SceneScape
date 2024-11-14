@@ -7,6 +7,6 @@
   	<insert id="insert" parameterType="ImageDTO">
   		insert into media
   		values
-  		(null, #{postNo}, #{url}, #{mediaType}, null, 1);
+  		(null, #{postNo}, #{url}, #{mediaType}, null);
   	</insert>
   </mapper>

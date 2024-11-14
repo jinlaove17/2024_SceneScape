@@ -1,10 +1,11 @@
 <script setup>
 import { ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useUserStore } from "@/stores/user";
 
-const userInfo = ref({
-  id: "",
-  nickname: "",
-});
+const store = useUserStore();
+const { userInfo } = storeToRefs(store);
+
 const isHoveredNav = ref(false);
 </script>
 
@@ -23,33 +24,38 @@ const isHoveredNav = ref(false);
     <div class="flex flex-col grow">
       <div
         v-show="userInfo.id === ''"
-        class="text-end border-b-2 border-gray-200 py-3"
+        class="text-sm text-end border-b-2 border-gray-200 py-3"
       >
         <RouterLink
           :to="{ name: 'login' }"
-          class="text-sm text-gray-500 hover:text-gray-700 mx-3"
-          href="#"
+          class="text-gray-500 hover:text-gray-700 mx-3"
         >
           로그인
         </RouterLink>
         <RouterLink
           :to="{ name: 'signup' }"
-          class="text-sm text-gray-500 hover:text-gray-700 mx-3"
-          href="#"
+          class="text-gray-500 hover:text-gray-700 mx-3"
         >
           회원가입
         </RouterLink>
       </div>
       <div
         v-show="userInfo.id !== ''"
-        class="text-end border-b-2 border-gray-200 py-3"
+        class="text-sm text-end border-b-2 border-gray-200 py-3"
       >
-        <a class="text-sm text-gray-500 hover:text-gray-700 mx-3" href="#">
+        <span>{{ userInfo.nickname }}님 환영합니다.</span>
+        <RouterLink
+          :to="{ name: 'mypage' }"
+          class="text-gray-500 hover:text-gray-700 mx-3"
+        >
           마이페이지
-        </a>
-        <a class="text-sm text-gray-500 hover:text-gray-700 mx-3" href="#">
+        </RouterLink>
+        <RouterLink
+          :to="{ name: 'login' }"
+          class="text-gray-500 hover:text-gray-700 mx-3"
+        >
           로그아웃
-        </a>
+        </RouterLink>
       </div>
 
       <div class="relative py-3">

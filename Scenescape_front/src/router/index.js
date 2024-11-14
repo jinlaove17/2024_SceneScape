@@ -4,6 +4,7 @@ import VSearchView from "@/views/VSearchView.vue";
 import VLoginView from "@/views/VLoginView.vue";
 import VSignupView from "@/views/VSignupView.vue";
 import VPhotoBoardView from "@/views/VPhotoBoardView.vue";
+import VMypageView from "@/views/VMypageView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: "/photoboard",
       name: "photoboard",
       component: VPhotoBoardView,
+    },
+    {
+      path: "/mypage",
+      name: "mypage",
+      component: VMypageView,
     },
   ],
 });

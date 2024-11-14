@@ -1,21 +1,34 @@
 <script setup>
 import { ref, watch } from "vue";
+import userAPI from "@/api/user";
 
-const userInput = ref({
+const inputParams = ref({
   id: "",
   pwd: "",
-  pwdCheck: "",
   nickname: "",
   email: "",
 });
 
 const idInfo = ref("");
 const isValidId = ref(false);
+const pwdCheck = ref("");
+
+const signup = () => {
+  userAPI.signup(
+    inputParams.value,
+    () => {
+      console.log("회원가입 성공!");
+    },
+    () => {
+      console.log("회원가입 실패!");
+    }
+  );
+};
 
 watch(
-  () => userInput.value.id,
+  () => inputParams.value.id,
   () => {
-    if (userInput.value.id.length < 2 || userInput.value.id.length > 16) {
+    if (inputParams.value.id.length < 2 || inputParams.value.id.length > 16) {
       idInfo.value = "아이디는 2자 이상 16자 이하여야 합니다!";
       isValidId.value = false;
     } else {
@@ -44,7 +57,7 @@ watch(
           class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
           placeholder=""
           required
-          v-model.lazy="userInput.id"
+          v-model.lazy="inputParams.id"
         />
         <label
           for="userId"
@@ -53,7 +66,7 @@ watch(
           ID
         </label>
         <p
-          v-show="userInput.id.length() > 0"
+          v-show="inputParams.id.length > 0"
           class="text-sm"
           :class="isValidId ? 'text-main-400' : 'text-red-500'"
         >
@@ -69,6 +82,7 @@ watch(
           class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
           placeholder=""
           required
+          v-model.lazy="inputParams.pwd"
         />
         <label
           for="userPwd"
@@ -86,6 +100,7 @@ watch(
           class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
           placeholder=""
           required
+          v-model.lazy="pwdCheck"
         />
         <label
           for="userPwdCheck"
@@ -102,6 +117,7 @@ watch(
           class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
           placeholder=""
           required
+          v-model.lazy="inputParams.nickname"
         />
         <label
           for="nickname"
@@ -118,6 +134,7 @@ watch(
           class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
           placeholder=""
           required
+          v-model.lazy="inputParams.email"
         />
         <label
           for="email"
@@ -128,78 +145,11 @@ watch(
       <button
         type="submit"
         class="w-24 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+        @click="signup"
       >
         회원 가입
       </button>
     </form>
-
-    <!-- <form
-      class="flex flex-col items-center w-80 border-2 mx-auto rounded-md py-5"
-      @submit.prevent
-    >
-      <div class="mb-5">
-        <label class="text-sm" for="userId">아이디<br /></label>
-        <input
-          class="w-56 h-8 border-2 rounded-md px-3"
-          type="text"
-          name="userId"
-          id="userId"
-          v-model.lazy="userInput.id"
-        />
-        <p
-          class="text-sm"
-          :class="isValidId ? 'text-main-400' : 'text-red-500'"
-        >
-          {{ idInfo }}
-        </p>
-      </div>
-      <div class="mb-5">
-        <label class="text-sm" for="userPwd">비밀번호<br /></label>
-        <input
-          class="w-56 h-8 border-2 rounded-md px-3"
-          type="password"
-          name="userPwd"
-          id="userPwd"
-          v-model.lazy="userInput.pwd"
-        />
-      </div>
-      <div class="mb-5">
-        <label class="text-sm" for="userPwdCheck">비밀번호 확인<br /></label>
-        <input
-          class="w-56 h-8 border-2 rounded-md px-3"
-          type="password"
-          name="userPwdCheck"
-          id="userPwdCheck"
-          v-model.lazy="userInput.pwdCheck"
-        />
-      </div>
-      <div>
-        <label class="text-sm" for="nickname">닉네임<br /></label>
-        <input
-          class="w-56 h-8 border-2 rounded-md mb-5 px-3"
-          type="text"
-          name="nickname"
-          id="nickname"
-          v-model.lazy="userInput.nickname"
-        />
-      </div>
-      <div>
-        <label class="text-sm" for="email">이메일<br /></label>
-        <input
-          class="w-56 h-8 border-2 rounded-md mb-5 px-3"
-          type="email"
-          name="email"
-          id="email"
-          v-model.lazy="userInput.email"
-        />
-      </div>
-      <button
-        type="button"
-        class="inline-flex items-end px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
-      >
-        회원가입
-      </button>
-    </form> -->
   </div>
 </template>
 

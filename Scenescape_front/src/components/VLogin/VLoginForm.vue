@@ -1,4 +1,27 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+import { useUserStore } from "@/stores/user";
+
+const store = useUserStore();
+const { login } = store;
+
+const inputParams = ref({
+  id: "",
+  pwd: "",
+});
+
+const onLogin = () => {
+  login(
+    inputParams.value,
+    () => {
+      console.log("로그인에 성공했습니다.");
+    },
+    () => {
+      console.log("로그인에 실패했습니다.");
+    }
+  );
+};
+</script>
 
 <template>
   <div class="flex flex-col items-center my-10">
@@ -19,6 +42,7 @@
             class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
             placeholder=""
             required
+            v-model="inputParams.id"
           />
           <label
             for="userId"
@@ -27,12 +51,6 @@
             ID
           </label>
         </div>
-        <p
-          class="text-sm"
-          :class="isValidId ? 'text-main-400' : 'text-red-500'"
-        >
-          {{ idInfo }}
-        </p>
       </div>
 
       <div class="relative z-0 w-full mb-8">
@@ -43,6 +61,8 @@
           class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
           placeholder=""
           required
+          autoComplete="off"
+          v-model="inputParams.pwd"
         />
         <label
           for="userPwd"
@@ -59,7 +79,6 @@
             type="checkbox"
             value="remember"
             class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300"
-            required
           />
         </div>
         <label for="remember" class="ms-2 text-md font-medium text-gray-900">
@@ -83,6 +102,7 @@
         <button
           type="submit"
           class="w-24 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400 mr-3"
+          @click="onLogin"
         >
           로그인
         </button>

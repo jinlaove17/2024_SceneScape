@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +32,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public class BoardController {
 	private BoardService boardService;
 	private ImageService imageService;
-	
+
 	@Autowired
 	public BoardController(BoardService boardService, ImageService imageService) {
 		this.boardService = boardService;
 		this.imageService = imageService;
 	}
-	
+
 	@GetMapping("/post.do")
 	public ResponseEntity<Map<String, Object>> getPost(@RequestParam("postNo") int postNo) {
 		Map<String, Object> response = new HashMap<>();
@@ -45,79 +46,221 @@ public class BoardController {
 		response.put("result", post);
 		return ResponseEntity.ok(response);
 	}
-	
+
 	@GetMapping("/posts.do")
 	public ResponseEntity<Map<String, Object>> getPostsByFilter(
 			@RequestParam(value = "searchType", required = false) String searchType,
 			@RequestParam(value = "searchKeyword", required = false) String searchKeyword,
+			@RequestParam(value = "category", defaultValue = "SCENE") String category,
+			@RequestParam(value="sortType", required = false) String sortType,
 			@RequestParam(value = "page", defaultValue = "1") String page,
-			@RequestParam(value = "pageSize", defaultValue = "20") String pageSize){
+			@RequestParam(value = "pageSize", defaultValue = "20") String pageSize) {
 		Map<String, Object> filter = new HashMap<>();
 		filter.put("searchType", searchType);
 		filter.put("searchKeyword", searchKeyword);
+		filter.put("category", category);
 		filter.put("page", Integer.parseInt(page));
 		filter.put("pageSize", Integer.parseInt(pageSize));
-		
-        // 페이지네이션을 위한 offset 계산
-        int offset = (Integer.parseInt(page) - 1) * Integer.parseInt(pageSize);
-        filter.put("offset", offset);
-		
+
+		// 페이지네이션을 위한 offset 계산
+		int offset = (Integer.parseInt(page) - 1) * Integer.parseInt(pageSize);
+		filter.put("offset", offset);
+
 		int totalResults = boardService.countByFilter(filter);
 		List<PostDTO> posts = boardService.getPostsByFilter(filter);
 		
+		for(PostDTO p : posts) {
+			System.out.println(p);
+		}
+
 		Map<String, Object> response = new HashMap<>();
 		response.put("totalResults", totalResults);
 		response.put("page", page);
 		response.put("pageSize", pageSize);
 		response.put("resultsInCurrentPage", posts.size());
 		response.put("results", posts);
-		
+
 		return ResponseEntity.ok(response);
 	}
-	
+
 	@PostMapping("/createTempPost.do")
 	public ResponseEntity<Map<String, Long>> createTempPost(HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
 		String userId = "ssafy";
-		if(userInfo != null) {
+		if (userInfo != null) {
 			userId = userInfo.getId();
 		}
-		long postNo = boardService.createPost(new PostDTO(null, null, userId, null));
-		
+		long postNo = boardService.createPost(new PostDTO(null, null, userId, null, null));
+
 		System.out.println("boardController.createTempPost: new PostNo " + postNo);
-		
+
 		Map<String, Long> response = new HashMap<>();
 		response.put("postNo", postNo);
-		
+
 		return ResponseEntity.ok(response);
 	}
-	
+
 	@Transactional
 	@PostMapping("/createScenePost.do")
-	public ResponseEntity<Map<String, Object>> createScenePost(
-	        @RequestBody Map<String, Object> payload, // JSON 데이터를 Map으로 받음
-	        HttpSession session) {
+	public ResponseEntity<Map<String, Object>> createScenePost(@RequestBody Map<String, Object> payload, // JSON 데이터를
+																											// Map으로 받음
+			HttpSession session) {
 
-	    Long postNo = Long.valueOf(payload.get("postNo").toString());
-	    String title = payload.get("title").toString();
-	    String content = payload.get("content").toString();
-	    String thumbnailUrl = payload.get("imageUrl").toString();
+		Long postNo = Long.valueOf(payload.get("postNo").toString());
+		String title = payload.get("title").toString();
+		String content = payload.get("content").toString();
+		String thumbnailUrl = payload.get("imageUrl").toString();
+		String sceneTitle = payload.get("sceneTitle").toString();
 
-	    System.out.println("title: " + title);
-	    System.out.println("content: " + content);
-	    System.out.println("새 게시글 번호: " + postNo);
+		System.out.println("title: " + title);
+		System.out.println("content: " + content);
+		System.out.println("새 게시글 번호: " + postNo);
 
-	    UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
-	    String userId = (userInfo != null) ? userInfo.getId() : "ssafy";
+		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+		String userId = (userInfo != null) ? userInfo.getId() : "ssafy";
 
-	    boardService.updatePost(new PostDTO(postNo, title, content, thumbnailUrl, "SCENE"));
+		boardService.updatePost(new PostDTO(postNo, title, content, thumbnailUrl, "SCENE", sceneTitle));
 
-	    // JSON 응답으로 반환할 데이터 구성
-	    Map<String, Object> response = new HashMap<>();
-	    response.put("message", "게시글이 성공적으로 생성되었습니다.");
-	    response.put("title", title);
-	    response.put("content", content);
+		// JSON 응답으로 반환할 데이터 구성
+		Map<String, Object> response = new HashMap<>();
+		response.put("message", "게시글이 성공적으로 생성되었습니다.");
+		response.put("title", title);
+		response.put("content", content);
 
-	    return ResponseEntity.ok(response);
+		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/createPost.do")
+	public ResponseEntity<Map<String, Object>> createPost(@RequestBody Map<String, Object> payload,
+			HttpSession session) {
+		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+
+		String userId = userInfo.getId();
+		// boolean isAdmin = userInfo.getIsAdmin();
+		String title = payload.get("title").toString();
+		String content = payload.get("content").toString();
+		String category = payload.get("category").toString();
+		String sceneTitle = payload.get("sceneTitle").toString();
+
+		long postNo = boardService.createPost(new PostDTO(title, content, userId, category, sceneTitle));
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("postNo", postNo);
+
+		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/updatePost.do")
+	public ResponseEntity<Map<String, Object>> updatePost(@RequestBody Map<String, Object> payload,
+			HttpSession session) {
+		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+		Map<String, Object> response = new HashMap<>();
+
+		// 세션 유효성 확인
+//		if (userInfo == null) {
+//			response.put("errorMsg", "로그인 정보가 없습니다.");
+//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+//		}
+//
+//		String userId = userInfo.getId();
+
+		String userId = "ssafy";
+
+		// postNo 유효성 확인
+		if (!payload.containsKey("postNo") || payload.get("postNo") == null) {
+			response.put("errorMsg", "유효하지 않은 게시글 번호입니다.");
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		long postNo;
+		try {
+			postNo = Long.parseLong(payload.get("postNo").toString());
+		} catch (NumberFormatException e) {
+			response.put("errorMsg", "게시글 번호는 숫자여야 합니다.");
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		// 게시글 가져오기
+		PostDTO post = boardService.getPost(postNo);
+		if (post == null) {
+			response.put("errorMsg", "게시글을 찾을 수 없습니다.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+		}
+
+		// 작성자 확인
+		if (post.getUserId() == null || !userId.equals(post.getUserId())) {
+			response.put("errorMsg", "게시글의 작성자가 아닙니다.");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+		}
+
+		// payload 데이터 추출
+		String title = payload.get("title") != null ? payload.get("title").toString() : null;
+		String content = payload.get("content") != null ? payload.get("content").toString() : null;
+
+		if (title == null || content == null) {
+			response.put("errorMsg", "제목과 내용을 모두 입력해야 합니다.");
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		// 게시글 업데이트
+		PostDTO updatedPost = new PostDTO();
+		updatedPost.setNo(postNo);
+		updatedPost.setTitle(title);
+		updatedPost.setContent(content);
+		updatedPost.setUserId(userId);
+
+		boardService.updatePost(updatedPost);
+		response.put("postNo", postNo);
+
+		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/deletePost.do")
+	public ResponseEntity<Map<String, Object>> deletePost(@RequestBody Map<String, Object> payload,
+			HttpSession session) {
+		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+		Map<String, Object> response = new HashMap<>();
+
+		// 세션 유효성 확인
+//		if (userInfo == null) {
+//			response.put("errorMsg", "로그인 정보가 없습니다.");
+//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+//		}
+//
+//		String userId = userInfo.getId();
+
+		String userId = "ssafy";
+		
+		// postNo 유효성 확인
+		if (!payload.containsKey("postNo") || payload.get("postNo") == null) {
+			response.put("errorMsg", "유효하지 않은 게시글 번호입니다.");
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		long postNo;
+		try {
+			postNo = Long.parseLong(payload.get("postNo").toString());
+		} catch (NumberFormatException e) {
+			response.put("errorMsg", "게시글 번호는 숫자여야 합니다.");
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		// 게시글 가져오기
+		PostDTO post = boardService.getPost(postNo);
+		if (post == null) {
+			response.put("errorMsg", "게시글을 찾을 수 없습니다.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+		}
+
+		// 작성자 확인
+		if (post.getUserId() == null || !userId.equals(post.getUserId())) {
+			response.put("errorMsg", "게시글의 작성자가 아닙니다.");
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+		}
+		
+		boardService.deletePost(postNo);
+		
+		
+		return ResponseEntity.ok(response);
 	}
 }

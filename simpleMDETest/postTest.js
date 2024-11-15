@@ -161,6 +161,7 @@ window.onload = function () {
         content: markdownContent,
         postNo: postNo,
         imageUrl: imageUrl,
+        sceneTitle: sceneTitle,
       }),
     })
       .then((response) => {

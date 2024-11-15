@@ -19,7 +19,7 @@ public class BoardService {
 		this.boardDao = boardDao;
 	}
 	
-	public PostDTO getPost(int postNo) {
+	public PostDTO getPost(long postNo) {
 		PostDTO post = boardDao.select(postNo);
 		
 		return post;
@@ -36,11 +36,11 @@ public class BoardService {
 		return post.getNo();
 	}
 	
-	public int deletePost(int postNo) {
+	public long deletePost(long postNo) {
 		return boardDao.delete(postNo);
 	}
 	
-	public int updatePost(PostDTO post) {
+	public long updatePost(PostDTO post) {
 		return boardDao.update(post);
 	}
 	
@@ -48,7 +48,7 @@ public class BoardService {
 		return boardDao.countAll(filter);
 	}
 	
-	public int setPostThumbnail(int postNo, String fileName) {
+	public int setPostThumbnail(long postNo, String fileName) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("no", postNo);
 		params.put("fileName", fileName);

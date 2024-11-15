@@ -14,26 +14,32 @@ public class PostDTO {
     private Timestamp updated;
     private String thumbnailUrl;
     private String category;
+    private String sceneTitle;
 
     public PostDTO() {
         super();
     }
 
-	public PostDTO(String title, String content, String userId, String thumbnailUrl, String category) {
+	public PostDTO(String title, String content, String userId, String thumbnailUrl, String category, String sceneTitle) {
 		super();
 		this.title = title;
 		this.content = content;
 		this.userId = userId;
 		this.thumbnailUrl = thumbnailUrl;
 		this.category = category;
+		this.sceneTitle = sceneTitle;
 	}
 	
-	public PostDTO(String title, String content, String userId, String category) {
-		this(title, content, userId, null, category);
+	public PostDTO(String title, String content) {
+		this(title, content, null, null, null, null);
+	}
+	
+	public PostDTO(String title, String content, String userId, String category, String sceneTitle) {
+		this(title, content, userId, null, category, sceneTitle);
 	}
 
 	public PostDTO(int no, String title, String content, String userId, int viewCount, int likeCount, int dislikeCount,
-			Timestamp created, Timestamp updated, String thumbnailUrl, String category) {
+			Timestamp created, Timestamp updated, String thumbnailUrl, String category, String sceneTitle) {
 		super();
 		this.no = no;
 		this.title = title;
@@ -46,15 +52,17 @@ public class PostDTO {
 		this.updated = updated;
 		this.thumbnailUrl = thumbnailUrl;
 		this.category = category;
+		this.sceneTitle = sceneTitle;
 	}
 
-	public PostDTO(Long no, String title, String content, String thumbnailUrl, String category) {
+	public PostDTO(Long no, String title, String content, String thumbnailUrl, String category, String sceneTitle) {
 		super();
 		this.no = no;
 		this.title = title;
 		this.content = content;
 		this.thumbnailUrl = thumbnailUrl;
 		this.category = category;
+		this.sceneTitle = sceneTitle;
 	}
 
 	public long getNo() {
@@ -144,6 +152,21 @@ public class PostDTO {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-    
+
+	public String getSceneTitle() {
+		return sceneTitle;
+	}
+
+	public void setSceneTitle(String sceneTitle) {
+		this.sceneTitle = sceneTitle;
+	}
+
+	@Override
+	public String toString() {
+		return "PostDTO [no=" + no + ", title=" + title + ", content=" + content + ", userId=" + userId + ", viewCount="
+				+ viewCount + ", likeCount=" + likeCount + ", dislikeCount=" + dislikeCount + ", created=" + created
+				+ ", updated=" + updated + ", thumbnailUrl=" + thumbnailUrl + ", category=" + category + ", sceneTitle="
+				+ sceneTitle + "]";
+	}
 	
 }

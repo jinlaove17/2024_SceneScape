@@ -11,8 +11,8 @@ import com.ssafy.enjoytrip.model.dto.PostDTO;
 public interface BoardDAO {
 	int insert(PostDTO post);
 	int update(PostDTO post);
-	int delete(int no);
-	PostDTO select(int no);
+	int delete(long no);
+	PostDTO select(long no);
 	List<PostDTO> selectAll(Map<String, Object> filter);
 	int countAll(Map<String, Object> filter);
 	int setThumbnail(Map<String, Object> params);

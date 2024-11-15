@@ -120,15 +120,18 @@
 	</select>
 
 	<select id="selectTitles" resultType="String">
-		select TRIM(scene_title) as scene_title
+		select TRIM(scene_title) as
+		scene_title
 		from attractions
 		where scene_title IS NOT NULL
-		group by scene_title;
+		group by
+		scene_title;
 	</select>
-	
+
 	<select id="selectBySceneTitle" resultMap="AttractionMap">
 		select *
-		from attractions
+		from
+		attractions
 		where scene_title = #{title}
 	</select>
 

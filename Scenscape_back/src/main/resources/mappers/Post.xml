@@ -6,25 +6,42 @@
 <mapper namespace="com.ssafy.enjoytrip.model.dao.BoardDAO">
 	<insert id="insert" useGeneratedKeys="true" keyProperty="no"
 		parameterType="PostDTO">
-		insert into posts (title, content, user_id, view_count, like_count,
-		dislike_count, category, thumbnail_url)
-		values (#{title}, #{content}, #{userId}, 0, 0, 0, #{category},
-		#{thumbnailUrl})
+		insert into posts (title, content, user_id, view_count,
+		like_count,
+		dislike_count, category, thumbnail_url, scene_title)
+		values (#{title},
+		#{content}, #{userId}, 0, 0, 0, #{category},
+		#{thumbnailUrl},
+		#{sceneTitle})
 	</insert>
 
 
 	<update id="update" parameterType="PostDTO">
 		update posts
-		set
-		title =
-		#{title}, content = #{content},
-		thumbnail_url = #{thumbnailUrl},
-		category = #{category}
-		where no
-		= #{no}
+		<set>
+			<if test="title != null">
+				title = #{title},
+			</if>
+			<if test="content != null">
+				content = #{content},
+			</if>
+			<if test="thumbnailUrl != null">
+				thumbnail_url = #{thumbnailUrl},
+			</if>
+			<if test="category != null">
+				category = #{category},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId},
+			</if>
+			<if test="sceneTitle != null">
+				scene_title = #{sceneTitle},
+			</if>
+		</set>
+		where no = #{no}
 	</update>
 
-	<delete id="delete" parameterType="int">
+	<delete id="delete" parameterType="long">
 		delete
 		from posts
 		where no =
@@ -38,26 +55,91 @@
 		where no = #{no}
 	</update>
 
-	<select id="select" parameterType="int" resultMap="PostMap">
+	<select id="select" parameterType="long" resultMap="PostMap">
 		select *
 		from
 		posts
 		where no = #{no}
 	</select>
 
-	<select id="selectAll" parameterType="map" resultMap="PostMap"
-		useCache="false">
-		select *
-		from posts
+	<select id="selectAll" parameterType="map"
+		resultMap="PostMap" useCache="false">
+		SELECT *
+		FROM posts
+		<where>
+			<!-- category 조건 -->
+			<if test="category != null and category != ''">
+				category = #{category}
+			</if>
+
+			<!-- searchType과 searchKeyword 조건 -->
+			<if
+				test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+				<if test="category != null and category != ''">
+					AND
+				</if>
+				<choose>
+					<when test="searchType == 'title'">
+						title LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<when test="searchType == 'userId'">
+						user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<when test="searchType == 'sceneTitle'">
+						scene_title LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+				</choose>
+			</if>
+		</where>
+
+		<!-- 정렬 조건 -->
+		<if test="sortType != null and sortType != ''">
+			ORDER BY
+			<choose>
+				<when test="sortType == 'view'">
+					view_count DESC
+				</when>
+				<when test="sortType == 'like'">
+					like_count DESC
+				</when>
+				<otherwise>
+					created_at DESC
+				</otherwise>
+			</choose>
+		</if>
+
 		<!-- 페이지네이션 -->
-		limit #{pageSize} offset #{offset}
+		LIMIT #{pageSize} OFFSET #{offset}
 	</select>
 
-	<!-- 전체 검색 결과 수를 계산하는 쿼리 -->
 	<select id="countAll" parameterType="map" resultType="int">
-		select
-		count(*)
-		from posts
+		SELECT COUNT(*)
+		FROM posts
+		<where>
+			<!-- category 조건 -->
+			<if test="category != null and category != ''">
+				category = #{category}
+			</if>
+
+			<!-- searchType과 searchKeyword 조건 -->
+			<if
+				test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
+				<if test="category != null and category != ''">
+					AND
+				</if>
+				<choose>
+					<when test="searchType == 'title'">
+						title LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<when test="searchType == 'userId'">
+						user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+					<when test="searchType == 'sceneTitle'">
+						scene_title LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
+				</choose>
+			</if>
+		</where>
 	</select>
 
 	<resultMap id="PostMap" type="PostDTO">
@@ -72,6 +154,7 @@
 		<result property="updated" column="updated" />
 		<result property="category" column="category" />
 		<result property="thumbnailUrl" column="thumbnail_url" />
+		<result property="sceneTitle" column="scene_title" />
 	</resultMap>
 
 </mapper>

@@ -68,10 +68,6 @@ public class BoardController {
 
 		int totalResults = boardService.countByFilter(filter);
 		List<PostDTO> posts = boardService.getPostsByFilter(filter);
-		
-		for(PostDTO p : posts) {
-			System.out.println(p);
-		}
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("totalResults", totalResults);
@@ -137,12 +133,21 @@ public class BoardController {
 
 		String userId = userInfo.getId();
 		// boolean isAdmin = userInfo.getIsAdmin();
+		String postNo = payload.get("postNo").toString();
 		String title = payload.get("title").toString();
 		String content = payload.get("content").toString();
 		String category = payload.get("category").toString();
 		String sceneTitle = payload.get("sceneTitle").toString();
-
-		long postNo = boardService.createPost(new PostDTO(title, content, userId, category, sceneTitle));
+		String thumbnailUrl = payload.get("thumbnailUrl").toString();
+		
+		System.out.println("boardController.createPost: ");
+		System.out.println("received postNo:" + postNo);
+		
+		if(postNo == null || postNo.equals("")) {
+			postNo = String.valueOf(boardService.createPost(new PostDTO(title, content, userId, category, sceneTitle)));
+		} else {
+			boardService.updatePost(new PostDTO(Long.parseLong(postNo), title, content, category, sceneTitle, thumbnailUrl));
+		}
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("postNo", postNo);

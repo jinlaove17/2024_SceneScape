@@ -55,14 +55,14 @@ public class PostDTO {
 		this.sceneTitle = sceneTitle;
 	}
 
-	public PostDTO(Long no, String title, String content, String thumbnailUrl, String category, String sceneTitle) {
+	public PostDTO(Long no, String title, String content, String category, String sceneTitle, String thumbnailUrl) {
 		super();
 		this.no = no;
 		this.title = title;
 		this.content = content;
-		this.thumbnailUrl = thumbnailUrl;
 		this.category = category;
 		this.sceneTitle = sceneTitle;
+		this.thumbnailUrl = thumbnailUrl;
 	}
 
 	public long getNo() {

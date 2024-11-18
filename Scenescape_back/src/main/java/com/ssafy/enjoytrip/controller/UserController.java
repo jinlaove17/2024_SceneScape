@@ -58,7 +58,9 @@ public class UserController {
 
 		if (userDto != null) {
 			session.setAttribute("userInfo", userDto);
-			return ResponseEntity.ok(null);
+			Map<String, Object> response = new HashMap<>();
+			response.put("userInfo", userDto);
+			return ResponseEntity.ok(response);
 		}
 
 		return ResponseEntity.notFound().build();

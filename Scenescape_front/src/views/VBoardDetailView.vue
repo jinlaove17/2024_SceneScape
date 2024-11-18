@@ -12,6 +12,8 @@ const store = useUserStore();
 const { userInfo } = storeToRefs(store);
 
 const post = ref(null);
+const comments = ref([]);
+const likeStatus = ref(null);
 const mode = ref("light");
 const isLoading = ref(true);
 
@@ -19,7 +21,9 @@ onMounted(() => {
   boardAPI.getPost(
     route.params.no,
     ({ data }) => {
-      post.value = data.result;
+      post.value = data.post;
+      comments.value = data.comments;
+      likeStatus.value = data.likeStatus;
       isLoading.value = false;
       console.log("게시판 세부 정보 불러오기 성공!");
     },

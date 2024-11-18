@@ -30,6 +30,8 @@ const onWritePost = () => {
 onMounted(() => {
   boardAPI.getPosts(
     ({ data }) => {
+      console.log(data);
+      console.log(data.results);
       posts.value = data.results;
       console.log("게시판 목록 불러오기 성공!");
     },

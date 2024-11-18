@@ -27,7 +27,8 @@ export const useUserStore = defineStore(
       userAPI.login(
         user,
         ({ data }) => {
-          orgUserInfo.value = data.data;
+          console.log(data);
+          orgUserInfo.value = data.userInfo;
           router.replace({ name: "main" });
 
           if (success) {

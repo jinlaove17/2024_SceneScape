@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.ssafy.enjoytrip.model.dao.CommentDAO">
+  	<insert id="insert" parameterType="CommentDTO" useGeneratedKeys="true" keyProperty="no">
+  		insert into comments
+  		(post_id, user_id, parent_id, content)
+  		values (#{postNo}, #{userId}, #{parentNo,jdbcType=INTEGER}, #{content})
+  	</insert>
+  	
+  	<update id="update" parameterType="CommentDTO">
+  		update comments
+  		set	content = #{content}
+  		where no = #{no}
+  	</update>
+  	
+  	<delete id="delete" parameterType="int">
+  		delete
+  		from comments
+  		where no = #{no}
+  	</delete>
+  	
+  	<select id="selectAll" parameterType="int" resultMap="CommentMap">
+  		select *
+  		from comments
+  		where post_no = #{postNo}
+  	</select>
+  	
+  	<resultMap type="CommentDTO" id="CommentMap">
+  		<result property="no" column="no"/>
+  		<result property="postNo" column="post_no" />
+  		<result property="userId" column="user_id" />
+  		<result property="parentNo" column="parent_no" />
+  		<result property="content" column="content" />
+  		<result property="created" column="created" />
+  		<result property="updated" column="updated" />
+  	</resultMap>
+  </mapper>

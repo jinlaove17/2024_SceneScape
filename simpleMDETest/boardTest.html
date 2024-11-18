@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Card Layout Board</title>
+    <style>
+      /* 기본 스타일 */
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background-color: #f4f4f4;
+      }
+
+      /* 게시글 등록 버튼 스타일 */
+      .post-button {
+        display: inline-block;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #ffffff;
+        background-color: #4caf50;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      .post-button:hover {
+        background-color: #45a049;
+      }
+
+      .card-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        max-width: 1200px;
+        width: 100%;
+        padding: 20px;
+      }
+      .card {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        text-align: center;
+        transition: transform 0.3s;
+      }
+      .card:hover {
+        transform: translateY(-5px);
+      }
+      .card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+      }
+      .card-content {
+        padding: 15px;
+      }
+      .card-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 10px 0 5px;
+      }
+      .card-info {
+        font-size: 14px;
+        color: #666;
+      }
+      .card-stats {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 10px;
+        font-size: 13px;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 게시글 등록 버튼 -->
+    <a href="postTest.html" class="post-button">게시글 등록</a>
+
+    <!-- 카드 컨테이너 -->
+    <div class="card-container" id="cardContainer"></div>
+
+    <script>
+      // 서버에서 데이터를 가져와 카드 렌더링하는 함수
+      async function fetchDataAndRenderCards() {
+        // 데이터 가져오기
+        const response = await fetch("http://localhost:8080/board/posts.do"); // URL 앞에 http:// 추가
+        const data = await response.json(); // 응답 데이터를 JSON으로 변환
+
+        // 카드 형태로 데이터를 렌더링하는 함수 호출
+        renderCards(data);
+      }
+
+      // 카드 형태로 데이터를 렌더링하는 함수
+      function renderCards(data) {
+        const container = document.getElementById("cardContainer");
+
+        data.results.forEach((post) => {
+          // 링크 요소 생성
+          const link = document.createElement("a");
+          link.href = `http://localhost:8080/board/post.do?postNo=${post.no}`;
+          link.style.textDecoration = "none"; // 링크 밑줄 제거
+          link.style.color = "black";
+
+          const card = document.createElement("div");
+          card.classList.add("card");
+
+          // 이미지
+          const img = document.createElement("img");
+          img.src = post.thumbnailUrl;
+          img.alt = post.title;
+
+          // 카드 내용
+          const content = document.createElement("div");
+          content.classList.add("card-content");
+
+          // 제목
+          const title = document.createElement("h3");
+          title.classList.add("card-title");
+          title.textContent = post.title;
+
+          // 작성자 정보
+          const info = document.createElement("p");
+          info.classList.add("card-info");
+          info.textContent = `작성자: ${post.userId}`;
+
+          // 통계 정보 (조회수, 좋아요 수, 싫어요 수)
+          const stats = document.createElement("div");
+          stats.classList.add("card-stats");
+
+          const viewCount = document.createElement("span");
+          viewCount.textContent = `조회수: ${post.viewCount}`;
+
+          const likeCount = document.createElement("span");
+          likeCount.textContent = `좋아요: ${post.likeCount}`;
+
+          const dislikeCount = document.createElement("span");
+          dislikeCount.textContent = `싫어요: ${post.dislikeCount}`;
+
+          // 통계 정보 추가
+          stats.appendChild(viewCount);
+          stats.appendChild(likeCount);
+          stats.appendChild(dislikeCount);
+
+          // 구성 요소를 카드에 추가
+          content.appendChild(title);
+          content.appendChild(info);
+          content.appendChild(stats);
+          card.appendChild(img);
+          card.appendChild(content);
+
+          // 카드 요소를 링크에 추가
+          link.appendChild(card);
+
+          // 링크 요소를 컨테이너에 추가
+          container.appendChild(link);
+        });
+      }
+
+      // 함수 호출하여 데이터 가져와 카드 렌더링
+      fetchDataAndRenderCards();
+    </script>
+  </body>
+</html>

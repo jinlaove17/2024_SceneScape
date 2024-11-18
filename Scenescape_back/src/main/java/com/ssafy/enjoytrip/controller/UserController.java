@@ -1,6 +1,8 @@
 package com.ssafy.enjoytrip.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,14 +17,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.enjoytrip.model.dto.ApiResponse;
 import com.ssafy.enjoytrip.model.dto.UserDTO;
 import com.ssafy.enjoytrip.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/userRest")
+@RequestMapping("/users")
 public class UserController {
 	private UserService userService;
 
@@ -30,84 +31,86 @@ public class UserController {
 	public UserController(UserService userService) {
 		this.userService = userService;
 	}
-	
+
 	@GetMapping("/")
-	private ResponseEntity<ApiResponse<List<UserDTO>>> getUsers() {
-		return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<List<UserDTO>>(HttpStatus.OK, userService.getUsers()));
+	private ResponseEntity<Map<String, Object>> getUsers() {
+		Map<String, Object> response = new HashMap<>();
+		response.put("users", userService.getUsers());
+		return ResponseEntity.ok(response);
 	}
-	
-	@PostMapping("/join.do")
-	private ResponseEntity<ApiResponse<String>> join(@RequestBody UserDTO user) {
+
+	@PostMapping("/join")
+	private ResponseEntity<Map<String, Object>> join(@RequestBody UserDTO user) {
+		Map<String, Object> response = new HashMap<>();
 		boolean isSuccess = userService.join(user.getId(), user.getPwd(), user.getNickname(), user.getEmail());
-		
-		if (isSuccess)
-		{
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<String>(HttpStatus.OK, "회원가입 성공"));
+
+		if (isSuccess) {
+			return ResponseEntity.ok(null);
 		}
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<String>(HttpStatus.BAD_REQUEST, "회원가입 실패"));
+		response.put("errorMsg", "회원가입 실패");
+		return ResponseEntity.badRequest().body(response);
 	}
 
-	@PostMapping("/login.do")
-	private ResponseEntity<ApiResponse<UserDTO>> login(@RequestBody UserDTO user, HttpSession session) {
+	@PostMapping("/login")
+	private ResponseEntity<Map<String, Object>> login(@RequestBody UserDTO user, HttpSession session) {
 		UserDTO userDto = userService.login(user.getId(), user.getPwd());
 
 		if (userDto != null) {
 			session.setAttribute("userInfo", userDto);
-			
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<UserDTO>(HttpStatus.OK, userDto));
+			return ResponseEntity.ok(null);
 		}
-		
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<UserDTO>(HttpStatus.NOT_FOUND, userDto));
+
+		return ResponseEntity.notFound().build();
 	}
 
-	@PostMapping("/logout.do")
-	private ResponseEntity<ApiResponse<String>> logout(HttpSession session, Model model) {
+	@PostMapping("/logout")
+	private ResponseEntity<Map<String, Object>> logout(HttpSession session, Model model) {
 		// 회원탈퇴 후 로그아웃으로 redirect 하는 경우가 있으므로, 유저가 존재할 때만 로그아웃 알림창을 띄운다.
 		UserDTO user = (UserDTO) session.getAttribute("userInfo");
-		
+
 		if (user != null) {
 			if (userService.isExist(user.getId())) {
 				// 세션에서 모든 속성 삭제 후 비우기
 				session.invalidate();
-				
-				return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<String>(HttpStatus.OK, "로그아웃 성공"));
+				return ResponseEntity.ok(null);
 			}
 		}
-		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<String>(HttpStatus.BAD_REQUEST, "로그아웃 실패"));
+
+		return ResponseEntity.notFound().build();
 	}
 
-	@PutMapping("/modify.do")
-	private ResponseEntity<ApiResponse<UserDTO>> modify(@RequestBody UserDTO user, HttpSession session) {
+	@PutMapping("/modify")
+	private ResponseEntity<Map<String, Object>> modify(@RequestBody UserDTO user, HttpSession session) {
 		UserDTO userDto = userService.updateAccount(user.getId(), user.getPwd(), user.getNickname(), user.getEmail());
 
 		if (userDto != null) {
 			session.setAttribute("userInfo", userDto);
-
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<UserDTO>(HttpStatus.OK, userDto));
+			return ResponseEntity.ok(null);
 		}
-		
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<UserDTO>(HttpStatus.NOT_FOUND, userDto));
+
+		return ResponseEntity.notFound().build();
 	}
 
-	@DeleteMapping("/delete.do/{id}")
-	private ResponseEntity<ApiResponse<String>>  delete(@PathVariable("id") String userId) {
+	@DeleteMapping("/delete/{id}")
+	private ResponseEntity<Map<String, Object>> delete(@PathVariable("id") String userId) {
 		if (userService.cancelAccount(userId)) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<String>(HttpStatus.OK, "회원삭제 성공"));
+			return ResponseEntity.ok(null);
 		}
-		
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<String>(HttpStatus.NOT_FOUND, "회원삭제 실패"));
+
+		return ResponseEntity.notFound().build();
 	}
 
-	@PostMapping("/find.do")
-	private ResponseEntity<ApiResponse<UserDTO>> find(@RequestBody UserDTO user) {
+	@PostMapping("/find-pwd")
+	private ResponseEntity<Map<String, Object>> find(@RequestBody UserDTO user) {
+		Map<String, Object> response = new HashMap<>();
 		UserDTO userDto = userService.findPassword(user.getId(), user.getEmail());
 
 		if (userDto != null) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse<UserDTO>(HttpStatus.OK, userDto));
+			response.put("tempPwd", userDto.getPwd());
+			return ResponseEntity.ok(response);
 		}
-		
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<UserDTO>(HttpStatus.NOT_FOUND, userDto));
+
+		return ResponseEntity.notFound().build();
 	}
 }

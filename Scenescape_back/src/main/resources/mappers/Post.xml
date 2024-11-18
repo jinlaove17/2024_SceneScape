@@ -43,10 +43,9 @@
 	</update>
 
 	<delete id="delete" parameterType="long">
-		delete
-		from posts
-		where no =
-		#{no}
+		update posts
+		set is_deleted = 1
+		where no = #{no}
 	</delete>
 
 	<update id="setThumbnail" parameterType="Map">
@@ -74,7 +73,7 @@
 		select *
 		from
 		posts
-		where no = #{no}
+		where no = #{no} and is_deleted = 0;
 	</select>
 
 	<select id="selectAll" parameterType="map" resultMap="PostMap"
@@ -82,9 +81,11 @@
 		SELECT *
 		FROM posts
 		<where>
+			is_deleted = 0
+
 			<!-- category 조건 -->
 			<if test="category != null and category != ''">
-				category = #{category}
+				AND category = #{category}
 			</if>
 
 			<!-- searchType과 searchKeyword 조건 -->
@@ -131,9 +132,10 @@
 		SELECT COUNT(*)
 		FROM posts
 		<where>
+			is_deleted = 0
 			<!-- category 조건 -->
 			<if test="category != null and category != ''">
-				category = #{category}
+				AND category = #{category}
 			</if>
 
 			<!-- searchType과 searchKeyword 조건 -->

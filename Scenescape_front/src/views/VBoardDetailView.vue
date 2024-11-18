@@ -12,6 +12,8 @@ const store = useUserStore();
 const { userInfo } = storeToRefs(store);
 
 const post = ref(null);
+const comments = ref([]);
+const likeStatus = ref(null);
 const mode = ref("light");
 const isLoading = ref(true);
 
@@ -20,8 +22,14 @@ onMounted(() => {
     route.params.no,
     ({ data }) => {
       post.value = data.post;
+      comments.value = data.comments;
+
+      // likeStatus : 1 -> 좋아요, 0 -> 누르지 않음, -1 -> 싫어요
+      likeStatus.value = data.likeStatus;
       isLoading.value = false;
       console.log("게시판 세부 정보 불러오기 성공!");
+      console.log(comments.value);
+      console.log(likeStatus.value);
     },
     () => {
       isLoading.value = false;
@@ -147,6 +155,12 @@ const onDeletePost = () => {
         </div>
 
         <VMarkdownView :mode="mode" :content="post.content"></VMarkdownView>
+        <div class="flex items-center justify-center h-40">
+          <div class="flex flex-row space-x-4">
+            <span><Button>좋아요 버튼</Button></span>
+            <span><Button>싫어요 버튼</Button></span>
+          </div>
+        </div>
 
         <div v-show="userInfo.id === post.userId" class="text-end">
           <button

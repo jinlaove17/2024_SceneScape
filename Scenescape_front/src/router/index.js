@@ -18,6 +18,16 @@ const router = createRouter({
           name: "login",
           component: () => import("@/components/VLogin/VLoginForm.vue"),
         },
+<<<<<<< HEAD
+=======
+
+        {
+          path: "find-password",
+          name: "login_find-password",
+          component: () =>
+            import("@/components/VLogin/VLoginFindPasswordForm.vue"),
+        },
+>>>>>>> 7585b869ee079f72682f4771aa773bddb77eb01d
       ],
     },
     {
@@ -33,6 +43,7 @@ const router = createRouter({
     {
       path: "/board",
       name: "board",
+<<<<<<< HEAD
       component: () => import("@/views/VBoardView.vue"),
     },
     {
@@ -44,6 +55,9 @@ const router = createRouter({
       path: "/board/write/:no?",
       name: "board_write",
       component: () => import("@/views/VBoardWriteView.vue"),
+=======
+      component: () => import("@/views/VPhotoBoardView.vue"),
+>>>>>>> 7585b869ee079f72682f4771aa773bddb77eb01d
     },
     {
       path: "/mypage",

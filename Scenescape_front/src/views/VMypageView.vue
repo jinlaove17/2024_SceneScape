@@ -1,8 +1,10 @@
-<script setup></script>
+<script setup>
+import VMypageForm from "@/components/VMypage/VMypageForm.vue";
+</script>
 
 <template>
-  <div>
-    <h1 class="text-3xl text-center">이곳은 마이 페이지입니다.</h1>
+  <div class="w-[80rem] mx-auto flex flex-col items-center my-10">
+    <VMypageForm />
   </div>
 </template>
 

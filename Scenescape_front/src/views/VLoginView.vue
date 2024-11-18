@@ -1,9 +1,11 @@
 <script setup>
-import VLoginForm from "@/components/VLogin/VLoginForm.vue";
+import { RouterView } from "vue-router";
 </script>
 
 <template>
-  <VLoginForm />
+  <div class="w-[80rem] mx-auto flex flex-col items-center my-10">
+    <RouterView />
+  </div>
 </template>
 
 <style scoped></style>

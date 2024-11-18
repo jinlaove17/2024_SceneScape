@@ -1,6 +1,10 @@
 <script setup>
 import { ref, computed } from "vue";
 
+const getImageUrl = (fileName) => {
+  return new URL(`/src/assets/img/${fileName}`, import.meta.url).href;
+};
+
 const carouselContents = ref([
   {
     title: "강릉 주문진",
@@ -9,7 +13,7 @@ const carouselContents = ref([
     날이 좋아서, 날이 좋지 않아서, 날이 적당해서.<br />
     모든 날이 좋았다."<br />
     <p class="text-end">- 드라마 <도깨비> -</p>`,
-    img: "/img/Guardian.jpg",
+    img: "Guardian.jpg",
   },
   {
     title: "경북 안동",
@@ -20,7 +24,7 @@ const carouselContents = ref([
     수평선 너머에도 계속 이어지는 그 바다.<br />
     그 바다에서 피어나는 해도 봅시다."<br />
     <p class="text-end">- 드라마 <미스터 션샤인> -</p>`,
-    img: "/img/MrSunshine.jpg",
+    img: "MrSunshine.jpg",
   },
 ]);
 
@@ -40,28 +44,29 @@ const isLastContent = computed(() => {
 </script>
 
 <template>
-  <div class="relative w-[100vw] h-[30rem] overflow-hidden select-none">
+  <div
+    class="relative w-[120rem] h-[30rem] mx-auto mb-12 overflow-hidden select-none"
+  >
     <div
-      class="flex transition-transform duration-1000 h-full"
+      class="h-full flex transition-transform duration-1000"
       :style="{ transform: `translateX(-${100 * curIndex}%)` }"
     >
-      <div
-        class="min-w-full min-h-full animate-wave bg-gradient-to-r from-main-200 from-30% via-indigo-200 via-60% to-violet-200 to-90%"
-      >
-        <div class="inline absolute left-36 top-28 z-10">
-          <p class="text-3xl text-gray-500">당신의 여정이 영화가 되는 곳</p>
-          <h1 class="text-7xl ms-24 my-4">
-            SCENE SCAPE<span class="text-3xl text-gray-500">에서</span>
-          </h1>
-          <p class="text-3xl ms-44 text-gray-500">
-            당신만의 한 장면을 담아보세요.
-          </p>
-        </div>
+      <div class="relative min-w-full">
         <img
-          src="/img/Seoul.jpg"
-          alt="Slide image"
-          class="absolute top-1/2 right-0 transform -translate-y-1/2 min-w-[45rem] max-w-[45rem] mask-gradient"
+          src="@/assets/img/Traveller.jpg"
+          class="w-full h-full object-cover blur-md"
         />
+        <img
+          src="@/assets/img/Traveller.jpg"
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[45rem] max-w-[45rem] mask-radial-opacity"
+        />
+        <div class="absolute top-24 left-1/2 transform -translate-x-1/2 z-10">
+          <h1 class="text-3xl text-black">
+            당신의 여정이 영화가 되는 곳&nbsp;
+            <span class="text-6xl text-white">SCENE SCAPE&nbsp;</span>에서
+            당신만의 한 장면을 담아보세요.
+          </h1>
+        </div>
       </div>
 
       <div
@@ -69,21 +74,19 @@ const isLastContent = computed(() => {
         :key="content.title"
         class="relative min-w-full"
       >
-        <div class="inline absolute left-28 top-24 z-10">
-          <p class="text-2xl text-white">이곳은 어떠세요?</p>
-          <h1 class="text-5xl mt-3 mb-14">{{ content.title }} 여행</h1>
-          <p class="text-lg text-gray-200 ps-4" v-html="content.desc"></p>
-        </div>
         <img
-          :src="content.img"
-          alt="Slide image"
-          class="inline object-cover w-full h-full blur-md"
+          :src="getImageUrl(content.img)"
+          class="w-full h-full object-cover blur-md"
         />
         <img
-          :src="content.img"
-          alt="Slide image"
+          :src="getImageUrl(content.img)"
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[45rem] max-w-[45rem] mask-radial-opacity"
         />
+        <div class="absolute left-32 top-24">
+          <p class="text-2xl text-white">이곳은 어떠세요?</p>
+          <h1 class="text-5xl mt-3 mb-14">{{ content.title }} 여행</h1>
+          <p class="text-lg text-gray-300 ps-4" v-html="content.desc"></p>
+        </div>
       </div>
     </div>
     <!-- 컨트롤 버튼 -->
@@ -145,41 +148,18 @@ const isLastContent = computed(() => {
 </template>
 
 <style scoped>
-.mask-gradient {
-  mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), transparent);
-  mask-size: 100% 100%;
-  mask-repeat: no-repeat;
-}
-
 .mask-radial-opacity {
   mask-image: radial-gradient(
     circle,
-    rgba(0, 0, 0, 1) 50%,
-    rgba(0, 0, 0, 0) 80%
+    rgba(0, 0, 0, 1) 45%,
+    rgba(0, 0, 0, 0) 75%
   );
   -webkit-mask-image: radial-gradient(
     circle,
-    rgba(0, 0, 0, 1) 50%,
-    rgba(0, 0, 0, 0) 80%
+    rgba(0, 0, 0, 1) 45%,
+    rgba(0, 0, 0, 0) 75%
   );
   mask-repeat: no-repeat;
   mask-size: cover;
-}
-
-@keyframes wave-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.animate-wave {
-  background-size: 200% 200%;
-  animation: wave-animation 10s ease-in-out infinite;
 }
 </style>

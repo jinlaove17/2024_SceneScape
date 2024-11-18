@@ -5,18 +5,20 @@ import VFooter from "@/components/VFooter.vue";
 </script>
 
 <template>
-  <div class="w-screen min-h-screen flex flex-col">
-    <header>
-      <VHeader />
-    </header>
+  <div class="flex justify-center">
+    <div class="flex flex-col flex-grow">
+      <header>
+        <VHeader />
+      </header>
 
-    <main class="flex-grow">
-      <RouterView />
-    </main>
+      <main class="flex-grow">
+        <RouterView />
+      </main>
 
-    <footer>
-      <VFooter />
-    </footer>
+      <footer>
+        <VFooter />
+      </footer>
+    </div>
   </div>
 </template>
 

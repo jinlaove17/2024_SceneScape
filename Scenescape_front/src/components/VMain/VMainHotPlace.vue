@@ -1,7 +1,7 @@
 <script setup></script>
 
 <template>
-  <div class="w-3/4 mx-auto">
+  <div class="w-[80rem] mx-auto">
     <div class="mb-5">
       <h1 class="text-3xl">
         🔥 지금 <span class="text-rose-500">핫플레이스</span>는?
@@ -18,7 +18,7 @@
         <a href="#">
           <img
             class="rounded-t-lg w-full object-cover"
-            src="/img/Gwanganri.jpg"
+            src="@/assets/img/Gwanganri.jpg"
             alt=""
           />
         </a>
@@ -41,7 +41,7 @@
         <a href="#">
           <img
             class="rounded-t-lg w-full object-cover"
-            src="/img/Hoamji.jpg"
+            src="@/assets/img/Hoamji.jpg"
             alt=""
           />
         </a>
@@ -64,7 +64,7 @@
         <a href="#">
           <img
             class="rounded-t-lg w-full object-cover"
-            src="/img/Yeonudang.jpg"
+            src="@/assets/img/Yeonudang.jpg"
             alt=""
           />
         </a>

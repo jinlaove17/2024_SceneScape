@@ -7,8 +7,8 @@ import VTopButton from "@/components/VTopButton.vue";
 
 <template>
   <div>
-    <VMainCarousel class="mb-16" />
-    <VMainHotPlace class="mb-16" />
+    <VMainCarousel />
+    <VMainHotPlace />
     <VMainPhotoFilm />
     <VTopButton />
   </div>

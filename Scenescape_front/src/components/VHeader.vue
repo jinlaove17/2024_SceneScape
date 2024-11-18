@@ -23,7 +23,7 @@ const onLogout = () => {
 
 <template>
   <nav
-    class="w-[80rem] m-auto flex items-center"
+    class="w-[80rem] mx-auto flex items-center"
     @mouseleave="isHoveredNav = false"
   >
     <div class="text-2xl flex-grow-0 me-5">

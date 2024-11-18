@@ -18,6 +18,12 @@ const router = createRouter({
           name: "login",
           component: () => import("@/components/VLogin/VLoginForm.vue"),
         },
+        {
+          path: "find-passowrd",
+          name: "login_find-password",
+          component: () =>
+            import("@/components/VLogin/VLoginFindPasswordForm.vue"),
+        },
       ],
     },
     {

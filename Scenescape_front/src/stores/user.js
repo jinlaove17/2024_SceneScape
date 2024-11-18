@@ -6,28 +6,21 @@ import userAPI from "@/api/user";
 export const useUserStore = defineStore(
   "user",
   () => {
+    const router = useRouter();
     const orgUserInfo = ref({
       id: "",
       pwd: "",
       nickname: "",
       email: "",
     });
-    const router = useRouter();
 
     // getter
     const userInfo = computed(() => orgUserInfo.value);
 
-    const resetUserInfo = () => {
-      orgUserInfo.value.id = "";
-      orgUserInfo.value.pwd = "";
-      orgUserInfo.value.nickname = "";
-      orgUserInfo.value.email = "";
-    };
-    const login = (user, success, fail) => {
-      userAPI.login(
+    const loginUser = (user, success, fail) => {
+      userAPI.loginUser(
         user,
         ({ data }) => {
-          console.log(data);
           orgUserInfo.value = data.userInfo;
           router.replace({ name: "main" });
 
@@ -42,10 +35,10 @@ export const useUserStore = defineStore(
         }
       );
     };
-    const logout = (success, fail) => {
-      userAPI.logout(
+    const logoutUser = (success, fail) => {
+      userAPI.logoutUser(
         () => {
-          resetUserInfo();
+          reset();
           router.replace({ name: "main" });
 
           if (success) {
@@ -59,8 +52,8 @@ export const useUserStore = defineStore(
         }
       );
     };
-    const modifyUser = (user, success, fail) => {
-      userAPI.modifyUser(
+    const updateUser = (user, success, fail) => {
+      userAPI.updateUser(
         user,
         () => {
           orgUserInfo.value = user;
@@ -77,11 +70,11 @@ export const useUserStore = defineStore(
         }
       );
     };
-    const cancelUser = (success, fail) => {
-      userAPI.cancelUser(
+    const deleteUser = (success, fail) => {
+      userAPI.deleteUser(
         orgUserInfo.value.id,
         () => {
-          resetUserInfo();
+          reset();
           router.replace({ name: "main" });
 
           if (success) {
@@ -95,14 +88,20 @@ export const useUserStore = defineStore(
         }
       );
     };
+    const reset = () => {
+      orgUserInfo.value.id = "";
+      orgUserInfo.value.pwd = "";
+      orgUserInfo.value.nickname = "";
+      orgUserInfo.value.email = "";
+    };
 
     return {
       orgUserInfo,
       userInfo,
-      login,
-      logout,
-      modifyUser,
-      cancelUser,
+      loginUser,
+      logoutUser,
+      updateUser,
+      deleteUser,
     };
   }
   // { persist: true }

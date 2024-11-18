@@ -12,7 +12,7 @@ const onFindPassword = () => {
   userAPI.findPassword(
     inputParams.value,
     ({ data }) => {
-      tempPassword.value = data.data.pwd;
+      tempPassword.value = data.tmpPwd;
       alert("임시 비밀번호가 발급 되었습니다.");
     },
     () => {
@@ -25,7 +25,7 @@ const onFindPassword = () => {
 <template>
   <div class="text-3xl mb-3">비밀번호 찾기</div>
   <form
-    class="w-[26rem] mx-auto border-2 rounded-md p-10"
+    class="w-[24rem] mx-auto border-2 rounded-lg p-8"
     @submit.prevent="onFindPassword"
   >
     <div v-if="tempPassword === ''">

@@ -86,16 +86,13 @@ const isValid = () => {
 };
 
 const onSignup = () => {
-  userAPI.signup(
+  userAPI.registerUser(
     inputParams.value,
     () => {
       router.push({ name: "login" });
       alert("회원가입 되었습니다.");
     },
-    ({ data }) => {
-      console.log(data);
-      idInfo.value = "이미 사용 중인 아이디입니다.";
-    }
+    () => {}
   );
 };
 
@@ -131,7 +128,7 @@ watch(
 <template>
   <div class="text-3xl mb-3">회원가입</div>
   <form
-    class="w-[26rem] mx-auto border-2 rounded-md p-10"
+    class="w-[24rem] mx-auto border-2 rounded-lg p-8"
     @submit.prevent="onSignup"
   >
     <div class="relative z-0 w-full mb-5">
@@ -210,7 +207,6 @@ watch(
     <div class="relative z-0 w-full mb-5">
       <input
         class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
-        :class="isValid"
         type="password"
         name="userPwdCheck"
         id="userPwdCheck"
@@ -259,7 +255,7 @@ watch(
       </p>
     </div>
 
-    <div class="relative z-0 w-full mb-8">
+    <div class="relative z-0 w-full mb-5">
       <input
         class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
         type="email"
@@ -279,7 +275,7 @@ watch(
 
     <div class="text-end">
       <button
-        class="w-24 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+        class="w-24 mt-2 ml-3 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
         :disabled="!isValid()"
       >
         회원가입

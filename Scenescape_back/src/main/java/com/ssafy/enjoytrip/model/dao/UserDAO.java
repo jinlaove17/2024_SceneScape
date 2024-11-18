@@ -9,18 +9,17 @@ import com.ssafy.enjoytrip.model.dto.UserDTO;
 
 @Mapper
 public interface UserDAO {
-	// insert into user(id, pwd, nickname, email) values(?, ?, ?, ?)
-	int insert(UserDTO user); 
+	int insert(UserDTO user);
 
-	// update user set id=?, pwd = ?, nickname = ?, email = ? where no = ?
 	int update(UserDTO user);
-	
-	// delete from user where no = ?
-	int delete(String userId); 
 
-	// select * from user where id = " + "\"" + id + "\"
-	// select * from user where nickname = " + "\"" + nickname + "\"
-	UserDTO select(Map<String, Object> params);
+	int logicallyDelete(String userId);
+
+	int countById(String userId);
 	
+	int countByNickname(String userNickname);
+	
+	UserDTO select(Map<String, Object> params);
+
 	List<UserDTO> selectAll();
 }

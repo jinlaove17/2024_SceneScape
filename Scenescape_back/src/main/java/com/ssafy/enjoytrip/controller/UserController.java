@@ -23,7 +23,7 @@ import com.ssafy.enjoytrip.service.UserService;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 	private UserService userService;
 
@@ -32,32 +32,33 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@GetMapping("/")
+	@GetMapping
 	private ResponseEntity<Map<String, Object>> getUsers() {
 		Map<String, Object> response = new HashMap<>();
 		response.put("users", userService.getUsers());
 		return ResponseEntity.ok(response);
 	}
 
-	@PostMapping("/join")
-	private ResponseEntity<Map<String, Object>> join(@RequestBody UserDTO user) {
-		Map<String, Object> response = new HashMap<>();
-		boolean isSuccess = userService.join(user.getId(), user.getPwd(), user.getNickname(), user.getEmail());
+	@PostMapping
+	private ResponseEntity<Map<String, Object>> registerUser(@RequestBody UserDTO user) {
+		String resultMsg = userService.registerUser(user.getId(), user.getPwd(), user.getNickname(), user.getEmail());
 
-		if (isSuccess) {
+		if (resultMsg.equals("")) {
 			return ResponseEntity.ok(null);
 		}
 
-		response.put("errorMsg", "회원가입 실패");
+		Map<String, Object> response = new HashMap<>();
+		response.put("errorMsg", resultMsg);
 		return ResponseEntity.badRequest().body(response);
 	}
 
 	@PostMapping("/login")
-	private ResponseEntity<Map<String, Object>> login(@RequestBody UserDTO user, HttpSession session) {
-		UserDTO userDto = userService.login(user.getId(), user.getPwd());
+	private ResponseEntity<Map<String, Object>> loginUser(@RequestBody UserDTO user, HttpSession session) {
+		UserDTO userDto = userService.loginUser(user.getId(), user.getPwd());
 
 		if (userDto != null) {
 			session.setAttribute("userInfo", userDto);
+			
 			Map<String, Object> response = new HashMap<>();
 			response.put("userInfo", userDto);
 			return ResponseEntity.ok(response);
@@ -67,24 +68,20 @@ public class UserController {
 	}
 
 	@PostMapping("/logout")
-	private ResponseEntity<Map<String, Object>> logout(HttpSession session, Model model) {
-		// 회원탈퇴 후 로그아웃으로 redirect 하는 경우가 있으므로, 유저가 존재할 때만 로그아웃 알림창을 띄운다.
+	private ResponseEntity<Map<String, Object>> logoutUser(HttpSession session, Model model) {
 		UserDTO user = (UserDTO) session.getAttribute("userInfo");
 
 		if (user != null) {
-			if (userService.isExist(user.getId())) {
-				// 세션에서 모든 속성 삭제 후 비우기
-				session.invalidate();
-				return ResponseEntity.ok(null);
-			}
+			session.invalidate();
+			return ResponseEntity.ok(null);
 		}
 
 		return ResponseEntity.notFound().build();
 	}
 
-	@PutMapping("/modify")
-	private ResponseEntity<Map<String, Object>> modify(@RequestBody UserDTO user, HttpSession session) {
-		UserDTO userDto = userService.updateAccount(user.getId(), user.getPwd(), user.getNickname(), user.getEmail());
+	@PutMapping
+	private ResponseEntity<Map<String, Object>> updateUser(@RequestBody UserDTO user, HttpSession session) {
+		UserDTO userDto = userService.updateUser(user.getId(), user.getPwd(), user.getNickname(), user.getEmail());
 
 		if (userDto != null) {
 			session.setAttribute("userInfo", userDto);
@@ -94,22 +91,22 @@ public class UserController {
 		return ResponseEntity.notFound().build();
 	}
 
-	@DeleteMapping("/delete/{id}")
-	private ResponseEntity<Map<String, Object>> delete(@PathVariable("id") String userId) {
-		if (userService.cancelAccount(userId)) {
+	@DeleteMapping("/{id}")
+	private ResponseEntity<Map<String, Object>> deleteUser(@PathVariable("id") String id) {
+		if (userService.deleteUser(id)) {
 			return ResponseEntity.ok(null);
 		}
 
 		return ResponseEntity.notFound().build();
 	}
 
-	@PostMapping("/find-pwd")
-	private ResponseEntity<Map<String, Object>> find(@RequestBody UserDTO user) {
-		Map<String, Object> response = new HashMap<>();
+	@PostMapping("/find-password")
+	private ResponseEntity<Map<String, Object>> findPassword(@RequestBody UserDTO user) {
 		UserDTO userDto = userService.findPassword(user.getId(), user.getEmail());
 
 		if (userDto != null) {
-			response.put("tempPwd", userDto.getPwd());
+			Map<String, Object> response = new HashMap<>();
+			response.put("tmpPwd", userDto.getPwd());
 			return ResponseEntity.ok(response);
 		}
 

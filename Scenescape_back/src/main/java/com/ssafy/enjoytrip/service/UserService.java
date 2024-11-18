@@ -21,49 +21,39 @@ public class UserService {
 		this.userDao = userDao;
 	}
 
-	public boolean isExist(String userId) {
-		Map<String, Object> params = new HashMap<>();
-
-		params.put("id", userId);
-
-		return userDao.select(params) != null;
-	}
-
 	public List<UserDTO> getUsers() {
 		return userDao.selectAll();
 	}
-	
-	public boolean join(String userId, String userPwd, String nickname, String email) {
-		Map<String, Object> params = new HashMap<>();
 
-		params.put("id", userId);
-
-		// 가입된 유저가 없으면 userService에서 register 수행
-		UserDTO user = userDao.select(params);
-
-		if (user == null) {
-			// 비밀번호 암호화
-			String encryptPwd = encryptPassword(userPwd);
-
-			if (userDao.insert(new UserDTO(userId, encryptPwd, nickname, email)) != 0) {
-				return true;
-			}
+	public String registerUser(String id, String pwd, String nickname, String email) {
+		// 아이디 중복 검사
+		if (userDao.countById(id) != 0) {
+			return "이미 존재하는 아이디입니다.";
 		}
 
-		return false;
+		// 닉네임 중복 검사
+		if (userDao.countByNickname(nickname) != 0) {
+			return "이미 존재하는 닉네임입니다.";
+		}
+
+		// 비밀번호 암호화
+		String encryptedPwd = encryptPassword(pwd);
+		UserDTO userDto = new UserDTO(id, encryptedPwd, nickname, email);
+
+		if (userDao.insert(userDto) != 0) {
+			return "";
+		}
+
+		return "회원가입에 실패했습니다.";
 	}
 
-	public UserDTO login(String userId, String userPwd) {
+	public UserDTO loginUser(String id, String pwd) {
 		Map<String, Object> params = new HashMap<>();
+		params.put("id", id);
 
-		params.put("id", userId);
-		params.put("pwd", userPwd);
-
-		// userService에서 유저 정보 찾아와서 password 비교
 		UserDTO userDto = userDao.select(params);
-
 		if (userDto != null) {
-			if (isMatch(userPwd, userDto.getPwd())) {
+			if (isMatch(pwd, userDto.getPwd())) {
 				return userDto;
 			}
 		}
@@ -71,10 +61,8 @@ public class UserService {
 		return null;
 	}
 
-	public UserDTO updateAccount(String userId, String newPwd, String newNickName, String newEmail) {
-		// 비밀번호 암호화
-		UserDTO userDto = new UserDTO(userId, encryptPassword(newPwd), newNickName, newEmail);
-		
+	public UserDTO updateUser(String id, String pwd, String nickname, String email) {
+		UserDTO userDto = new UserDTO(id, encryptPassword(pwd), nickname, email);
 		if (userDao.update(userDto) != 0) {
 			return userDto;
 		}
@@ -82,35 +70,35 @@ public class UserService {
 		return null;
 	}
 
-	public boolean cancelAccount(String userId) {
-		return userDao.delete(userId) != 0;
+	public boolean deleteUser(String id) {
+		return userDao.logicallyDelete(id) != 0;
 	}
 
-	public UserDTO findPassword(String userId, String email) {
+	public UserDTO findPassword(String id, String email) {
 		Map<String, Object> params = new HashMap<>();
+		params.put("id", id);
+		params.put("email", email);
 
-		params.put("id", userId);
-		
 		UserDTO userDto = userDao.select(params);
 
-		if ((userDto != null) && (email.equals(userDto.getEmail()))) {
+		if (userDto != null) {
 			// 8자리 난수 임시 비밀번호 생성
 			StringBuilder tmpPwd = new StringBuilder();
 			Random random = new Random();
 
 			for (int len = 0; len < 8; ++len) {
-				int rnd = random.nextInt(26); // 0 ~ 25 사이의 난수 생성
 				int type = random.nextInt(3); // 0 ~ 2 사이의 난수 발생
-
+				int rand = random.nextInt(26); // 0 ~ 25 사이의 난수 생성
+				
 				switch (type) {
 				case 0:
-					tmpPwd.append((char) ('A' + rnd));
+					tmpPwd.append((char) ('A' + rand));
 					break;
 				case 1:
-					tmpPwd.append((char) ('a' + rnd));
+					tmpPwd.append((char) ('a' + rand));
 					break;
 				case 2:
-					tmpPwd.append(rnd % 10);
+					tmpPwd.append(rand % 10);
 					break;
 				}
 			}
@@ -120,7 +108,6 @@ public class UserService {
 			if (userDao.update(userDto) != 0) {
 				// 화면 출력은 암호화되지 않은 비밀번호로 해야한다.
 				userDto.setPwd(tmpPwd.toString());
-
 				return userDto;
 			}
 		}
@@ -128,11 +115,11 @@ public class UserService {
 		return null;
 	}
 
-	private String encryptPassword(String userPwd) {
-		return BCrypt.hashpw(userPwd, BCrypt.gensalt());
+	private String encryptPassword(String pwd) {
+		return BCrypt.hashpw(pwd, BCrypt.gensalt());
 	}
 
-	private boolean isMatch(String userPwd, String encryptedPassword) {
-		return BCrypt.checkpw(userPwd, encryptedPassword);
+	private boolean isMatch(String pwd, String encryptedPwd) {
+		return BCrypt.checkpw(pwd, encryptedPwd);
 	}
 }

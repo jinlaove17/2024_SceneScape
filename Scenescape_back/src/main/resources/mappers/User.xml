@@ -14,11 +14,23 @@
 		where id = #{id}
 	</update>
 
-	<delete id="delete" parameterType="int">
+	<update id="logicallyDelete" parameterType="int">
 		update users
 		set id = null, nickname = null, is_deleted = 1
 		where id = #{id}
-	</delete>
+	</update>
+	
+	<select id="countById">
+		select count(*)
+		from users
+		where id = #{id}
+	</select>
+
+	<select id="countByNickname">
+		select count(*)
+		from users
+		where nickname = #{nickname}
+	</select>
 
 	<select id="select">
 		select *
@@ -28,8 +40,14 @@
 			<if test="id != null and id != ''">
 				and id = #{id}
 			</if>
+			<if test="pwd != null and pwd != ''">
+				and pwd = #{pwd}
+			</if>
 			<if test="nickname != null and nickname != ''">
 				and nickname = #{nickname}
+			</if>
+			<if test="email != null and email != ''">
+				and email = #{email}
 			</if>
 		</where>
 	</select>

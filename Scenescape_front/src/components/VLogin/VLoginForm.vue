@@ -5,7 +5,7 @@ import { useUserStore } from "@/stores/user";
 
 const router = useRouter();
 const store = useUserStore();
-const { login } = store;
+const { loginUser } = store;
 
 const inputParams = ref({
   id: "",
@@ -17,7 +17,7 @@ const onGoFindPassword = () => {
   router.push({ name: "login_find-password" });
 };
 const onLogin = () => {
-  login(
+  loginUser(
     inputParams.value,
     () => {
       console.log("로그인 성공!");
@@ -31,7 +31,7 @@ const onLogin = () => {
 
 <template>
   <div class="text-3xl mb-3">로그인</div>
-  <form class="w-[26rem] mx-auto border-2 rounded-md p-10" @submit.prevent>
+  <form class="w-[24rem] mx-auto border-2 rounded-lg p-8" @submit.prevent>
     <div class="relative z-0 w-full mb-5">
       <input
         class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
@@ -100,7 +100,7 @@ const onLogin = () => {
         비밀번호 찾기
       </button>
       <button
-        class="w-24 mt-2 ml-3 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+        class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
         @click="onLogin"
       >
         로그인

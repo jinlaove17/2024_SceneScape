@@ -5,15 +5,14 @@ import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 
 const store = useUserStore();
-const { logout } = store;
+const { logoutUser } = store;
 const { userInfo } = storeToRefs(store);
 const isHoveredNav = ref(false);
 
 const onLogout = () => {
-  logout(
+  logoutUser(
     () => {
       alert("로그아웃 되었습니다.");
-      console.log("로그아웃 성공!");
     },
     () => {
       console.log("로그아웃 실패!");

@@ -4,7 +4,7 @@ import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 
 const store = useUserStore();
-const { modifyUser, cancelUser } = store;
+const { updateUser, deleteUser } = store;
 const { userInfo } = storeToRefs(store);
 
 const inputParams = ref({
@@ -64,8 +64,8 @@ const isValid = () => {
   return isValidPwd.value && isValidPwdCheck.value && isValidNickname.value;
 };
 
-const onModifyUser = () => {
-  modifyUser(
+const onUpdateUser = () => {
+  updateUser(
     { id: userInfo.value.id, ...inputParams.value },
     () => {
       alert("회원 정보가 수정되었습니다.");
@@ -75,8 +75,8 @@ const onModifyUser = () => {
     }
   );
 };
-const onCancelUser = () => {
-  cancelUser(
+const onDeleteUser = () => {
+  deleteUser(
     () => {
       alert("회원 탈퇴가 완료되었습니다.");
     },
@@ -111,8 +111,8 @@ watch(
 <template>
   <div class="text-3xl mb-3">마이페이지</div>
   <form
-    class="w-[26rem] mx-auto border-2 rounded-md p-10"
-    @submit.prevent="onModifyUser"
+    class="w-[24rem] mx-auto border-2 rounded-lg p-8"
+    @submit.prevent="onUpdateUser"
   >
     <div class="relative z-0 w-full mb-5">
       <input
@@ -232,7 +232,7 @@ watch(
       </p>
     </div>
 
-    <div class="relative z-0 w-full mb-8">
+    <div class="relative z-0 w-full mb-5">
       <input
         class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
         type="email"
@@ -253,14 +253,13 @@ watch(
     <div class="text-center">
       <button
         class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
-        :disabled="!isValid()"
       >
         수정하기
       </button>
       <button
         class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-red-300 rounded-lg hover:bg-red-400"
         type="button"
-        @click="onCancelUser"
+        @click="onDeleteUser"
       >
         회원탈퇴
       </button>

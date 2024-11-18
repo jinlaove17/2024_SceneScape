@@ -28,6 +28,10 @@ public class BoardService {
 	public List<PostDTO> getPostsByFilter(Map<String, Object> filter) {
 		List<PostDTO> posts = boardDao.selectAll(filter);
 		
+		System.out.println("in boardService: ");
+		for(PostDTO p : posts) {
+			System.out.println(p.getTitle());
+		}
 		return posts;
 	}
 	

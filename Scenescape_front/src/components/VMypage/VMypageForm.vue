@@ -1,35 +1,19 @@
 <script setup>
 import { ref, watch } from "vue";
-import { useRouter } from "vue-router";
-import userAPI from "@/api/user";
+import { useUserStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
 
-const router = useRouter();
+const store = useUserStore();
+const { modifyUser, cancelUser } = store;
+const { userInfo } = storeToRefs(store);
+
 const inputParams = ref({
-  id: "",
   pwd: "",
   pwdCheck: "",
-  nickname: "",
-  email: "",
+  nickname: userInfo.value.nickname,
+  email: userInfo.value.email,
 });
 const showPwd = ref(false);
-
-// 아이디 유효성 검사
-const isValidId = ref(false);
-const idInfo = ref("");
-const checkValidId = () => {
-  const regex = /^[A-Za-z0-9]+$/;
-
-  if (inputParams.value.id.length < 2 || inputParams.value.id.length > 16) {
-    idInfo.value = "아이디는 2자 이상 16자 이하여야 합니다!";
-    isValidId.value = false;
-  } else if (!regex.test(inputParams.value.id)) {
-    idInfo.value = "아이디는 영문자와 소문자로 구성되어야 합니다.";
-    isValidId.value = false;
-  } else {
-    idInfo.value = "";
-    isValidId.value = true;
-  }
-};
 
 // 비밀번호 유효성 검사
 const isValidPwd = ref(false);
@@ -77,34 +61,30 @@ const checkValidNickname = () => {
 };
 
 const isValid = () => {
-  return (
-    isValidId.value &&
-    isValidPwd.value &&
-    isValidPwdCheck.value &&
-    isValidNickname.value
-  );
+  return isValidPwd.value && isValidPwdCheck.value && isValidNickname.value;
 };
 
-const onSignup = () => {
-  userAPI.signup(
-    inputParams.value,
+const onModifyUser = () => {
+  modifyUser(
+    { id: userInfo.value.id, ...inputParams.value },
     () => {
-      router.push({ name: "login" });
-      alert("회원가입 되었습니다.");
+      alert("회원 정보가 수정되었습니다.");
     },
-    ({ data }) => {
-      console.log(data);
-      idInfo.value = "이미 사용 중인 아이디입니다.";
+    () => {
+      console.log("회원 정보를 수정하지 못했습니다.");
     }
   );
 };
-
-watch(
-  () => inputParams.value.id,
-  () => {
-    checkValidId();
-  }
-);
+const onCancelUser = () => {
+  cancelUser(
+    () => {
+      alert("회원 탈퇴가 완료되었습니다.");
+    },
+    () => {
+      console.log("회원 탈퇴를 수행하지 못했습니다.");
+    }
+  );
+};
 
 watch(
   () => inputParams.value.pwd,
@@ -129,20 +109,20 @@ watch(
 </script>
 
 <template>
-  <div class="text-3xl mb-3">회원가입</div>
+  <div class="text-3xl mb-3">마이페이지</div>
   <form
     class="w-[26rem] mx-auto border-2 rounded-md p-10"
-    @submit.prevent="onSignup"
+    @submit.prevent="onModifyUser"
   >
     <div class="relative z-0 w-full mb-5">
       <input
-        class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
+        class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer pointer-events-none"
         type="text"
         name="userId"
         id="userId"
         placeholder=""
-        required
-        v-model.lazy="inputParams.id"
+        readonly
+        :value="userInfo.id"
       />
       <label
         for="userId"
@@ -150,13 +130,6 @@ watch(
       >
         아이디
       </label>
-      <p
-        v-show="!isValidId"
-        class="text-sm"
-        :class="isValidId ? 'text-main-400' : 'text-red-500'"
-      >
-        {{ idInfo }}
-      </p>
     </div>
 
     <div class="relative z-0 w-full mb-5">
@@ -277,12 +250,19 @@ watch(
       </label>
     </div>
 
-    <div class="text-end">
+    <div class="text-center">
       <button
-        class="w-24 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+        class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
         :disabled="!isValid()"
       >
-        회원가입
+        수정하기
+      </button>
+      <button
+        class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-red-300 rounded-lg hover:bg-red-400"
+        type="button"
+        @click="onCancelUser"
+      >
+        회원탈퇴
       </button>
     </div>
   </form>

@@ -1,19 +1,20 @@
 <script setup>
+import { RouterView } from "vue-router";
 import VHeader from "@/components/VHeader.vue";
 import VFooter from "@/components/VFooter.vue";
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen">
-    <header class="w-screen">
+  <div class="w-screen min-h-screen flex flex-col">
+    <header>
       <VHeader />
     </header>
 
-    <main class="w-screen flex-grow">
+    <main class="flex-grow">
       <RouterView />
     </main>
 
-    <footer class="w-screen">
+    <footer>
       <VFooter />
     </footer>
   </div>

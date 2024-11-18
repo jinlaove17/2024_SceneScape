@@ -54,4 +54,12 @@ public class BoardService {
 		params.put("fileName", fileName);
 		return boardDao.setThumbnail(params);
 	}
+	
+	public int updateViewCount(long postNo) {
+		return boardDao.updateViewCount(postNo);
+	}
+	
+	public int updateLikeCount(long postNo) {
+		return boardDao.updateLikeCount(postNo);
+	}
 }

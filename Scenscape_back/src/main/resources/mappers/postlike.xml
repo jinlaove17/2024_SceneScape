@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.model.dao.PostLikeDAO">
+	
+	<insert id="insert" parameterType="PostLikeDTO">
+		insert into postlikes
+		(user_id, post_no, is_like)
+		values (#{userId}, #{postNo}, #{isLike})	
+	</insert>
+	
+	<select id="select" parameterType="PostLikeDTO">
+		select
+		case
+		when is_like = TRUE then 1
+		when is_like = FALSE then -1
+		ELSE 0
+		end as status
+		from postlikes
+		where user_id = #{userId} and post_no = #{postNo};
+	</select>
+</mapper>

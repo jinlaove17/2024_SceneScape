@@ -9,7 +9,8 @@
 		insert into posts (title, content, user_id, view_count,
 		like_count,
 		dislike_count, category, thumbnail_url, scene_title)
-		values (#{title},
+		values
+		(#{title},
 		#{content}, #{userId}, 0, 0, 0, #{category},
 		#{thumbnailUrl},
 		#{sceneTitle})
@@ -55,6 +56,20 @@
 		where no = #{no}
 	</update>
 
+	<update id="updateLikeCount" parameterType="long">
+		update posts
+		set
+		like_count = like_count + 1
+		where no = #{postNo};
+	</update>
+
+	<update id="updateViewCount" parameterType="long">
+		update posts
+		set
+		view_count = view_count + 1
+		where no = #{postNo};
+	</update>
+
 	<select id="select" parameterType="long" resultMap="PostMap">
 		select *
 		from
@@ -62,8 +77,8 @@
 		where no = #{no}
 	</select>
 
-	<select id="selectAll" parameterType="map"
-		resultMap="PostMap" useCache="false">
+	<select id="selectAll" parameterType="map" resultMap="PostMap"
+		useCache="false">
 		SELECT *
 		FROM posts
 		<where>

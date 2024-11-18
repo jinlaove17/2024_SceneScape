@@ -17,4 +17,6 @@ public interface BoardDAO {
 	int countAll(Map<String, Object> filter);
 	int setThumbnail(Map<String, Object> params);
 	List<String> getSceneTitles();
+	int updateViewCount(long no);
+	int updateLikeCount(long no);
 }

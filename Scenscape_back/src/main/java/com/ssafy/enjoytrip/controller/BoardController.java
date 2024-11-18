@@ -3,28 +3,31 @@ package com.ssafy.enjoytrip.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.enjoytrip.model.dto.CommentDTO;
 import com.ssafy.enjoytrip.model.dto.PostDTO;
+import com.ssafy.enjoytrip.model.dto.PostLikeDTO;
 import com.ssafy.enjoytrip.model.dto.UserDTO;
 import com.ssafy.enjoytrip.service.BoardService;
+import com.ssafy.enjoytrip.service.CommentService;
 import com.ssafy.enjoytrip.service.ImageService;
+import com.ssafy.enjoytrip.service.PostLikeService;
 
 import jakarta.servlet.http.HttpSession;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500")
 @RequestMapping("/board")
@@ -32,18 +35,38 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 public class BoardController {
 	private BoardService boardService;
 	private ImageService imageService;
+	private CommentService commentService;
+	private PostLikeService postLikeService;
 
 	@Autowired
-	public BoardController(BoardService boardService, ImageService imageService) {
+	public BoardController(BoardService boardService, ImageService imageService, CommentService commentService, PostLikeService postLikeService) {
 		this.boardService = boardService;
 		this.imageService = imageService;
+		this.commentService = commentService;
+		this.postLikeService = postLikeService;
 	}
 
+	@Transactional
 	@GetMapping("/post.do")
-	public ResponseEntity<Map<String, Object>> getPost(@RequestParam("postNo") int postNo) {
+	public ResponseEntity<Map<String, Object>> getPost(@RequestParam("postNo") int postNo, HttpSession session) {
 		Map<String, Object> response = new HashMap<>();
+		boardService.updateViewCount(postNo);
+		
+		UserDTO userInfo = (UserDTO)session.getAttribute("userInfo");
+		String userId = null;
+		int likeStatus = 0;
+		if(userInfo != null) {
+			System.out.println(userInfo.toString());
+			userId = userInfo.getId();
+			likeStatus = postLikeService.getLikeStatus(new PostLikeDTO(userId, postNo));
+		}
+
 		PostDTO post = boardService.getPost(postNo);
-		response.put("result", post);
+		List<CommentDTO> comments = commentService.searchAll(postNo);
+		
+		response.put("post", post);
+		response.put("comments", comments);
+		response.put("likeStatus", likeStatus);
 		return ResponseEntity.ok(response);
 	}
 
@@ -267,5 +290,17 @@ public class BoardController {
 		
 		
 		return ResponseEntity.ok(response);
+	}
+	
+	// 트랜잭션이 완료되지 않은 상태에서도 변경된 데이터를 다른 트랜잭션에서 볼 수 있음  
+	@Transactional(isolation = Isolation.READ_COMMITTED)
+	@PutMapping("/updateViewCount.do")
+	public ResponseEntity<Integer> updateViewCount(long postNo) {
+		return ResponseEntity.ok(boardService.updateViewCount(postNo));
+	}
+	
+	@PutMapping("/updateLikeCount.do")
+	public ResponseEntity<Integer> updateLikeCount(long postNo) {
+		return ResponseEntity.ok(boardService.updateLikeCount(postNo));
 	}
 }

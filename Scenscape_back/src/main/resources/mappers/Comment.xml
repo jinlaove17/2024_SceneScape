@@ -22,9 +22,19 @@
   		where no = #{no}
   	</delete>
   	
-  	<select id="selectAll" parameterType="int">
+  	<select id="selectAll" parameterType="int" resultMap="CommentMap">
   		select *
   		from comments
   		where post_no = #{postNo}
   	</select>
+  	
+  	<resultMap type="CommentDTO" id="CommentMap">
+  		<result property="no" column="no"/>
+  		<result property="postNo" column="post_no" />
+  		<result property="userId" column="user_id" />
+  		<result property="parentNo" column="parent_no" />
+  		<result property="content" column="content" />
+  		<result property="created" column="created" />
+  		<result property="updated" column="updated" />
+  	</resultMap>
   </mapper>

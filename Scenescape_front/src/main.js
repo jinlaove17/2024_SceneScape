@@ -1,19 +1,24 @@
 import "@/assets/css/main.css";
+import "vue3-markdown/dist/style.css";
 
 import { createApp } from "vue";
 import App from "@/App.vue";
 
-import { createNaverMap } from "vue3-naver-maps";
-
 import router from "./router";
 
+import { createNaverMap } from "vue3-naver-maps";
+
 import { createPinia } from "pinia";
-import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import { createPersistedState } from "pinia-plugin-persistedstate";
 
 const app = createApp(App);
 const pinia = createPinia();
 
-pinia.use(piniaPluginPersistedstate);
+pinia.use(
+  createPersistedState({
+    storage: sessionStorage,
+  })
+);
 
 app
   .use(createNaverMap, {

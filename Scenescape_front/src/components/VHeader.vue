@@ -1,29 +1,43 @@
 <script setup>
 import { ref } from "vue";
-import { storeToRefs } from "pinia";
+import { RouterLink } from "vue-router";
 import { useUserStore } from "@/stores/user";
+import { storeToRefs } from "pinia";
 
 const store = useUserStore();
+const { logout } = store;
 const { userInfo } = storeToRefs(store);
-
 const isHoveredNav = ref(false);
+
+const onLogout = () => {
+  logout(
+    () => {
+      alert("로그아웃 되었습니다.");
+      console.log("로그아웃 성공!");
+    },
+    () => {
+      console.log("로그아웃 실패!");
+    }
+  );
+};
 </script>
 
 <template>
   <nav
-    class="w-3/4 m-auto flex justify-center items-center"
+    class="w-[80rem] m-auto flex items-center"
     @mouseleave="isHoveredNav = false"
   >
-    <div class="text-2xl font-bold grow-0 me-5">
+    <div class="text-2xl flex-grow-0 me-5">
       <RouterLink :to="{ name: 'main' }" class="select-none">
         <span class="text-main-300">S</span>CENE
         <br />
         <span class="text-main-300">S</span>CAPE
       </RouterLink>
     </div>
-    <div class="flex flex-col grow">
+
+    <div class="flex flex-col flex-grow">
       <div
-        v-show="userInfo.id === ''"
+        v-show="userInfo.nickname === ''"
         class="text-sm text-end border-b-2 border-gray-200 py-3"
       >
         <RouterLink
@@ -39,23 +53,24 @@ const isHoveredNav = ref(false);
           회원가입
         </RouterLink>
       </div>
+
       <div
-        v-show="userInfo.id !== ''"
+        v-show="userInfo.nickname !== ''"
         class="text-sm text-end border-b-2 border-gray-200 py-3"
       >
-        <span>{{ userInfo.nickname }}님 환영합니다.</span>
+        <span class="mx-3">{{ userInfo.nickname }}님 환영합니다.</span>
         <RouterLink
           :to="{ name: 'mypage' }"
           class="text-gray-500 hover:text-gray-700 mx-3"
         >
           마이페이지
         </RouterLink>
-        <RouterLink
-          :to="{ name: 'login' }"
-          class="text-gray-500 hover:text-gray-700 mx-3"
+        <span
+          class="text-gray-500 hover:text-gray-700 mx-3 cursor-pointer"
+          @click="onLogout"
         >
           로그아웃
-        </RouterLink>
+        </span>
       </div>
 
       <div class="relative py-3">
@@ -91,7 +106,7 @@ const isHoveredNav = ref(false);
           </div>
           <div class="flex flex-col items-center w-36">
             <RouterLink
-              :to="{ name: 'photoboard' }"
+              :to="{ name: 'board' }"
               class="text-gray-600 hover:text-main-400 text-md pt-3"
             >
               사진 게시판

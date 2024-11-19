@@ -8,12 +8,11 @@ const props = defineProps({
   },
   items: Array,
 });
-const emit = defineEmits(["requireSubItems"]);
+const emit = defineEmits(["selectedItem"]);
 
 // State
 const isOpen = ref(false);
 const isSearching = ref(false);
-
 const searchTerm = ref("");
 const selectedItem = ref("");
 
@@ -40,7 +39,7 @@ const onFocusOutInput = () => {
   isSearching.value = false;
 };
 const onSelectItem = (title) => {
-  emit("requireSubItems", title);
+  emit("selectedItem", title);
   selectedItem.value = title;
 };
 </script>
@@ -55,6 +54,7 @@ const onSelectItem = (title) => {
       <p class="block text-sm text-gray-500 group-focus-within:text-main-300">
         {{ props.title }}
       </p>
+
       <!-- Dropdown Button -->
       <button
         class="inline-flex justify-between items-center w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-main-300"
@@ -78,7 +78,7 @@ const onSelectItem = (title) => {
       <!-- Dropdown Menu -->
       <div
         v-show="isOpen"
-        class="absolute flex flex-col h-56 z-20 right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-3 space-y-1 overflow-y-scroll"
+        class="absolute flex flex-col w-80 h-56 z-20 right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 p-3 space-y-1 overflow-y-scroll"
       >
         <!-- Search Input -->
         <input

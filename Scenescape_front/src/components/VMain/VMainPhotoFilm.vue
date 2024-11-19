@@ -49,7 +49,7 @@ const stopAutoplay = () => {};
   </div>
 
   <div
-    class="w-[120rem] mx-auto flex overflow-hidden"
+    class="flex overflow-hidden"
     @mouseenter="stopAutoplay"
     @mouseleave="startAutoplay"
   >
@@ -63,7 +63,7 @@ const stopAutoplay = () => {};
     />
   </div>
   <div
-    class="w-[120rem] mx-auto flex overflow-hidden"
+    class="flex overflow-hidden"
     @mouseenter="stopAutoplay"
     @mouseleave="startAutoplay"
   >

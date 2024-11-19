@@ -20,6 +20,7 @@ const likeStatus = ref(null);
 const mode = ref("light");
 const isLoading = ref(true);
 const newComment = ref("");
+const parentNo = ref(null);
 
 onMounted(() => {
   boardAPI.getPost(
@@ -67,6 +68,7 @@ const pushLikeButton = (value) => {
 
   boardAPI.likePost(
     post.value.no,
+    userId,
     value,
     () => {
       if (value == 1) {
@@ -80,17 +82,37 @@ const pushLikeButton = (value) => {
   );
 };
 
-const submitComment = () => {
+const submitComment = ({ content, parentNo = null }) => {
   const userId = useUserStore().orgUserInfo.id;
 
-  if(!userId) {
+  if (!userId) {
     alert("로그인이 필요합니다.");
     return;
   }
-  commentAPI.
-}
+
+  // 댓글 생성 API 호출
+  commentAPI.createComment(
+    { postNo: post.value.no, userId, content, parentNo },
+    ({ data }) => {
+      comments.value.push(data.comment); // 새 댓글(또는 대댓글) 추가
+      console.log(comments);
+      commentsCount.value++;
+      newComment.value = ""; // 입력 필드 초기화
+      parentNo && (parentNo.value = null); // 대댓글이면 parentNo 초기화
+      console.log("댓글 작성 성공!");
+    },
+    () => {
+      alert("댓글 작성에 실패했습니다.");
+    }
+  );
+};
 
 const commentTree = computed(() => {
+  if (!comments.value || comments.value.length === 0) {
+    // comments가 없거나 빈 배열인 경우 빈 배열 반환
+    return [];
+  }
+
   const commentMap = {};
   const roots = [];
 
@@ -98,11 +120,9 @@ const commentTree = computed(() => {
     commentMap[comment.no] = { ...comment, replies: [] };
   });
 
-  // comment가 대댓글이면(parent_no가 있으면)
+  // 대댓글을 부모 댓글에 연결
   comments.value.forEach((comment) => {
     if (comment.parentNo) {
-
-      // 부모 댓글을 가져와서 부모 댓글에 replies에 comment를 추가
       const parent = commentMap[comment.parentNo];
       if (parent) {
         parent.replies.push(commentMap[comment.no]);
@@ -311,6 +331,7 @@ const commentTree = computed(() => {
               v-for="comment in commentTree"
               :key="comment.no"
               :comment="comment"
+              @add-reply="submitComment"
             />
           </ul>
         </div>

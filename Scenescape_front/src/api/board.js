@@ -35,7 +35,7 @@ const uploadImage = (formData) => {
   });
 };
 
-const likePost = (postNo, likeStatus, success, fail) => {
+const likePost = (postNo, userId, likeStatus, success, fail) => {
   boardAPI
     .put(`/posts/like/${postNo}`, { userId: userId, likeStatus })
     .then(success)

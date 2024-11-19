@@ -5,32 +5,24 @@
 
 <mapper namespace="com.ssafy.enjoytrip.model.dao.AttractionDAO">
 	<insert id="insert" parameterType="AttractionDTO">
-		insert into attractions
-		values
-		(null, #{contentID}, #{title}, #{contentTypeID}, #{areaCode},
-		#{sigunguCode},
-		#{firstImage1}, #{firstImage2}, #{mapLevel},
-		#{latitude}, #{longitude}, #{tel},
-		#{addr1}, #{addr2}, #{homepage},
-		#{overview}, #{likeCount},
-		#{viewCount});
+		insert into attractions(title,
+		scene_title, content_type_id, area_code, si_gun_gu_code, address,
+		latitude, longitude, overview, img, tel, view_count, like_count)
+		values(#{title}, #{sceneTitle}, #{contentTypeID}, #{areaCode},
+		#{sigunguCode}, #{address},
+		#{latitude}, #{longitude}, #{overview}, #{img}, #{tel}, #{viewCount},
+		#{likeCount});
 	</insert>
 
 	<update id="update" parameterType="AttractionDTO">
 		update attractions
-		set
-		content_id = #{contentID}, title = #{title}, content_type_id =
-		#{content_type_id},
-		area_code = #{areaCode}, si_gun_gu_code =
-		#{sigunguCode}, first_image1 =
-		#{firstImage1}, first_image2 =
-		#{firstImage2},
-		map_level = #{mapLevel}, latitude = #{latitude},
-		longitude = #{longitude}, tel
-		= #{tel}, addr1 = #{addr1}, addr2 =
-		#{addr2},
-		hompage = #{homepage}, overview = #{overview}
-		where no = #{no}
+		set title =
+		#{title}, scene_title = #{sceneTitle}, content_type_id =
+		#{contentTypeID}, area_code = #{areaCode}, si_gun_gu_code =
+		#{sigunguCode}, address = #{address},
+		latitude = #{latitude}, longitude = #{longitude}, overview = #{overview}, img
+		= #{img}, tel = #{tel}, view_count = #{viewCount}, like_count =
+		#{likeCount}
 	</update>
 
 	<delete id="delete" parameterType="int">
@@ -41,7 +33,7 @@
 	</delete>
 
 	<select id="selectAll" parameterType="map"
-		resultMap="AttractionMap" useCache="false">
+		resultMap="AttractionMap">
 		select *
 		from attractions
 		<where>
@@ -64,7 +56,9 @@
 					test="(area != null and area != '') or (subArea != null and subArea != '')">
 					and
 				</if>
+
 				content_type_id IN
+
 				<foreach item="content" index="index" collection="contents"
 					open="(" separator="," close=")">
 					#{content}
@@ -119,13 +113,13 @@
 		</where>
 	</select>
 
-	<select id="selectTitles" resultType="String">
-		select TRIM(scene_title) as
-		scene_title
+	<select id="selectSceneTitles" resultType="String">
+		select
+		TRIM(scene_title) as scene_title
 		from attractions
-		where scene_title IS NOT NULL
-		group by
-		scene_title;
+		where scene_title IS
+		NOT NULL
+		group by scene_title;
 	</select>
 
 	<select id="selectBySceneTitle" resultMap="AttractionMap">
@@ -148,8 +142,7 @@
 		<result property="overview" column="overview" />
 		<result property="img" column="img" />
 		<result property="tel" column="tel" />
-		<result property="likeCount" column="like_count" />
 		<result property="viewCount" column="view_count" />
+		<result property="likeCount" column="like_count" />
 	</resultMap>
-
 </mapper>

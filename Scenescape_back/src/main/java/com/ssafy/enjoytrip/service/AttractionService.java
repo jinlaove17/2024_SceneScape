@@ -64,8 +64,8 @@ public class AttractionService {
 		return attractions;
 	}
 	
-	public List<String> getTitles() {
-		return attractionDao.selectTitles();
+	public List<String> getSceneTitles() {
+		return attractionDao.selectSceneTitles();
 	}
 	
 	public List<AttractionDTO> searchBySceneTitle(String title) {

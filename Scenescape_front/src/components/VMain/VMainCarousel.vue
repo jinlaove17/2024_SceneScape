@@ -54,7 +54,7 @@ const isLastContent = computed(() => {
       <div class="relative min-w-full">
         <img
           src="@/assets/img/Traveller.jpg"
-          class="w-full h-full object-cover blur-md"
+          class="w-full h-full object-cover blur-sm"
         />
         <img
           src="@/assets/img/Traveller.jpg"

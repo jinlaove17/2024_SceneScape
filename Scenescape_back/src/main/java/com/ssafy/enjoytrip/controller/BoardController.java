@@ -39,7 +39,8 @@ public class BoardController {
 	private PostLikeService postLikeService;
 
 	@Autowired
-	public BoardController(BoardService boardService, ImageService imageService, CommentService commentService, PostLikeService postLikeService) {
+	public BoardController(BoardService boardService, ImageService imageService, CommentService commentService,
+			PostLikeService postLikeService) {
 		this.boardService = boardService;
 		this.imageService = imageService;
 		this.commentService = commentService;
@@ -51,22 +52,24 @@ public class BoardController {
 	public ResponseEntity<Map<String, Object>> getPost(@RequestParam("postNo") int postNo, HttpSession session) {
 		Map<String, Object> response = new HashMap<>();
 		boardService.updateViewCount(postNo);
-		
-		UserDTO userInfo = (UserDTO)session.getAttribute("userInfo");
-		String userId = null;
-		int likeStatus = 0;
-		if(userInfo != null) {
-			System.out.println(userInfo.toString());
-			userId = userInfo.getId();
-			likeStatus = postLikeService.getLikeStatus(new PostLikeDTO(userId, postNo));
-		}
 
+//		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+//		String userId = null;
+		int likeStatus = 0;
+//
+//		
+//		if (userInfo != null) {
+//			System.out.println(userInfo.toString());
+//			userId = userInfo.getId();
+//			likeStatus = postLikeService.getLikeStatus(new PostLikeDTO(userId, postNo));
+//		}
+//
 		PostDTO post = boardService.getPost(postNo);
 		List<CommentDTO> comments = commentService.searchAll(postNo);
-		
+
 		response.put("post", post);
 		response.put("comments", comments);
-		response.put("likeStatus", likeStatus);
+//		response.put("likeStatus", likeStatus);
 		return ResponseEntity.ok(response);
 	}
 
@@ -75,7 +78,7 @@ public class BoardController {
 			@RequestParam(value = "searchType", required = false) String searchType,
 			@RequestParam(value = "searchKeyword", required = false) String searchKeyword,
 			@RequestParam(value = "category", defaultValue = "SCENE") String category,
-			@RequestParam(value="sortType", required = false) String sortType,
+			@RequestParam(value = "sortType", required = false) String sortType,
 			@RequestParam(value = "page", defaultValue = "1") String page,
 			@RequestParam(value = "pageSize", defaultValue = "20") String pageSize) {
 		Map<String, Object> filter = new HashMap<>();
@@ -162,14 +165,15 @@ public class BoardController {
 		String category = payload.get("category").toString();
 		String sceneTitle = payload.get("sceneTitle").toString();
 		String thumbnailUrl = payload.get("thumbnailUrl").toString();
-		
+
 		System.out.println("boardController.createPost: ");
 		System.out.println("received postNo:" + postNo);
-		
-		if(postNo == null || postNo.equals("")) {
+
+		if (postNo == null || postNo.equals("")) {
 			postNo = String.valueOf(boardService.createPost(new PostDTO(title, content, userId, category, sceneTitle)));
 		} else {
-			boardService.updatePost(new PostDTO(Long.parseLong(postNo), title, content, category, sceneTitle, thumbnailUrl));
+			boardService.updatePost(
+					new PostDTO(Long.parseLong(postNo), title, content, category, sceneTitle, thumbnailUrl));
 		}
 
 		Map<String, Object> response = new HashMap<>();
@@ -258,7 +262,7 @@ public class BoardController {
 //		String userId = userInfo.getId();
 
 		String userId = "ssafy";
-		
+
 		// postNo 유효성 확인
 		if (!payload.containsKey("postNo") || payload.get("postNo") == null) {
 			response.put("errorMsg", "유효하지 않은 게시글 번호입니다.");
@@ -285,20 +289,19 @@ public class BoardController {
 			response.put("errorMsg", "게시글의 작성자가 아닙니다.");
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 		}
-		
+
 		boardService.deletePost(postNo);
-		
-		
+
 		return ResponseEntity.ok(response);
 	}
-	
-	// 트랜잭션이 완료되지 않은 상태에서도 변경된 데이터를 다른 트랜잭션에서 볼 수 있음  
+
+	// 트랜잭션이 완료되지 않은 상태에서도 변경된 데이터를 다른 트랜잭션에서 볼 수 있음
 	@Transactional(isolation = Isolation.READ_COMMITTED)
 	@PutMapping("/updateViewCount.do")
 	public ResponseEntity<Integer> updateViewCount(long postNo) {
 		return ResponseEntity.ok(boardService.updateViewCount(postNo));
 	}
-	
+
 	@PutMapping("/updateLikeCount.do")
 	public ResponseEntity<Integer> updateLikeCount(long postNo) {
 		return ResponseEntity.ok(boardService.updateLikeCount(postNo));

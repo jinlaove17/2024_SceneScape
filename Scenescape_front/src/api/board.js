@@ -34,4 +34,12 @@ const uploadImage = (formData) => {
   });
 };
 
-export default { getPosts, getPost, createPost, updatePost, deletePost, createTempPost, uploadImage };
+export default {
+  getPosts,
+  getPost,
+  createPost,
+  updatePost,
+  deletePost,
+  createTempPost,
+  uploadImage,
+};

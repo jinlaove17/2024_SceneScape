@@ -13,13 +13,9 @@ public class AttractionDTO {
 	private String overview;
 	private String img;
 	private String tel;
-	private Integer likeCount;
 	private Integer viewCount;
+	private Integer likeCount;
 
-	public void increaseViewCount() {
-		this.viewCount++;
-	}
-	
 	public AttractionDTO() {
 		super();
 	}
@@ -140,6 +136,14 @@ public class AttractionDTO {
 		this.tel = tel;
 	}
 
+	public Integer getViewCount() {
+		return viewCount;
+	}
+
+	public void setViewCount(Integer viewCount) {
+		this.viewCount = viewCount;
+	}
+	
 	public Integer getLikeCount() {
 		return likeCount;
 	}
@@ -148,11 +152,15 @@ public class AttractionDTO {
 		this.likeCount = likeCount;
 	}
 
-	public Integer getViewCount() {
-		return viewCount;
+	public void increaseViewCount() {
+		this.viewCount++;
 	}
-
-	public void setViewCount(Integer viewCount) {
-		this.viewCount = viewCount;
+	
+	@Override
+	public String toString() {
+		return "AttractionDTO [no=" + no + ", title=" + title + ", sceneTitle=" + sceneTitle + ", contentTypeID="
+				+ contentTypeID + ", areaCode=" + areaCode + ", sigunguCode=" + sigunguCode + ", address=" + address
+				+ ", latitude=" + latitude + ", longitude=" + longitude + ", overview=" + overview + ", img=" + img
+				+ ", tel=" + tel + ", viewCount=" + viewCount + ", likeCount=" + likeCount + "]";
 	}
 }

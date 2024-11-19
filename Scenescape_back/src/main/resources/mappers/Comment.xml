@@ -6,7 +6,7 @@
   <mapper namespace="com.ssafy.enjoytrip.model.dao.CommentDAO">
   	<insert id="insert" parameterType="CommentDTO" useGeneratedKeys="true" keyProperty="no">
   		insert into comments
-  		(post_id, user_id, parent_id, content)
+  		(post_no, user_id, parent_no, content)
   		values (#{postNo}, #{userId}, #{parentNo,jdbcType=INTEGER}, #{content})
   	</insert>
   	

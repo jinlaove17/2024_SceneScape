@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import boardAPI from "@/api/board";
+import commentAPI from "@/api/comment"
 import { VMarkdownView } from "vue3-markdown";
 import VCommentItem from "@/components/VPost/VCommentItem.vue";
 
@@ -19,6 +20,7 @@ const likeStatus = ref(null);
 const mode = ref("light");
 const isLoading = ref(true);
 const newComment = ref("");
+const parentNo = ref(null);
 
 onMounted(() => {
   boardAPI.getPost(
@@ -57,8 +59,16 @@ const onDeletePost = () => {
 };
 
 const pushLikeButton = (value) => {
+  const userId = useUserStore().orgUserInfo.id;
+
+  if(!userId) {
+    alert("로그인이 필요합니다.");
+    return;
+  }
+
   boardAPI.likePost(
     post.value.no,
+    userId,
     value,
     () => {
       if (value == 1) {
@@ -72,16 +82,45 @@ const pushLikeButton = (value) => {
   );
 };
 
+const submitComment = ({ content, parentNo = null }) => {
+  const userId = useUserStore().orgUserInfo.id;
+
+  if (!userId) {
+    alert("로그인이 필요합니다.");
+    return;
+  }
+
+  // 댓글 생성 API 호출
+  commentAPI.createComment(
+    { postNo: post.value.no, userId, content, parentNo },
+    ({ data }) => {
+      comments.value.push(data.comment); // 새 댓글(또는 대댓글) 추가
+      console.log(comments);
+      commentsCount.value++;
+      newComment.value = ""; // 입력 필드 초기화
+      parentNo && (parentNo.value = null); // 대댓글이면 parentNo 초기화
+      console.log("댓글 작성 성공!");
+    },
+    () => {
+      alert("댓글 작성에 실패했습니다.");
+    }
+  );
+};
+
 const commentTree = computed(() => {
+  if (!comments.value || comments.value.length === 0) {
+    // comments가 없거나 빈 배열인 경우 빈 배열 반환
+    return [];
+  }
+
   const commentMap = {};
   const roots = [];
 
-  // comments 의 요소를 순회하면서
-  // commentMap에 key를 댓글의 no, value를 댓글 내용, 대댓글의 no를
   comments.value.forEach((comment) => {
     commentMap[comment.no] = { ...comment, replies: [] };
   });
 
+  // 대댓글을 부모 댓글에 연결
   comments.value.forEach((comment) => {
     if (comment.parentNo) {
       const parent = commentMap[comment.parentNo];
@@ -280,6 +319,7 @@ const commentTree = computed(() => {
             <button
               class="w-24 h-10 bg-teal-500 text-white rounded-md hover:bg-teal-600"
               @click="submitComment"
+              :disabled="newComment.length === 0"
             >
               작성
             </button>
@@ -291,6 +331,7 @@ const commentTree = computed(() => {
               v-for="comment in commentTree"
               :key="comment.no"
               :comment="comment"
+              @add-reply="submitComment"
             />
           </ul>
         </div>

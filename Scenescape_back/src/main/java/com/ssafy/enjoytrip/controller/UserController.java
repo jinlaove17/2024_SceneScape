@@ -48,6 +48,7 @@ public class UserController {
 		}
 
 		Map<String, Object> response = new HashMap<>();
+		System.out.println(resultMsg);
 		response.put("errorMsg", resultMsg);
 		return ResponseEntity.badRequest().body(response);
 	}

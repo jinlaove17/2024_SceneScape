@@ -1,39 +1,58 @@
+import { useUserStore } from "@/stores/user";
 import { localAxios } from "@/utils/http-commons";
 
 const boardAPI = localAxios();
 
 const getPosts = (success, fail) => {
-  boardAPI.get("/board/posts.do").then(success).catch(fail);
+  boardAPI.get("/posts").then(success).catch(fail);
 };
 
 const getPost = (postNo, success, fail) => {
-  boardAPI.get(`/board/post.do?postNo=${postNo}`).then(success).catch(fail);
+  boardAPI.get(`/posts/${postNo}`).then(success).catch(fail);
 };
 
 const createPost = (post, success, fail) => {
-  boardAPI.post("/board/createPost.do", post).then(success).catch(fail);
+  boardAPI.post("/posts", post).then(success).catch(fail);
 };
 
 const updatePost = (post, success, fail) => {
-  boardAPI.post("/board/updatePost.do", post).then(success).catch(fail);
+  boardAPI.put(`/posts/${postNo}`, post).then(success).catch(fail);
 };
 
 const deletePost = (postNo, success, fail) => {
-  boardAPI.post("/board/deletePost.do", { postNo }).then(success).catch(fail);
+  boardAPI.delete(`/posts/${postNo}`).then(success).catch(fail);
 };
 
 const createTempPost = () => {
-  return boardAPI.post("/board/createTempPost.do");
+  return boardAPI.post("/posts/temp");
 };
 
 const uploadImage = (formData) => {
-  return boardAPI.post("/image/uploadImage.do", formData, {
+  return boardAPI.post("/images", formData, {
     headers: {
       "Content-Type": "multipart/form-data", // 명시적으로 설정
     },
   });
 };
 
+<<<<<<< HEAD
+=======
+const likePost = (postNo, likeStatus, success, fail) => {
+  const userId = useUserStore().orgUserInfo.id;
+
+  if (!userId) {
+    alert("로그인이 필요합니다.");
+    fail(new Error("로그인이 필요합니다."));
+    return;
+  }
+
+  boardAPI
+    .put(`/posts/like/${postNo}`, { userId: userId, likeStatus })
+    .then(success)
+    .catch(fail);
+};
+
+>>>>>>> e92403c3bd070a616454dab6ff25f32bb174773c
 export default {
   getPosts,
   getPost,
@@ -42,4 +61,8 @@ export default {
   deletePost,
   createTempPost,
   uploadImage,
+<<<<<<< HEAD
+=======
+  likePost,
+>>>>>>> e92403c3bd070a616454dab6ff25f32bb174773c
 };

@@ -23,6 +23,13 @@ public class PostLikeDTO {
 		this.userId = userId;
 		this.postNo = postNo;
 	}
+	
+	public PostLikeDTO(String userId, int postNo, int likeStatus) {
+		super();
+		this.userId = userId;
+		this.postNo = postNo;
+		isLike = (likeStatus==1);
+	}
 
 	public int getNo() {
 		return no;

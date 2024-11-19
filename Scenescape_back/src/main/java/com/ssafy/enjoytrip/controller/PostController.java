@@ -3,6 +3,7 @@ package com.ssafy.enjoytrip.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,49 +25,53 @@ import com.ssafy.enjoytrip.model.dto.CommentDTO;
 import com.ssafy.enjoytrip.model.dto.PostDTO;
 import com.ssafy.enjoytrip.model.dto.PostLikeDTO;
 import com.ssafy.enjoytrip.model.dto.UserDTO;
-import com.ssafy.enjoytrip.service.BoardService;
 import com.ssafy.enjoytrip.service.CommentService;
 import com.ssafy.enjoytrip.service.ImageService;
 import com.ssafy.enjoytrip.service.PostLikeService;
+import com.ssafy.enjoytrip.service.PostService;
 
 import jakarta.servlet.http.HttpSession;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500")
-@RequestMapping("/board")
+@RequestMapping("/posts")
 @Controller
-public class BoardController {
-	private BoardService boardService;
+public class PostController {
+	private PostService postService;
 	private ImageService imageService;
 	private CommentService commentService;
 	private PostLikeService postLikeService;
 
 	@Autowired
-	public BoardController(BoardService boardService, ImageService imageService, CommentService commentService,
-			PostLikeService postLikeService) {
-		this.boardService = boardService;
+	public PostController(PostService postService, ImageService imageService, CommentService commentService, PostLikeService postLikeService) {
+		this.postService = postService;
 		this.imageService = imageService;
 		this.commentService = commentService;
 		this.postLikeService = postLikeService;
 	}
 
 	@Transactional
-	@GetMapping("/post.do")
-	public ResponseEntity<Map<String, Object>> getPost(@RequestParam("postNo") int postNo, HttpSession session) {
+	@GetMapping("/{no}")
+	public ResponseEntity<Map<String, Object>> getPost(@PathVariable("no") int postNo, HttpSession session) {
 		Map<String, Object> response = new HashMap<>();
-		boardService.updateViewCount(postNo);
 
-//		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
-//		String userId = null;
+		// 조회 수 증가
+		postService.updateViewCount(postNo);
+		
+		UserDTO userInfo = (UserDTO)session.getAttribute("userInfo");
+		String userId = null;
 		int likeStatus = 0;
-//
-//		
-//		if (userInfo != null) {
-//			System.out.println(userInfo.toString());
-//			userId = userInfo.getId();
-//			likeStatus = postLikeService.getLikeStatus(new PostLikeDTO(userId, postNo));
-//		}
-//
-		PostDTO post = boardService.getPost(postNo);
+		
+		// 사용자가 이미 게시글에 좋아요 혹은 싫어요를 남겼는지 확인
+		if (userInfo != null) {
+		    System.out.println(userInfo);
+		    userId = userInfo.getId();
+		    
+		    // getLikeStatus returns: 1 -> 좋아요, -1 -> 싫어요, null -> 아무것도 누르지 않음.
+		    likeStatus = Optional.ofNullable(postLikeService.getLikeStatus(new PostLikeDTO(userId, postNo)))
+		                         .orElse(0);
+		}
+
+		PostDTO post = postService.getPost(postNo);
 		List<CommentDTO> comments = commentService.searchAll(postNo);
 
 		response.put("post", post);
@@ -73,7 +80,7 @@ public class BoardController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping("/posts.do")
+	@GetMapping
 	public ResponseEntity<Map<String, Object>> getPostsByFilter(
 			@RequestParam(value = "searchType", required = false) String searchType,
 			@RequestParam(value = "searchKeyword", required = false) String searchKeyword,
@@ -92,8 +99,8 @@ public class BoardController {
 		int offset = (Integer.parseInt(page) - 1) * Integer.parseInt(pageSize);
 		filter.put("offset", offset);
 
-		int totalResults = boardService.countByFilter(filter);
-		List<PostDTO> posts = boardService.getPostsByFilter(filter);
+		int totalResults = postService.countByFilter(filter);
+		List<PostDTO> posts = postService.getPostsByFilter(filter);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("totalResults", totalResults);
@@ -105,14 +112,14 @@ public class BoardController {
 		return ResponseEntity.ok(response);
 	}
 
-	@PostMapping("/createTempPost.do")
+	@PostMapping("/temp")
 	public ResponseEntity<Map<String, Long>> createTempPost(HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
 		String userId = "ssafy";
 		if (userInfo != null) {
 			userId = userInfo.getId();
 		}
-		long postNo = boardService.createPost(new PostDTO(null, null, userId, null, null));
+		long postNo = postService.createPost(new PostDTO(null, null, userId, null, null));
 
 		System.out.println("boardController.createTempPost: new PostNo " + postNo);
 
@@ -123,36 +130,7 @@ public class BoardController {
 	}
 
 	@Transactional
-	@PostMapping("/createScenePost.do")
-	public ResponseEntity<Map<String, Object>> createScenePost(@RequestBody Map<String, Object> payload, // JSON 데이터를
-																											// Map으로 받음
-			HttpSession session) {
-
-		Long postNo = Long.valueOf(payload.get("postNo").toString());
-		String title = payload.get("title").toString();
-		String content = payload.get("content").toString();
-		String thumbnailUrl = payload.get("imageUrl").toString();
-		String sceneTitle = payload.get("sceneTitle").toString();
-
-		System.out.println("title: " + title);
-		System.out.println("content: " + content);
-		System.out.println("새 게시글 번호: " + postNo);
-
-		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
-		String userId = (userInfo != null) ? userInfo.getId() : "ssafy";
-
-		boardService.updatePost(new PostDTO(postNo, title, content, thumbnailUrl, "SCENE", sceneTitle));
-
-		// JSON 응답으로 반환할 데이터 구성
-		Map<String, Object> response = new HashMap<>();
-		response.put("message", "게시글이 성공적으로 생성되었습니다.");
-		response.put("title", title);
-		response.put("content", content);
-
-		return ResponseEntity.ok(response);
-	}
-
-	@PostMapping("/createPost.do")
+	@PostMapping
 	public ResponseEntity<Map<String, Object>> createPost(@RequestBody Map<String, Object> payload,
 			HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
@@ -169,11 +147,10 @@ public class BoardController {
 		System.out.println("boardController.createPost: ");
 		System.out.println("received postNo:" + postNo);
 
-		if (postNo == null || postNo.equals("")) {
-			postNo = String.valueOf(boardService.createPost(new PostDTO(title, content, userId, category, sceneTitle)));
+		if(postNo == null || postNo.equals("")) {
+			postNo = String.valueOf(postService.createPost(new PostDTO(title, content, userId, category, sceneTitle)));
 		} else {
-			boardService.updatePost(
-					new PostDTO(Long.parseLong(postNo), title, content, category, sceneTitle, thumbnailUrl));
+			postService.updatePost(new PostDTO(Long.parseLong(postNo), title, content, category, sceneTitle, thumbnailUrl));
 		}
 
 		Map<String, Object> response = new HashMap<>();
@@ -182,38 +159,22 @@ public class BoardController {
 		return ResponseEntity.ok(response);
 	}
 
-	@PostMapping("/updatePost.do")
-	public ResponseEntity<Map<String, Object>> updatePost(@RequestBody Map<String, Object> payload,
+	@PutMapping("/{no}")
+	public ResponseEntity<Map<String, Object>> updatePost(@PathVariable("no") int postNo, @RequestBody Map<String, Object> payload,
 			HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
 		Map<String, Object> response = new HashMap<>();
 
 		// 세션 유효성 확인
-//		if (userInfo == null) {
-//			response.put("errorMsg", "로그인 정보가 없습니다.");
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-//		}
-//
-//		String userId = userInfo.getId();
-
-		String userId = "ssafy";
-
-		// postNo 유효성 확인
-		if (!payload.containsKey("postNo") || payload.get("postNo") == null) {
-			response.put("errorMsg", "유효하지 않은 게시글 번호입니다.");
-			return ResponseEntity.badRequest().body(response);
+		if (userInfo == null) {
+			response.put("errorMsg", "로그인 정보가 없습니다.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 		}
 
-		long postNo;
-		try {
-			postNo = Long.parseLong(payload.get("postNo").toString());
-		} catch (NumberFormatException e) {
-			response.put("errorMsg", "게시글 번호는 숫자여야 합니다.");
-			return ResponseEntity.badRequest().body(response);
-		}
+		String userId = userInfo.getId();
 
 		// 게시글 가져오기
-		PostDTO post = boardService.getPost(postNo);
+		PostDTO post = postService.getPost(postNo);
 		if (post == null) {
 			response.put("errorMsg", "게시글을 찾을 수 없습니다.");
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -241,44 +202,28 @@ public class BoardController {
 		updatedPost.setContent(content);
 		updatedPost.setUserId(userId);
 
-		boardService.updatePost(updatedPost);
+		postService.updatePost(updatedPost);
 		response.put("postNo", postNo);
 
 		return ResponseEntity.ok(response);
 	}
 
-	@PostMapping("/deletePost.do")
-	public ResponseEntity<Map<String, Object>> deletePost(@RequestBody Map<String, Object> payload,
+	@DeleteMapping("/{no}")
+	public ResponseEntity<Map<String, Object>> deletePost(@PathVariable("no") int postNo,
 			HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
 		Map<String, Object> response = new HashMap<>();
 
 		// 세션 유효성 확인
-//		if (userInfo == null) {
-//			response.put("errorMsg", "로그인 정보가 없습니다.");
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-//		}
-//
-//		String userId = userInfo.getId();
-
-		String userId = "ssafy";
-
-		// postNo 유효성 확인
-		if (!payload.containsKey("postNo") || payload.get("postNo") == null) {
-			response.put("errorMsg", "유효하지 않은 게시글 번호입니다.");
-			return ResponseEntity.badRequest().body(response);
+		if (userInfo == null) {
+			response.put("errorMsg", "로그인 정보가 없습니다.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 		}
 
-		long postNo;
-		try {
-			postNo = Long.parseLong(payload.get("postNo").toString());
-		} catch (NumberFormatException e) {
-			response.put("errorMsg", "게시글 번호는 숫자여야 합니다.");
-			return ResponseEntity.badRequest().body(response);
-		}
-
+		String userId = userInfo.getId();
+		
 		// 게시글 가져오기
-		PostDTO post = boardService.getPost(postNo);
+		PostDTO post = postService.getPost(postNo);
 		if (post == null) {
 			response.put("errorMsg", "게시글을 찾을 수 없습니다.");
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
@@ -290,20 +235,18 @@ public class BoardController {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
 		}
 
-		boardService.deletePost(postNo);
-
+		postService.deletePost(postNo);
+		
 		return ResponseEntity.ok(response);
 	}
+	
+	@PutMapping("/like/{no}")
+	public ResponseEntity<Integer> updateLikeCount(@PathVariable("no") int postNo, @RequestBody Map<String, Object> payload) {
+		String userId = (String) payload.get("userId");
+		int likeStatus = (int) payload.get("likeStatus");
 
-	// 트랜잭션이 완료되지 않은 상태에서도 변경된 데이터를 다른 트랜잭션에서 볼 수 있음
-	@Transactional(isolation = Isolation.READ_COMMITTED)
-	@PutMapping("/updateViewCount.do")
-	public ResponseEntity<Integer> updateViewCount(long postNo) {
-		return ResponseEntity.ok(boardService.updateViewCount(postNo));
-	}
-
-	@PutMapping("/updateLikeCount.do")
-	public ResponseEntity<Integer> updateLikeCount(long postNo) {
-		return ResponseEntity.ok(boardService.updateLikeCount(postNo));
+		postLikeService.like(new PostLikeDTO(userId, postNo, likeStatus));
+		
+		return ResponseEntity.ok(postService.updateLikeCount(postNo, likeStatus));
 	}
 }

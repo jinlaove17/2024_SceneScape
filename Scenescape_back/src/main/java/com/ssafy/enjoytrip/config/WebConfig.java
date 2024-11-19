@@ -39,6 +39,5 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/media/**")
         		.addResourceLocations("file:///C:/SSAFY/project/8_final_team08/Scenescape_back/src/main/resources/static/media/");
              // .addResourceLocations("file:///Users/juhyun/Documents/SceneScape/Scenescape_back/src/main/resources/static/media/");
-        
     }
 }

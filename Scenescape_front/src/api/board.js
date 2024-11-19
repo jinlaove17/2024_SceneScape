@@ -16,7 +16,7 @@ const createPost = (post, success, fail) => {
 };
 
 const updatePost = (post, success, fail) => {
-  boardAPI.put(`/posts/${postNo}`, post).then(success).catch(fail);
+  boardAPI.put(`/posts/${post.no}`, post).then(success).catch(fail);
 };
 
 const deletePost = (postNo, success, fail) => {

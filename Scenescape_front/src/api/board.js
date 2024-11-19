@@ -36,14 +36,6 @@ const uploadImage = (formData) => {
 };
 
 const likePost = (postNo, likeStatus, success, fail) => {
-  const userId = useUserStore().orgUserInfo.id;
-
-  if (!userId) {
-    alert("로그인이 필요합니다.");
-    fail(new Error("로그인이 필요합니다."));
-    return;
-  }
-
   boardAPI
     .put(`/posts/like/${postNo}`, { userId: userId, likeStatus })
     .then(success)

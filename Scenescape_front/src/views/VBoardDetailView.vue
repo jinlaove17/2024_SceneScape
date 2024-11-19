@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import boardAPI from "@/api/board";
+import commentAPI from "@/api/comment"
 import { VMarkdownView } from "vue3-markdown";
 import VCommentItem from "@/components/VPost/VCommentItem.vue";
 
@@ -57,6 +58,13 @@ const onDeletePost = () => {
 };
 
 const pushLikeButton = (value) => {
+  const userId = useUserStore().orgUserInfo.id;
+
+  if(!userId) {
+    alert("로그인이 필요합니다.");
+    return;
+  }
+
   boardAPI.likePost(
     post.value.no,
     value,
@@ -72,18 +80,29 @@ const pushLikeButton = (value) => {
   );
 };
 
+const submitComment = () => {
+  const userId = useUserStore().orgUserInfo.id;
+
+  if(!userId) {
+    alert("로그인이 필요합니다.");
+    return;
+  }
+  commentAPI.
+}
+
 const commentTree = computed(() => {
   const commentMap = {};
   const roots = [];
 
-  // comments 의 요소를 순회하면서
-  // commentMap에 key를 댓글의 no, value를 댓글 내용, 대댓글의 no를
   comments.value.forEach((comment) => {
     commentMap[comment.no] = { ...comment, replies: [] };
   });
 
+  // comment가 대댓글이면(parent_no가 있으면)
   comments.value.forEach((comment) => {
     if (comment.parentNo) {
+
+      // 부모 댓글을 가져와서 부모 댓글에 replies에 comment를 추가
       const parent = commentMap[comment.parentNo];
       if (parent) {
         parent.replies.push(commentMap[comment.no]);
@@ -280,6 +299,7 @@ const commentTree = computed(() => {
             <button
               class="w-24 h-10 bg-teal-500 text-white rounded-md hover:bg-teal-600"
               @click="submitComment"
+              :disabled="newComment.length === 0"
             >
               작성
             </button>

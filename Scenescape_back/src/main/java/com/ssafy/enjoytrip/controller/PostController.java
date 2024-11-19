@@ -76,7 +76,7 @@ public class PostController {
 
 		response.put("post", post);
 		response.put("comments", comments);
-//		response.put("likeStatus", likeStatus);
+		response.put("likeStatus", likeStatus);
 		return ResponseEntity.ok(response);
 	}
 

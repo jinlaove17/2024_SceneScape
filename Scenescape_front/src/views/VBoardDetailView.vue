@@ -1,10 +1,11 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import boardAPI from "@/api/board";
 import { VMarkdownView } from "vue3-markdown";
+import VCommentItem from "@/components/VPost/VCommentItem.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -13,9 +14,11 @@ const { userInfo } = storeToRefs(store);
 
 const post = ref(null);
 const comments = ref([]);
+const commentsCount = ref(0);
 const likeStatus = ref(null);
 const mode = ref("light");
 const isLoading = ref(true);
+const newComment = ref("");
 
 onMounted(() => {
   boardAPI.getPost(
@@ -23,12 +26,11 @@ onMounted(() => {
     ({ data }) => {
       post.value = data.post;
       comments.value = data.comments;
+      commentsCount.value = comments.value.length;
       likeStatus.value = data.likeStatus;
       isLoading.value = false;
       console.log("게시판 세부 정보 불러오기 성공!");
-      console.log(post.value);
-      console.log(comments.value);
-      console.log(likeStatus.value);
+      console.log(data);
     },
     () => {
       isLoading.value = false;
@@ -69,6 +71,30 @@ const pushLikeButton = (value) => {
     }
   );
 };
+
+const commentTree = computed(() => {
+  const commentMap = {};
+  const roots = [];
+
+  // comments 의 요소를 순회하면서
+  // commentMap에 key를 댓글의 no, value를 댓글 내용, 대댓글의 no를
+  comments.value.forEach((comment) => {
+    commentMap[comment.no] = { ...comment, replies: [] };
+  });
+
+  comments.value.forEach((comment) => {
+    if (comment.parentNo) {
+      const parent = commentMap[comment.parentNo];
+      if (parent) {
+        parent.replies.push(commentMap[comment.no]);
+      }
+    } else {
+      roots.push(commentMap[comment.no]);
+    }
+  });
+
+  return roots;
+});
 </script>
 
 <template>
@@ -171,10 +197,10 @@ const pushLikeButton = (value) => {
 
         <VMarkdownView :mode="mode" :content="post.content"></VMarkdownView>
 
-        <div class="flex justify-center items-center space-x-10">
+        <div class="flex justify-center items-center space-x-10 my-10">
           <!--좋아요 버튼-->
           <span>
-            <Button
+            <button
               class="w-24 border-4 rounded-2xl"
               :class="
                 likeStatus === 1
@@ -191,12 +217,12 @@ const pushLikeButton = (value) => {
                   />
                 </svg>
               </div>
-            </Button>
+            </button>
           </span>
 
           <!--싫어요 버튼-->
           <span>
-            <Button
+            <button
               class="w-24 border-4 rounded-2xl"
               :class="
                 likeStatus === -1
@@ -217,7 +243,7 @@ const pushLikeButton = (value) => {
                   />
                 </svg>
               </div>
-            </Button>
+            </button>
           </span>
         </div>
 
@@ -236,6 +262,37 @@ const pushLikeButton = (value) => {
           >
             글 삭제
           </button>
+        </div>
+
+        <div>
+          <h2 class="text-xl mt-6 mb-3 border-b-2 border-gray-300">
+            댓글 ( {{ commentsCount }} )
+          </h2>
+
+          <!-- 댓글 입력 영역 -->
+          <div class="flex items-center space-x-3 mb-4">
+            <textarea
+              v-model="newComment"
+              placeholder="댓글을 입력하세요..."
+              class="flex-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              rows="3"
+            ></textarea>
+            <button
+              class="w-24 h-10 bg-teal-500 text-white rounded-md hover:bg-teal-600"
+              @click="submitComment"
+            >
+              작성
+            </button>
+          </div>
+
+          <!-- 댓글 목록 -->
+          <ul>
+            <VCommentItem
+              v-for="comment in commentTree"
+              :key="comment.no"
+              :comment="comment"
+            />
+          </ul>
         </div>
       </div>
     </div>

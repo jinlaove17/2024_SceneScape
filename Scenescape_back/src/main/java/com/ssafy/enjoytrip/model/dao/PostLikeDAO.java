@@ -7,5 +7,5 @@ import com.ssafy.enjoytrip.model.dto.PostLikeDTO;
 @Mapper
 public interface PostLikeDAO {
 	int insert(PostLikeDTO postLike);
-	int select(PostLikeDTO postLike); 
+	Integer select(PostLikeDTO postLike); 
 }

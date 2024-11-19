@@ -20,7 +20,7 @@ public class PostLikeService {
 		return postLike.isLike()?1:-1;
 	}
 	
-	public int getLikeStatus(PostLikeDTO postLike) {
+	public Integer getLikeStatus(PostLikeDTO postLike) {
 		return postLikeDao.select(postLike);
 	}
 }

@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ssafy.enjoytrip.service.ImageService;
 
 @CrossOrigin(origins = "http://127.0.0.1:5500")
-@RequestMapping("/image")
+@RequestMapping("/images")
 @Controller
 public class ImageController {
 	private ImageService imageService;
@@ -27,7 +27,7 @@ public class ImageController {
 		this.imageService = imageService;
 	}
 	
-    @PostMapping("/uploadImage.do")
+    @PostMapping
     public ResponseEntity<Map<String, Object>> uploadImage(
             @RequestParam("image") MultipartFile imageFile,
             @RequestParam("postNo") Long postNo) {

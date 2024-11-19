@@ -55,11 +55,16 @@
 		where no = #{no}
 	</update>
 
-	<update id="updateLikeCount" parameterType="long">
+	<update id="updateLikeCount" parameterType="map">
 		update posts
 		set
-		like_count = like_count + 1
-		where no = #{postNo};
+		<if test="isLike">
+			like_count = like_count + 1
+		</if>
+		<if test="!isLike">
+			dislike_count = dislike_count + 1
+		</if>
+		where no = #{no}
 	</update>
 
 	<update id="updateViewCount" parameterType="long">
@@ -132,7 +137,7 @@
 		SELECT COUNT(*)
 		FROM posts
 		<where>
-			is_deleted = 0 
+			is_deleted = 0
 			<!-- category 조건 -->
 			<if test="category != null and category != ''">
 				AND category = #{category}

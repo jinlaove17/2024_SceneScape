@@ -35,7 +35,7 @@ public class AttractionController {
     		@RequestParam(value = "subArea", required = false) String subArea,
     		@RequestParam(value = "contents", required = false) String[] contents,
     		@RequestParam(value = "sortType", required = false) String sortType,
-    		@RequestParam(value = "pageSize", defaultValue = "20") String pageSize) {
+    		@RequestParam(value = "pageSize", defaultValue = "10") String pageSize) {
     
         Map<String, Object> filter = new HashMap<>();
         filter.put("area", area);

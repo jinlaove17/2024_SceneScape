@@ -9,4 +9,3 @@ import VSignupForm from "@/components/VSignup/VSignupForm.vue";
 </template>
 
 <style scoped></style>
-q

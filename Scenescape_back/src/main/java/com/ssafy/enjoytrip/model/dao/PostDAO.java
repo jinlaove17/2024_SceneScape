@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import com.ssafy.enjoytrip.model.dto.PostDTO;
 
 @Mapper
-public interface BoardDAO {
+public interface PostDAO {
 	int insert(PostDTO post);
 	int update(PostDTO post);
 	int delete(long no);
@@ -18,5 +18,5 @@ public interface BoardDAO {
 	int setThumbnail(Map<String, Object> params);
 	List<String> getSceneTitles();
 	int updateViewCount(long no);
-	int updateLikeCount(long no);
+	int updateLikeCount(long no, boolean isLike);
 }

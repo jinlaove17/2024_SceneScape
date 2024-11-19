@@ -35,8 +35,6 @@ const uploadImage = (formData) => {
   });
 };
 
-<<<<<<< HEAD
-=======
 const likePost = (postNo, likeStatus, success, fail) => {
   const userId = useUserStore().orgUserInfo.id;
 
@@ -52,7 +50,6 @@ const likePost = (postNo, likeStatus, success, fail) => {
     .catch(fail);
 };
 
->>>>>>> e92403c3bd070a616454dab6ff25f32bb174773c
 export default {
   getPosts,
   getPost,
@@ -61,8 +58,5 @@ export default {
   deletePost,
   createTempPost,
   uploadImage,
-<<<<<<< HEAD
-=======
   likePost,
->>>>>>> e92403c3bd070a616454dab6ff25f32bb174773c
 };

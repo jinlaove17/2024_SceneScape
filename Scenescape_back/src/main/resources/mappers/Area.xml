@@ -4,11 +4,20 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="com.ssafy.enjoytrip.model.dao.AreaDAO">
-    <select id="select" parameterType="int" resultType="com.ssafy.enjoytrip.model.dto.SubAreaDTO">
-        SELECT s.sido_code AS areaCode, s.sido_name AS areaName, 
-               g.gugun_code AS subAreaCode, g.gugun_name AS subAreaName
-        FROM sidos s 
-        JOIN guguns g ON s.sido_code = g.sido_code
-        WHERE s.sido_code = #{areaCode}
-    </select>
+    <resultMap id="areaResultMap" type="com.ssafy.enjoytrip.model.dto.AreaDTO">
+        <id property="areaCode" column="areaCode"/>
+        <result property="areaName" column="areaName"/>
+        <collection property="subAreas" ofType="com.ssafy.enjoytrip.model.dto.SubAreaDTO">
+            <id property="subAreaCode" column="subAreaCode"/>
+            <result property="subAreaName" column="subAreaName"/>
+        </collection>
+    </resultMap>
+    
+    <select id="selectAll" resultType="map">
+	     select s.sido_code as areaCode, s.sido_name as areaName,
+		        g.gugun_code as subAreaCode, g.gugun_name as subAreaName
+	     from sidos as s
+	     left join guguns as g
+	     on   s.sido_code = g.sido_code
+ 	</select>
 </mapper>

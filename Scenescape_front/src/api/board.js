@@ -1,4 +1,3 @@
-import { useUserStore } from "@/stores/user";
 import { localAxios } from "@/utils/http-commons";
 
 const boardAPI = localAxios();

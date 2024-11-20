@@ -1,8 +1,9 @@
 <script setup>
 import VSearchDropdown from "@/components/VSearchDropdown.vue";
 import { ref, onMounted, computed } from "vue";
-import attractionAPI from "@/api/attraction";
 import { KakaoMap } from "vue3-kakao-maps";
+import attractionAPI from "@/api/attraction";
+import areaAPI from "@/api/area";
 
 // Kakao Map
 const map = ref();
@@ -134,6 +135,15 @@ onMounted(() => {
     },
     () => {
       console.log("SceneTitles 로드 실패");
+    }
+  );
+
+  areaAPI.getAreas(
+    ({ data }) => {
+      console.log(data);
+    },
+    () => {
+      console.log("areas 로드 실패");
     }
   );
 });

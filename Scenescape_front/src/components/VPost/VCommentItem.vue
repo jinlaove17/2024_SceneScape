@@ -1,6 +1,12 @@
 <script setup>
 import { ref } from "vue";
 import { defineProps, defineEmits } from "vue";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 // Props
 const props = defineProps({
@@ -60,14 +66,7 @@ const handleReply = (replyData) => {
         <span class="text-gray-500 text-sm">
           {{ props.comment.created 
           ? (() => {
-              const date = new Date(props.comment.created);
-              const year = date.getFullYear();
-              const month = String(date.getMonth() + 1).padStart(2, '0');
-              const day = String(date.getDate()).padStart(2, '0');
-              const hours = String(date.getHours()).padStart(2, '0');
-              const minutes = String(date.getMinutes()).padStart(2, '0');
-              // 시간 출력 형식 지정
-              return `${year}-${month}-${day} ${hours}:${minutes}`;
+              return dayjs.tz(props.comment.created, "Asia/Seoul").format("YYYY-MM-DD HH:mm")
             })()
           : "알 수 없음" }} 
         </span>

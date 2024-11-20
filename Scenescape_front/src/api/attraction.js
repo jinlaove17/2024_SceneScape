@@ -10,10 +10,6 @@ const getSceneTitles = (success, fail) => {
   attractionAPI.get("/attractions/titles").then(success).catch(fail);
 };
 
-const searchBySceneTitle = (sceneTitle, success, fail) => {
-  attractionAPI.get(`/attractions/${sceneTitle}`).then(success).catch(fail);
-};
-
 const searchByFilter = (filter, success, fail) => {
   const queryParams = new URLSearchParams();
 
@@ -37,8 +33,9 @@ const searchByFilter = (filter, success, fail) => {
       }
     }
   }
+  console.log(queryParams.toString());
   attractionAPI
-    .get("/attractions?" + queryParams.toString)
+    .get("/attractions?" + queryParams.toString())
     .then(success)
     .catch(fail);
 };
@@ -46,6 +43,5 @@ const searchByFilter = (filter, success, fail) => {
 export default {
   getAttractions,
   getSceneTitles,
-  searchBySceneTitle,
   searchByFilter,
 };

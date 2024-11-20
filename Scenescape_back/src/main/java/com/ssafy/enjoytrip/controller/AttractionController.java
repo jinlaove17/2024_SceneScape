@@ -45,6 +45,8 @@ public class AttractionController {
 	    filter.put("sortType", sortType);
 	    filter.put("page", page);
 	    filter.put("pageSize", pageSize);
+	    
+	    System.out.println(sceneTitle);
 
 	    // 페이지네이션을 위한 offset 계산
 	    int offset = (page - 1) * pageSize;

@@ -20,11 +20,8 @@ const searchByFilter = (filter, success, fail) => {
       filter[key] !== undefined &&
       filter[key] !== ""
     ) {
-      if (key === "sceneTitle") {
-        queryParams.append(key, encodeURIComponent(filter[key]));
-      } else if (Array.isArray(filter[key])) {
+      if (Array.isArray(filter[key])) {
         // 배열인 경우 각 요소를 개별적으로 추가
-        // ex) 사용자가 관광지 구분(음식점, 관광지, 축제 등)을 여러개 선택
         filter[key].forEach((value) => {
           queryParams.append(key, value);
         });

@@ -331,7 +331,6 @@ const setSelectedTitle = (title) => {
               <p class="mb-1 text-base">{{ scene.title }}</p>
               <p class="truncate">{{ scene.address }}</p>
               <p>분류: {{ scene.contentTypeID }}</p>
-              <p>분류: {{ scene.no }}</p>
             </div>
           </div>
         </div>

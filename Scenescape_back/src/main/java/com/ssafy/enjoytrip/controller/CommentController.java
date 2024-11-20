@@ -1,5 +1,6 @@
 package com.ssafy.enjoytrip.controller;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +33,14 @@ public class CommentController {
 	@PostMapping
 	public ResponseEntity<Map<String, Object>> createComment(@RequestBody CommentDTO comment) {		
 		// todo: 세션에 저장된 userInfo의 아이디와 comment의 userId가 같은지 확인
-
-		System.out.println(comment.getPostNo() + " " + comment.getUserId()+" "+comment.getContent());
 		int no = commentService.create(comment);
 		
 		Map<String, Object> response = new HashMap<>();
 		comment.setNo(no);
+		comment.setCreated(new Timestamp(System.currentTimeMillis()));
 		response.put("comment", comment);
+		
+		System.out.println(comment.getNo()+" "+comment.getPostNo()+" "+comment.getContent()+" "+comment.getParentNo()+" "+comment.getCreated());
 		
 		return ResponseEntity.ok(response);
 	}

@@ -20,7 +20,6 @@ const likeStatus = ref(null);
 const mode = ref("light");
 const isLoading = ref(true);
 const newComment = ref("");
-const parentNo = ref(null);
 
 onMounted(() => {
   boardAPI.getPost(
@@ -53,7 +52,7 @@ const onDeletePost = () => {
       alert("게시글이 삭제 되었습니다.");
     },
     () => {
-      console.log("게시판 삭제 실패!");
+      console.log("게시글 삭제 실패!");
     }
   );
 };
@@ -100,10 +99,11 @@ const submitComment = ({ content, parentNo }) => {
       console.log(comments);
       commentsCount.value++;
       newComment.value = ""; // 입력 필드 초기화
-      parentNo && (parentNo.value = null); // 대댓글이면 parentNo 초기화
+      parentNo && (parentNo = null); // 대댓글이면 parentNo 초기화
       console.log("댓글 작성 성공!");
     },
-    () => {
+    (error) => {
+      console.log(error);
       alert("댓글 작성에 실패했습니다.");
     }
   );

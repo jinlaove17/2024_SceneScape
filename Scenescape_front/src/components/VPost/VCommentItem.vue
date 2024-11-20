@@ -56,22 +56,35 @@ const handleReply = (replyData) => {
     <!-- 댓글 내용 -->
     <div class="p-4 border border-gray-300 rounded-md">
       <div class="flex justify-between">
-        <span class="text-teal-700 font-semibold">{{ comment.userId }}</span>
+        <span class="text-teal-700 font-semibold">{{ props.comment.userId }}</span>
         <span class="text-gray-500 text-sm">
-          {{ comment.created ? comment.created.substr(0, 10) : "알 수 없음" }}
+          {{ props.comment.created 
+          ? (() => {
+              const date = new Date(props.comment.created);
+              const year = date.getFullYear();
+              const month = String(date.getMonth() + 1).padStart(2, '0');
+              const day = String(date.getDate()).padStart(2, '0');
+              const hours = String(date.getHours()).padStart(2, '0');
+              const minutes = String(date.getMinutes()).padStart(2, '0');
+              // 시간 출력 형식 지정
+              return `${year}-${month}-${day} ${hours}:${minutes}`;
+            })()
+          : "알 수 없음" }} 
         </span>
       </div>
-      <p class="mt-2">{{ comment.content }}</p>
+      <p class="mt-2">{{ props.comment.content }}</p>
+      
+      <!-- 답글 버튼 -->
+      <button
+        class="text-blue-500 hover:underline mt-2"
+        @click="toggleReplyInput"
+        v-if="props.comment.parentNo == null"
+      >
+        답글
+      </button>
     </div>
 
-    <!-- 답글 버튼 -->
-    <button
-      class="text-blue-500 hover:underline mt-2"
-      @click="toggleReplyInput"
-      v-if="props.comment.parentNo == null"
-    >
-      답글
-    </button>
+
 
     <!-- 대댓글 입력창 -->
     <div v-if="isReplying" class="mt-2">

@@ -7,10 +7,10 @@
 	<insert id="insert" parameterType="AttractionDTO">
 		insert into attractions(title,
 		scene_title, content_type_id, area_code, si_gun_gu_code, address,
-		latitude, longitude, overview, img, tel, view_count, like_count)
+		latitude, longitude, overview, img, tel, like_count)
 		values(#{title}, #{sceneTitle}, #{contentTypeID}, #{areaCode},
 		#{sigunguCode}, #{address},
-		#{latitude}, #{longitude}, #{overview}, #{img}, #{tel}, #{viewCount},
+		#{latitude}, #{longitude}, #{overview}, #{img}, #{tel},
 		#{likeCount});
 	</insert>
 
@@ -21,7 +21,7 @@
 		#{contentTypeID}, area_code = #{areaCode}, si_gun_gu_code =
 		#{sigunguCode}, address = #{address},
 		latitude = #{latitude}, longitude = #{longitude}, overview = #{overview}, img
-		= #{img}, tel = #{tel}, view_count = #{viewCount}, like_count =
+		= #{img}, tel = #{tel}, like_count =
 		#{likeCount}
 	</update>
 
@@ -68,9 +68,6 @@
 		<if test="sortType != null and sortType != ''">
 			order by
 			<choose>
-				<when test="sortType == 'view'">
-					view_count
-				</when>
 				<when test="sortType == 'like'">
 					like_count
 				</when>
@@ -143,7 +140,6 @@
 		<result property="overview" column="overview" />
 		<result property="img" column="img" />
 		<result property="tel" column="tel" />
-		<result property="viewCount" column="view_count" />
 		<result property="likeCount" column="like_count" />
 	</resultMap>
 </mapper>

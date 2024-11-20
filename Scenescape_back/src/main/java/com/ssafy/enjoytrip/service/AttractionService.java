@@ -46,10 +46,8 @@ public class AttractionService {
 			return null;
 		}
 
-		// 조회수 증가
 		AttractionDTO attraction = attractionDao.select(no);
-		attraction.increaseViewCount();
-
+		
 		return attraction;
 	}
 	

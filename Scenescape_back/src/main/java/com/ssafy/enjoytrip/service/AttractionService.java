@@ -57,7 +57,7 @@ public class AttractionService {
 		return attractionDao.countAll(filter);
 	}
 
-	public List<AttractionDTO> searchAll(Map<String, Object> filter, String sortOrder, String pageNum) {
+	public List<AttractionDTO> searchAll(Map<String, Object> filter, String sortOrder, int pageNum) {
 		// 조건 없이 전체 데이터를 가져옴 (페이지네이션 적용 X)
 		List<AttractionDTO> attractions = attractionDao.selectAll(filter);
 		

@@ -20,7 +20,6 @@ const likeStatus = ref(null);
 const mode = ref("light");
 const isLoading = ref(true);
 const newComment = ref("");
-const parentNo = ref(null);
 
 onMounted(() => {
   boardAPI.getPost(
@@ -53,7 +52,7 @@ const onDeletePost = () => {
       alert("게시글이 삭제 되었습니다.");
     },
     () => {
-      console.log("게시판 삭제 실패!");
+      console.log("게시글 삭제 실패!");
     }
   );
 };
@@ -82,7 +81,7 @@ const pushLikeButton = (value) => {
   );
 };
 
-const submitComment = ({ content, parentNo = null }) => {
+const submitComment = ({ content, parentNo }) => {
   const userId = useUserStore().orgUserInfo.id;
 
   if (!userId) {
@@ -92,16 +91,19 @@ const submitComment = ({ content, parentNo = null }) => {
 
   // 댓글 생성 API 호출
   commentAPI.createComment(
-    { postNo: post.value.no, userId, content, parentNo },
+    { postNo: post.value.no, userId, content: content, parentNo },
     ({ data }) => {
       comments.value.push(data.comment); // 새 댓글(또는 대댓글) 추가
+      console.log("createComment: ");
+      console.log(data);
       console.log(comments);
       commentsCount.value++;
       newComment.value = ""; // 입력 필드 초기화
-      parentNo && (parentNo.value = null); // 대댓글이면 parentNo 초기화
+      parentNo && (parentNo = null); // 대댓글이면 parentNo 초기화
       console.log("댓글 작성 성공!");
     },
-    () => {
+    (error) => {
+      console.log(error);
       alert("댓글 작성에 실패했습니다.");
     }
   );
@@ -318,7 +320,7 @@ const commentTree = computed(() => {
             ></textarea>
             <button
               class="w-24 h-10 bg-teal-500 text-white rounded-md hover:bg-teal-600"
-              @click="submitComment"
+              @click="submitComment({ content: newComment })"
               :disabled="newComment.length === 0"
             >
               작성
@@ -331,8 +333,7 @@ const commentTree = computed(() => {
               v-for="comment in commentTree"
               :key="comment.no"
               :comment="comment"
-              @add-reply="submitComment"
-            />
+              @add-reply="(data) => submitComment(data)"/>
           </ul>
         </div>
       </div>

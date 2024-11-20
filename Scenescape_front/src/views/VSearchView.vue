@@ -150,10 +150,11 @@ const onSearchScene = () => {
 
   console.log(selectedScene.value.title);
 
-  attractionAPI.searchBySceneTitle(
-    selectedScene.value.title,
+  attractionAPI.searchByFilter(
+    { sceneTitle: selectedScene.value.title },
     ({ data }) => {
-      selectedScene.value.scenes = data;
+      console.log(data);
+      selectedScene.value.scenes = data.results;
       updateMarkers();
     },
     (error) => {
@@ -164,7 +165,6 @@ const onSearchScene = () => {
 
 const setSelectedTitle = (title) => {
   selectedScene.value.title = title;
-  console.log("setSelectedTitle", selectedScene.value.title);
 };
 </script>
 

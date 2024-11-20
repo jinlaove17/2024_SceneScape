@@ -44,10 +44,7 @@ const onFocusOutInput = () => {
   isSearching.value = false;
 };
 const onSelectItem = (title) => {
-  console.log("onSelectItem", title);
   emit("changeSelection", title);
-
-  console.log("emit selected item", title);
 };
 </script>
 

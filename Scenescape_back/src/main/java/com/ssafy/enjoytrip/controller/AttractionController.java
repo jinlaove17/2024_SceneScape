@@ -26,39 +26,35 @@ public class AttractionController {
 
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> getAttractions(
-	        @RequestParam(value = "page", defaultValue = "1") int page,
-	        @RequestParam(value = "area", required = false) String area,
-	        @RequestParam(value = "subArea", required = false) String subArea,
-	        @RequestParam(value = "contents", required = false) String[] contents,
-	        @RequestParam(value = "sceneTitle", required = false) String sceneTitle,
-	        @RequestParam(value = "sortType", required = false) String sortType,
-	        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-	    Map<String, Object> filter = new HashMap<>();
-	    filter.put("area", area);
-	    filter.put("subArea", subArea);
-	    filter.put("contents", contents);
-	    filter.put("sceneTitle", sceneTitle);
-	    filter.put("sortType", sortType);
-	    filter.put("page", page);
-	    filter.put("pageSize", pageSize);
-	    
-	    System.out.println(sceneTitle);
+			@RequestParam(value = "area", required = false) String area,
+			@RequestParam(value = "subArea", required = false) String subArea,
+			@RequestParam(value = "contents", required = false) String[] contents,
+			@RequestParam(value = "sceneTitle", required = false) String sceneTitle,
+			@RequestParam(value = "sortType", required = false) String sortType,
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {
+		Map<String, Object> filter = new HashMap<>();
+		filter.put("area", area);
+		filter.put("subArea", subArea);
+		filter.put("contents", contents);
+		filter.put("sceneTitle", sceneTitle);
+		filter.put("sortType", sortType);
+		filter.put("page", page);
+		filter.put("pageSize", pageSize);
 
-	    // 페이지네이션을 위한 offset 계산
-	    int offset = (page - 1) * pageSize;
-	    filter.put("offset", offset);
+		// 페이지네이션을 위한 offset 계산
+		int offset = (page - 1) * pageSize;
+		filter.put("offset", offset);
 
-	    int totalResults = attractionService.countAll(filter);
-	    List<AttractionDTO> attractions = attractionService.searchAll(filter, sortType, page);
+		int totalCount = attractionService.countAll(filter);
+		List<AttractionDTO> attractions = attractionService.searchAll(filter, sortType, page);
 
-	    Map<String, Object> response = new HashMap<>();
-	    response.put("totalResults", totalResults); // 전체 결과 수
-	    response.put("page", page);
-	    response.put("pageSize", pageSize);
-	    response.put("resultsInCurrentPage", attractions.size());
-	    response.put("results", attractions);
+		Map<String, Object> response = new HashMap<>();
+		response.put("totalCount", totalCount); // 전체 결과 수
+		response.put("page", page);
+		response.put("items", attractions);
 
-	    return ResponseEntity.ok(response);
+		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping("/titles")

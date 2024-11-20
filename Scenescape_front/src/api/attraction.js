@@ -15,11 +15,7 @@ const searchByFilter = (filter, success, fail) => {
 
   // filter 객체의 각 속성을 순회하며 쿼리 파라미터에 추가
   for (const key in filter) {
-    if (
-      filter[key] !== null &&
-      filter[key] !== undefined &&
-      filter[key] !== ""
-    ) {
+    if (filter[key]) {
       if (Array.isArray(filter[key])) {
         // 배열인 경우 각 요소를 개별적으로 추가
         filter[key].forEach((value) => {

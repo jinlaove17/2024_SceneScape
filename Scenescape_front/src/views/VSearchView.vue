@@ -4,6 +4,7 @@ import { ref, onMounted, computed } from "vue";
 import { KakaoMap } from "vue3-kakao-maps";
 import attractionAPI from "@/api/attraction";
 import areaAPI from "@/api/area";
+import VPagenation from "@/components/VPagenation.vue";
 
 // Kakao Map
 const map = ref();
@@ -14,20 +15,19 @@ let bounds;
 const markerList = computed(() => markerInfoList.slice(0, markerCount.value));
 const onLoadKakaoMap = (mapRef) => {
   map.value = mapRef;
-  bounds = new kakao.maps.LatLngBounds();
 };
 
 const updateMarkers = () => {
-  const length = selectedScene.value.scenes.length;
+  const length = pageInfo.value.items.length;
 
   bounds = new kakao.maps.LatLngBounds();
   markerInfoList = [];
 
   for (let i = 0; i < length; ++i) {
     markerInfoList.push({
-      key: selectedScene.value.scenes[i].no,
-      lat: selectedScene.value.scenes[i].latitude,
-      lng: selectedScene.value.scenes[i].longitude,
+      key: pageInfo.value.items[i].no,
+      lat: pageInfo.value.items[i].latitude,
+      lng: pageInfo.value.items[i].longitude,
     });
 
     // 배열의 좌표들이 잘 보이게 마커를 지도에 추가합니다.
@@ -36,9 +36,6 @@ const updateMarkers = () => {
       markerInfoList[i].lng
     );
 
-    console.log(markerInfoList[i].lat, markerInfoList[i].lng);
-
-    // LatLngBounds 객체에 좌표를 추가합니다
     bounds.extend(point);
   }
 
@@ -47,9 +44,9 @@ const updateMarkers = () => {
 };
 
 const setBounds = () => {
-  // LatLngBounds 객체에 추가된 좌표들을 기준으로 지도의 범위를 재설정합니다
-  // 이때 지도의 중심좌표와 레벨이 변경될 수 있습니다
-  if (map.value !== undefined) {
+  // LatLngBounds 객체에 추가된 좌표들을 기준으로 지도의 범위를 재설정합니다.
+  // 이때 지도의 중심좌표와 레벨이 변경될 수 있습니다.
+  if (map.value) {
     map.value.setBounds(bounds);
   }
 };
@@ -58,8 +55,7 @@ const panTo = (lat, lng) => {
   if (map.value) {
     // 지도 중심을 부드럽게 이동시킵니다.
     // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다.
-    console.log("PanTo", lat, lng);
-    map.value.setLevel(1);
+    map.value.setLevel(3);
     map.value.panTo(new kakao.maps.LatLng(lat, lng));
   }
 };
@@ -70,7 +66,7 @@ const sideBarAnimation = computed(() =>
   isOpenSideBar.value ? "translate-x-0" : "translate-x-full"
 );
 
-// 씬 검색 컨텐츠
+// 일반 검색 관련
 const selectedBit = ref(0);
 const isSelectedContent = (num) => {
   return selectedBit.value & (1 << num);
@@ -83,6 +79,10 @@ const onSelectContent = (num) => {
   }
 };
 
+const searchMode = ref(1);
+
+// 씬 검색 데이터
+// 검색 조건
 const searchContents = [
   {
     id: 12,
@@ -117,16 +117,16 @@ const searchContents = [
     name: "음식점",
   },
 ];
-
-// 검색 조건
-const searchMode = ref(1);
-
-// 씬 검색 데이터
 const sceneTitles = ref([]);
-const selectedScene = ref({
-  title: "",
-  scenes: [],
-});
+const selectedTitle = ref("");
+const areaInfoList = ref([]);
+const selectedArea = ref("");
+const selectedSubArea = ref("");
+
+const getSubArea = (areaName) => {
+  const area = areaInfoList.value.find((item) => item.areaName === "서울");
+  return area ? area.subAreas.map((item) => item.subAreaName) : [];
+};
 
 onMounted(() => {
   attractionAPI.getSceneTitles(
@@ -140,7 +140,18 @@ onMounted(() => {
 
   areaAPI.getAreas(
     ({ data }) => {
-      console.log(data);
+      data.areas.forEach((item) => {
+        const area = {
+          areaCode: item.areaCode,
+          areaName: item.areaName,
+          subAreas: [],
+        };
+
+        for (const sub of item.subAreas) {
+          area.subAreas.push(sub);
+        }
+        areaInfoList.value.push(area);
+      });
     },
     () => {
       console.log("areas 로드 실패");
@@ -149,22 +160,23 @@ onMounted(() => {
 });
 
 const onReset = () => {
-  selectedScene.value.title = "";
-  selectedScene.value.scenes = [];
+  selectedTitle.value = "";
+  pageInfo.value.totalCount = 0;
+  pageInfo.value.curPage = 1;
+  pageInfo.value.curPageCount = 0;
+  pageInfo.value.items = [];
 };
 
 const onSearchScene = () => {
-  if (!selectedScene.value.title || selectedScene.value.title === "") {
+  if (!selectedTitle.value) {
     return;
   }
 
-  console.log(selectedScene.value.title);
-
   attractionAPI.searchByFilter(
-    { sceneTitle: selectedScene.value.title },
+    { sceneTitle: selectedTitle.value },
     ({ data }) => {
-      console.log(data);
-      selectedScene.value.scenes = data.results;
+      pageInfo.value = data;
+      console.log(pageInfo.value);
       updateMarkers();
     },
     (error) => {
@@ -174,7 +186,27 @@ const onSearchScene = () => {
 };
 
 const setSelectedTitle = (title) => {
-  selectedScene.value.title = title;
+  selectedTitle.value = title;
+};
+
+// 페이지네이션
+const pageInfo = ref({
+  totalCount: 0,
+  page: 1,
+  items: [],
+});
+
+const onChangePage = (page) => {
+  attractionAPI.searchByFilter(
+    { page },
+    ({ data }) => {
+      pageInfo.value = data;
+      updateMarkers();
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
 };
 </script>
 
@@ -184,8 +216,8 @@ const setSelectedTitle = (title) => {
       class="z-0"
       :width="1920"
       :height="800"
-      :lat="33.45058"
-      :lng="126.574942"
+      :lat="37.501286"
+      :lng="127.0396029"
       :draggable="true"
       :markerList="markerList"
       @onLoadKakaoMap="onLoadKakaoMap"
@@ -225,13 +257,13 @@ const setSelectedTitle = (title) => {
         </svg>
       </button>
 
-      <div class="w-full h-full flex flex-col items-center">
+      <div class="w-full h-full pb-3 flex flex-col items-center">
         <!-- 씬 검색 -->
-        <div v-show="searchMode === 1" class="pb-3 border-b-2 border-gray-200">
+        <div v-show="searchMode === 1" class="pb-2 border-b-2 border-gray-200">
           <div class="w-80 mx-auto">
             <VSearchDropdown
               :info="'컨텐츠'"
-              :selectedItem="selectedScene.title"
+              :selectedItem="selectedTitle"
               :items="sceneTitles"
               @change-selection="setSelectedTitle"
             />
@@ -256,7 +288,7 @@ const setSelectedTitle = (title) => {
         </div>
 
         <!-- 일반 검색 -->
-        <div v-show="searchMode === 2" class="pb-3 border-b-2 border-gray-200">
+        <div v-show="searchMode === 2" class="pb-2 border-b-2 border-gray-200">
           <div class="group relative w-80 my-3 mx-auto">
             <label
               for="search"
@@ -279,6 +311,15 @@ const setSelectedTitle = (title) => {
                 d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
               />
             </svg>
+
+            <VSearchDropdown
+              :selected-item="selectedArea"
+              :items="areaInfoList.map((area) => area.areaName)"
+            />
+            <VSearchDropdown
+              :selected-item="selectedSubArea"
+              :items="getSubArea(selectedArea)"
+            />
           </div>
 
           <div class="w-64 mx-auto grid grid-cols-8">
@@ -322,28 +363,49 @@ const setSelectedTitle = (title) => {
               </svg>
             </label>
           </div>
+
+          <div class="text-end">
+            <button
+              class="w-24 mt-2 mr-2 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+              type="button"
+              @click="onReset"
+            >
+              초기화
+            </button>
+
+            <button
+              class="w-24 mt-1 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+              @click="onSearchScene"
+            >
+              검색하기
+            </button>
+          </div>
         </div>
 
-        <div class="flex flex-col items-center w-80 flex-grow mx-auto text-sm">
+        <div class="flex flex-col items-center w-96 flex-grow text-sm mt-2">
           <div
-            v-for="scene in selectedScene.scenes"
-            :key="scene.no"
-            class="grid grid-cols-[auto_1fr] gap-2 w-full p-1 bg-white border-b hover:bg-main-100 cursor-pointer"
-            @click="panTo(scene.latitude, scene.longitude)"
+            v-for="item in pageInfo.items"
+            :key="item.no"
+            class="grid grid-cols-[auto_1fr] gap-2 w-full h-[120px] px-2 py-2 bg-white border-b hover:bg-gray-100 cursor-pointer"
+            @click="panTo(item.latitude, item.longitude)"
           >
             <div>
               <img
-                class="w-20 h-20 object-cover rounded-md"
+                class="w-28 h-28 object-cover"
                 src="@/assets/img/Danbam.jpg"
               />
             </div>
             <div class="overflow-hidden text-overflow-ellipsis">
-              <p class="mb-1 text-base">{{ scene.title }}</p>
-              <p class="truncate">{{ scene.address }}</p>
-              <p>분류: {{ scene.contentTypeID }}</p>
+              <p class="mb-1 text-base">{{ item.title }}</p>
+              <p class="truncate">{{ item.address }}</p>
+              <p>분류: {{ item.contentTypeID }}</p>
+              <p>전화번호: {{ item.tel }}</p>
+              <p class="truncate">{{ item.overview }}</p>
             </div>
           </div>
         </div>
+
+        <VPagenation :pageInfo="pageInfo" @change-page="onChangePage" />
       </div>
     </form>
 

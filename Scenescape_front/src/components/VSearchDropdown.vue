@@ -2,19 +2,24 @@
 import { ref, computed } from "vue";
 
 const props = defineProps({
-  title: {
+  info: {
+    type: String,
+  },
+  selectedItem: {
     type: String,
     require: true,
   },
-  items: Array,
+  items: {
+    type: Array,
+    require: true,
+  },
 });
-const emit = defineEmits(["selectedItem"]);
+const emit = defineEmits(["changeSelection"]);
 
 // State
 const isOpen = ref(false);
 const isSearching = ref(false);
 const searchTerm = ref("");
-const selectedItem = ref("");
 
 // Computed
 const filteredItems = computed(() => {
@@ -39,8 +44,8 @@ const onFocusOutInput = () => {
   isSearching.value = false;
 };
 const onSelectItem = (title) => {
-  emit("selectedItem", title);
-  selectedItem.value = title;
+  console.log("onSelectItem", title);
+  emit("changeSelection", title);
 };
 </script>
 
@@ -52,14 +57,15 @@ const onSelectItem = (title) => {
   >
     <div class="relative group w-full">
       <p class="block text-sm text-gray-500 group-focus-within:text-main-300">
-        {{ props.title }}
+        {{ props.info }}
       </p>
 
       <!-- Dropdown Button -->
       <button
         class="inline-flex justify-between items-center w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-main-300"
+        type="button"
       >
-        <p class="text-sm">{{ selectedItem }}</p>
+        <p class="text-sm">{{ props.selectedItem }}</p>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="w-5 h-5 ml-2 -mr-1"

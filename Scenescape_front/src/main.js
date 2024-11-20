@@ -6,10 +6,10 @@ import App from "@/App.vue";
 
 import router from "./router";
 
-import { createNaverMap } from "vue3-naver-maps";
-
 import { createPinia } from "pinia";
 import { createPersistedState } from "pinia-plugin-persistedstate";
+
+import { useKakao } from "vue3-kakao-maps/@utils";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -20,12 +20,5 @@ pinia.use(
   })
 );
 
-app
-  .use(createNaverMap, {
-    clientId: "uj8hbqlcvw", // Required
-    category: "ncp", // Optional
-    subModules: [], // Optional, "panorama" | "geocoder" | "drawing" | "visualization"
-  })
-  .use(router)
-  .use(pinia)
-  .mount("#app");
+useKakao("");
+app.use(router).use(pinia).mount("#app");

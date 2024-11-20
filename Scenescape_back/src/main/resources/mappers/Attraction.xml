@@ -36,35 +36,33 @@
 		resultMap="AttractionMap">
 		select *
 		from attractions
-		<where>
-			<!-- area가 존재할 경우 조건 추가 -->
-			<if test="area != null and area != ''">
-				area_code = #{area}
-			</if>
-
-			<!-- subArea가 존재할 경우 조건 추가 -->
-			<if test="subArea != null and subArea != ''">
-				<if test="area != null and area != ''">
-					and
-				</if>
-				si_gun_gu_code = #{subArea}
-			</if>
-
-			<!-- contents가 존재할 경우 조건 추가 -->
-			<if test="contents != null and contents.length > 0">
-				<if
-					test="(area != null and area != '') or (subArea != null and subArea != '')">
-					and
-				</if>
-
-				content_type_id IN
-
-				<foreach item="content" index="index" collection="contents"
-					open="(" separator="," close=")">
-					#{content}
-				</foreach>
-			</if>
-		</where>
+	    <where>
+	        <trim prefixOverrides="AND">
+	            <!-- area가 존재할 경우 조건 추가 -->
+	            <if test="area != null and area != ''">
+	                AND area_code = #{area}
+	                
+	                <!-- area가 존재할 때만 subArea 조건 추가 -->
+	                <if test="subArea != null and subArea != ''">
+	                    AND si_gun_gu_code = #{subArea}
+	                </if>
+	            </if>
+	            
+	            <!-- contents가 존재할 경우 조건 추가 -->
+	            <if test="contents != null and contents.length > 0">
+	                AND content_type_id IN
+	                <foreach item="content" index="index" collection="contents"
+	                         open="(" separator="," close=")">
+	                    #{content}
+	                </foreach>
+	            </if>
+	            
+	            <!-- sceneTitle이 존재할 경우 조건 추가 -->
+	            <if test="sceneTitle != null and sceneTitle != ''">
+	                AND scene_title = #{sceneTitle}
+	            </if>
+	        </trim>
+	    </where>
 
 		<!-- 정렬 기준 추가 -->
 		<if test="sortType != null and sortType != ''">
@@ -109,6 +107,9 @@
 					open="(" separator="," close=")">
 					#{content}
 				</foreach>
+			</if>
+			<if test="sceneTitle != null and sceneTitle != ''">
+				scene_title = #{sceneTitle}
 			</if>
 		</where>
 	</select>

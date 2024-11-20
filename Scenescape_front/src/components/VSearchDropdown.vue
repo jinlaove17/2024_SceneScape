@@ -46,6 +46,8 @@ const onFocusOutInput = () => {
 const onSelectItem = (title) => {
   console.log("onSelectItem", title);
   emit("changeSelection", title);
+
+  console.log("emit selected item", title);
 };
 </script>
 
@@ -63,7 +65,6 @@ const onSelectItem = (title) => {
       <!-- Dropdown Button -->
       <button
         class="inline-flex justify-between items-center w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-main-300"
-        type="button"
       >
         <p class="text-sm">{{ props.selectedItem }}</p>
         <svg

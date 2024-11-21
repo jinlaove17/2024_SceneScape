@@ -33,8 +33,16 @@ const searchByFilter = (filter, success, fail) => {
     .catch(fail);
 };
 
+const setLike = (attractionNo, userId, success, fail) => {
+  attractionAPI
+    .post(`/attractions/like/${attractionNo}`, userId)
+    .then(success)
+    .catch(fail);
+};
+
 export default {
   getAttractions,
   getSceneTitles,
   searchByFilter,
+  setLike,
 };

@@ -2,29 +2,34 @@
 import { ref, computed } from "vue";
 
 const props = defineProps({
-  info: {
+  header: {
     type: String,
-  },
-  selectedItem: {
-    type: String,
-    require: true,
   },
   items: {
     type: Array,
-    require: true,
+    required: true,
+  },
+  selectedItem: {
+    type: Object,
+    required: true,
+  },
+  useProperty: {
+    type: String,
+    required: true,
   },
 });
 const emit = defineEmits(["changeSelection"]);
 
-// State
 const isOpen = ref(false);
 const isSearching = ref(false);
 const searchTerm = ref("");
 
-// Computed
 const filteredItems = computed(() => {
-  const search = searchTerm.value.toLowerCase();
-  return props.items.filter((item) => item.toLowerCase().includes(search));
+  return props.items.filter((item) =>
+    item[props.useProperty]
+      .toLowerCase()
+      .includes(searchTerm.value.toLowerCase())
+  );
 });
 
 const onOpenSelect = () => {
@@ -43,8 +48,8 @@ const onFocusInInput = () => {
 const onFocusOutInput = () => {
   isSearching.value = false;
 };
-const onSelectItem = (title) => {
-  emit("changeSelection", title);
+const onSelectItem = (item) => {
+  emit("changeSelection", item);
 };
 </script>
 
@@ -55,15 +60,15 @@ const onSelectItem = (title) => {
     @focusout="onCloseSelect"
   >
     <div class="relative group w-full">
-      <p class="block text-sm text-gray-500 group-focus-within:text-main-300">
-        {{ props.info }}
+      <p class="block text-sm text-gray-500">
+        {{ props.header }}
       </p>
 
       <!-- Dropdown Button -->
       <button
         class="inline-flex justify-between items-center w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-main-300"
       >
-        <p class="text-sm">{{ props.selectedItem }}</p>
+        <p class="text-sm">{{ props.selectedItem[props.useProperty] }}</p>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="w-5 h-5 ml-2 -mr-1"
@@ -98,11 +103,11 @@ const onSelectItem = (title) => {
         <!-- Dropdown Content -->
         <a
           v-for="item in filteredItems"
-          :key="item"
+          :key="item[props.useProperty]"
           class="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md"
           @mousedown="onSelectItem(item)"
         >
-          {{ item }}
+          {{ item[props.useProperty] }}
         </a>
       </div>
     </div>

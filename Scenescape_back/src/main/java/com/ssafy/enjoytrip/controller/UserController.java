@@ -42,7 +42,6 @@ public class UserController {
 	@PostMapping
 	private ResponseEntity<Map<String, Object>> registerUser(@RequestBody UserDTO user) {
 		String resultMsg = userService.registerUser(user.getId(), user.getPwd(), user.getNickname(), user.getEmail());
-
 		if (resultMsg.equals("")) {
 			return ResponseEntity.ok(null);
 		}
@@ -71,7 +70,6 @@ public class UserController {
 	@PostMapping("/logout")
 	private ResponseEntity<Map<String, Object>> logoutUser(HttpSession session, Model model) {
 		UserDTO user = (UserDTO) session.getAttribute("userInfo");
-
 		if (user != null) {
 			session.invalidate();
 			return ResponseEntity.ok(null);
@@ -83,7 +81,6 @@ public class UserController {
 	@PutMapping
 	private ResponseEntity<Map<String, Object>> updateUser(@RequestBody UserDTO user, HttpSession session) {
 		UserDTO userDto = userService.updateUser(user.getId(), user.getPwd(), user.getNickname(), user.getEmail());
-
 		if (userDto != null) {
 			session.setAttribute("userInfo", userDto);
 			return ResponseEntity.ok(null);
@@ -104,7 +101,6 @@ public class UserController {
 	@PostMapping("/find-password")
 	private ResponseEntity<Map<String, Object>> findPassword(@RequestBody UserDTO user) {
 		UserDTO userDto = userService.findPassword(user.getId(), user.getEmail());
-
 		if (userDto != null) {
 			Map<String, Object> response = new HashMap<>();
 			response.put("tmpPwd", userDto.getPwd());

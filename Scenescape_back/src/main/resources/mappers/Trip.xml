@@ -164,5 +164,4 @@
 			<result property="likeCount" column="like_count" />
 		</collection>
 	</resultMap>
-
 </mapper>

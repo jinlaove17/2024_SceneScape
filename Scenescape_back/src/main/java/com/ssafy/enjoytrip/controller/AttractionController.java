@@ -58,7 +58,7 @@ public class AttractionController {
 		filter.put("offset", offset);
 
 		int totalCount = attractionService.countAll(filter);
-		List<AttractionDTO> attractions = attractionService.searchAll(filter, sortType, page);
+		List<AttractionDTO> attractions = attractionService.searchAll(filter);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("totalCount", totalCount); // 전체 결과 수

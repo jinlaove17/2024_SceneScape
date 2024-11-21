@@ -27,14 +27,12 @@ const endPage = computed(() => {
     parseInt((props.pageInfo.page - 1) / NAVIGATION_SIZE) * NAVIGATION_SIZE +
     NAVIGATION_SIZE;
 
+  console.log(lastPage, totalPage.value);
+
   return lastPage < totalPage.value ? lastPage : totalPage.value;
 });
 const totalPage = computed(() => {
-  return (
-    parseInt((props.pageInfo.totalCount - 1) / NAVIGATION_SIZE) *
-      NAVIGATION_SIZE +
-    1
-  );
+  return parseInt((props.pageInfo.totalCount - 1) / NAVIGATION_SIZE) + 1;
 });
 const endRange = computed(() => {
   return (

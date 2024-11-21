@@ -5,6 +5,10 @@ public class UserDTO {
 	private String pwd;
 	private String nickname;
 	private String email;
+	
+	public UserDTO() {
+		super();
+	}
 
 	public UserDTO(String id, String pwd, String nickname, String email) {
 		super();

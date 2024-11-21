@@ -33,9 +33,9 @@ const searchByFilter = (filter, success, fail) => {
     .catch(fail);
 };
 
-const setLike = (attractionNo, userId, success, fail) => {
+const updateLikeCount = (attractionNo, success, fail) => {
   attractionAPI
-    .post(`/attractions/like/${attractionNo}`, userId)
+    .post(`/attractions/like/${attractionNo}`)
     .then(success)
     .catch(fail);
 };
@@ -44,5 +44,5 @@ export default {
   getAttractions,
   getSceneTitles,
   searchByFilter,
-  setLike,
+  updateLikeCount,
 };

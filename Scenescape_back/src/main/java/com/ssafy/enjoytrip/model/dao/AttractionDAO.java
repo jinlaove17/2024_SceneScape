@@ -19,6 +19,8 @@ public interface AttractionDAO {
 
 	int countAll(Map<String, Object> filter);
 
+	int updateLikeCount(Map<String, Object> filter);
+	
 	List<AttractionDTO> selectAll(Map<String, Object> filter);
 
 	List<String> selectSceneTitles();

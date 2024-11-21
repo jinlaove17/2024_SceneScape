@@ -28,8 +28,7 @@
 	<delete id="delete" parameterType="int">
 		delete
 		from attractions
-		where no
-		= #{no}
+		where no = #{no}
 	</delete>
 
 	<select id="selectAll" parameterType="map"
@@ -110,6 +109,18 @@
 			</if>
 		</where>
 	</select>
+
+	<update id="updateLikeCount" parameterType="map">
+		update attractions
+		set like_count = like_count +
+		<if test="shift == 1">
+			1
+		</if>
+		<if test="shift == -1">
+			-1
+		</if>
+		where no = #{attractionNo}
+	</update>
 
 	<select id="selectSceneTitles" resultType="String">
 		select

@@ -8,5 +8,7 @@ import com.ssafy.enjoytrip.model.dto.AttractionLikeDTO;
 public interface AttractionLikeDAO {
 	int insert(AttractionLikeDTO attractionLikeDTO);
 
-	boolean select(AttractionLikeDTO attractionLikeDTO);
+	int delete(AttractionLikeDTO attractionLikeDTO);
+	
+	int select(AttractionLikeDTO attractionLikeDTO);
 }

@@ -10,18 +10,22 @@ import com.ssafy.enjoytrip.model.dto.PostLikeDTO;
 
 @Service
 public class AttractionLikeService {
-	private final AttractionLikeDAO attactionLikeDAO;
+	private final AttractionLikeDAO attractionLikeDAO;
 	
 	@Autowired
 	public AttractionLikeService(AttractionLikeDAO attractionLikeDAO) {
-		this.attactionLikeDAO = attractionLikeDAO;
+		this.attractionLikeDAO = attractionLikeDAO;
 	}
 	
-	public int likeAttraction(AttractionLikeDTO attractionLikeDTO) {
-		return attactionLikeDAO.insert(attractionLikeDTO);
-	}
-	
-	public boolean getLikeStatus(AttractionLikeDTO attractionLikeDTO) {
-		return attactionLikeDAO.select(attractionLikeDTO);
+	public int updateLikeCount(AttractionLikeDTO attractionLikeDTO) {
+		int isFound = attractionLikeDAO.select(attractionLikeDTO);
+		
+		// 해당 유저의 관계 테이블이 없다면 새롭게 생성한다.
+		if (isFound == 0) {
+			return attractionLikeDAO.insert(attractionLikeDTO);
+		}
+		
+		// 이미 있다면, 좋아요를 취소한 것이므로 삭제한다.
+		return -attractionLikeDAO.delete(attractionLikeDTO);
 	}
 }

@@ -13,6 +13,7 @@ const onChangePage = (page) => {
   emit("changePage", page);
 };
 
+const PAGE_SIZE = parseInt(import.meta.env.VITE_ATTRACTION_PAGE_SIZE);
 const NAVIGATION_SIZE = parseInt(
   import.meta.env.VITE_ATTRACTION_NAVIGATION_SIZE
 );
@@ -29,7 +30,7 @@ const endPage = computed(() => {
   return lastPage < totalPage.value ? lastPage : totalPage.value;
 });
 const totalPage = computed(() => {
-  return parseInt((props.pageInfo.totalCount - 1) / NAVIGATION_SIZE) + 1;
+  return parseInt((props.pageInfo.totalCount - 1) / PAGE_SIZE) + 1;
 });
 const endRange = computed(() => {
   return (
@@ -49,57 +50,40 @@ const range = (start, end) => {
 
 <template>
   <nav>
-    <ul class="flex items-center -space-x-px h-8 cursor-pointer">
+    <ul class="flex items-center h-8 cursor-pointer">
       <li
-        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
+        class="flex items-center justify-center px-2 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
+        @click="onChangePage(1)"
+      >
+        <span>처음</span>
+      </li>
+
+      <li
+        class="flex items-center justify-center px-2 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
         @click="onChangePage(startPage === 1 ? 1 : startPage - 1)"
       >
-        <span class="sr-only">Previous</span>
-        <svg
-          class="w-2.5 h-2.5 rtl:rotate-180"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 6 10"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M5 1 1 5l4 4"
-          />
-        </svg>
+        <span>이전</span>
       </li>
       <li
         v-for="page in range(startPage, endPage)"
         :key="page"
-        class="flex items-center justify-center px-3 h-8 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-        :class="page == props.pageInfo.page ? 'bg-main-200' : 'bg-white'"
+        class="flex items-center justify-center px-2 h-8 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+        :class="page == props.pageInfo.page ? 'bg-main-100' : 'bg-white'"
         @click="onChangePage(page)"
       >
         {{ page }}
       </li>
       <li
-        class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
+        class="flex items-center justify-center px-2 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
         @click="onChangePage(endRange ? totalPage : endPage + 1)"
       >
-        <span class="sr-only">Next</span>
-        <svg
-          class="w-2.5 h-2.5 rtl:rotate-180"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 6 10"
-        >
-          <path
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="m1 9 4-4-4-4"
-          />
-        </svg>
+        <span>다음</span>
+      </li>
+      <li
+        class="flex items-center justify-center px-2 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
+        @click="onChangePage(totalPage)"
+      >
+        <span>끝</span>
       </li>
     </ul>
   </nav>

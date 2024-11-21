@@ -69,4 +69,8 @@ public class AttractionService {
 	public List<AttractionDTO> searchBySceneTitle(String title) {
 		return attractionDao.selectBySceneTitle(title);
 	}
+	
+	public int updateLikeCount(Map<String, Object> filter) {
+		return attractionDao.updateLikeCount(filter);
+	}
 }

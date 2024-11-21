@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.enjoytrip.model.dto.AttractionDTO;
 import com.ssafy.enjoytrip.model.dto.AttractionLikeDTO;
+import com.ssafy.enjoytrip.model.dto.UserDTO;
 import com.ssafy.enjoytrip.service.AttractionLikeService;
 import com.ssafy.enjoytrip.service.AttractionService;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/attractions")
@@ -81,16 +84,27 @@ public class AttractionController {
 	}
 
 	@PostMapping("/like/{attractionNo}")
-	public ResponseEntity<Integer> setLike(
-			@PathVariable("attractionNo") int attractionNo,
-			@RequestBody String userId) {
-		System.out.println(attractionNo + " " + userId);
-		
-		int response = attractionLikeService.likeAttraction(new AttractionLikeDTO(userId, attractionNo));
-		if (response == 1) {
-			return ResponseEntity.ok(response);
+	public ResponseEntity<Integer> updateLikeCount(@PathVariable("attractionNo") int attractionNo, HttpSession session) {
+		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+		System.out.println(userInfo);
+		if (userInfo == null) {
+			return ResponseEntity.badRequest().build();
 		}
 		
+		String userId = userInfo.getId();
+		int response = attractionLikeService.updateLikeCount(new AttractionLikeDTO(userId, attractionNo));
+
+		if (response != 0) {
+			// 관계 테이블을 만드는데 성공했으면, attraction의 likeCount를 1 증가시킨다
+			// 관계 테이블을 삭제하는데 성공했으면, attraction의 likeCount를 1 감소시킨다.
+			Map<String, Object> filter = new HashMap<>();
+			filter.put("userId", userId);
+			filter.put("attractionNo", attractionNo);
+			filter.put("shift", response);
+			attractionService.updateLikeCount(filter);
+			return ResponseEntity.ok(response);
+		}
+
 		return ResponseEntity.badRequest().body(response);
 	}
 }

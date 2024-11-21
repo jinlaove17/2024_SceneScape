@@ -8,6 +8,10 @@ import VPagenation from "@/components/VPagenation.vue";
 
 // Kakao Map
 const map = ref();
+let originPosition = {
+  lat: 37.501286,
+  lng: 127.0396029,
+};
 let markerInfoList = [];
 let markerCount = ref(0);
 let bounds;
@@ -41,6 +45,12 @@ const updateMarkers = () => {
 
   markerCount.value = length;
   setBounds();
+};
+
+const clearMakers = () => {
+  markerInfoList = [];
+  markerCount.value = 0;
+  panTo(originPosition.lat, originPosition.lng);
 };
 
 const setBounds = () => {
@@ -165,6 +175,7 @@ const onReset = () => {
   pageInfo.value.curPage = 1;
   pageInfo.value.curPageCount = 0;
   pageInfo.value.items = [];
+  clearMakers();
 };
 
 const onSearchScene = () => {
@@ -216,8 +227,8 @@ const onChangePage = (page) => {
       class="z-0"
       :width="1920"
       :height="800"
-      :lat="37.501286"
-      :lng="127.0396029"
+      :lat="originPosition.lat"
+      :lng="originPosition.lng"
       :draggable="true"
       :markerList="markerList"
       @onLoadKakaoMap="onLoadKakaoMap"
@@ -382,30 +393,42 @@ const onChangePage = (page) => {
           </div>
         </div>
 
-        <div class="flex flex-col items-center w-96 flex-grow text-sm mt-2">
-          <div
-            v-for="item in pageInfo.items"
-            :key="item.no"
-            class="grid grid-cols-[auto_1fr] gap-2 w-full h-[120px] px-2 py-2 bg-white border-b hover:bg-gray-100 cursor-pointer"
-            @click="panTo(item.latitude, item.longitude)"
-          >
-            <div>
-              <img
-                class="w-28 h-28 object-cover"
-                src="@/assets/img/Danbam.jpg"
-              />
+        <div
+          class="flex flex-col items-center w-96 flex-grow text-sm mt-2"
+          :class="pageInfo.items.length > 0 ? '' : 'justify-center text-center'"
+        >
+          <template v-if="pageInfo.items.length > 0">
+            <div
+              v-for="item in pageInfo.items"
+              :key="item.no"
+              class="grid grid-cols-[auto_1fr] gap-2 w-full h-[120px] px-2 py-2 bg-white border-b hover:bg-gray-100 cursor-pointer"
+              @click="panTo(item.latitude, item.longitude)"
+            >
+              <div>
+                <img
+                  class="w-28 h-28 object-cover"
+                  src="@/assets/img/Danbam.jpg"
+                />
+              </div>
+              <div class="overflow-hidden text-overflow-ellipsis">
+                <p class="mb-1 text-base">{{ item.title }}</p>
+                <p class="truncate">{{ item.address }}</p>
+                <p>분류: {{ item.contentTypeID }}</p>
+                <p>전화번호: {{ item.tel }}</p>
+                <p class="truncate">{{ item.overview }}</p>
+              </div>
             </div>
-            <div class="overflow-hidden text-overflow-ellipsis">
-              <p class="mb-1 text-base">{{ item.title }}</p>
-              <p class="truncate">{{ item.address }}</p>
-              <p>분류: {{ item.contentTypeID }}</p>
-              <p>전화번호: {{ item.tel }}</p>
-              <p class="truncate">{{ item.overview }}</p>
-            </div>
+          </template>
+          <div v-else class="text-base text-gray-300">
+            검색 결과가 없습니다.
           </div>
         </div>
 
-        <VPagenation :pageInfo="pageInfo" @change-page="onChangePage" />
+        <VPagenation
+          v-if="pageInfo.items.length > 0"
+          :pageInfo="pageInfo"
+          @change-page="onChangePage"
+        />
       </div>
     </form>
 

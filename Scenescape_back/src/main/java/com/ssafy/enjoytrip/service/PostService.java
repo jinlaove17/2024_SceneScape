@@ -37,7 +37,7 @@ public class PostService {
 	}
 	
 	public long deletePost(long postNo) {
-		return postDao.delete(postNo);
+		return postDao.logicalDelete(postNo);
 	}
 	
 	public long updatePost(PostDTO post) {

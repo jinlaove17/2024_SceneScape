@@ -4,7 +4,7 @@ public class AttractionDTO {
 	private Integer no;
 	private String title;
 	private String sceneTitle;
-	private Integer contentTypeID;
+	private Integer contentTypeId;
 	private Integer areaCode;
 	private Integer sigunguCode;
 	private String address;
@@ -19,14 +19,14 @@ public class AttractionDTO {
 		super();
 	}
 
-	public AttractionDTO(Integer no, String title, String sceneTitle, Integer contentTypeID, Integer areaCode,
+	public AttractionDTO(Integer no, String title, String sceneTitle, Integer contentTypeId, Integer areaCode,
 			Integer sigunguCode, String address, Double latitude, Double longitude, String overview, String img,
 			String tel, Integer likeCount) {
 		super();
 		this.no = no;
 		this.title = title;
 		this.sceneTitle = sceneTitle;
-		this.contentTypeID = contentTypeID;
+		this.contentTypeId = contentTypeId;
 		this.areaCode = areaCode;
 		this.sigunguCode = sigunguCode;
 		this.address = address;
@@ -62,12 +62,12 @@ public class AttractionDTO {
 		this.sceneTitle = sceneTitle;
 	}
 
-	public Integer getContentTypeID() {
-		return contentTypeID;
+	public Integer getContentTypeId() {
+		return contentTypeId;
 	}
 
-	public void setContentTypeID(Integer contentTypeID) {
-		this.contentTypeID = contentTypeID;
+	public void setContentTypeID(Integer contentTypeId) {
+		this.contentTypeId = contentTypeId;
 	}
 
 	public Integer getAreaCode() {

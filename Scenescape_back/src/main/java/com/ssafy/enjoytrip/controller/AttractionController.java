@@ -8,21 +8,28 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.enjoytrip.model.dto.AttractionDTO;
+import com.ssafy.enjoytrip.model.dto.AttractionLikeDTO;
+import com.ssafy.enjoytrip.service.AttractionLikeService;
 import com.ssafy.enjoytrip.service.AttractionService;
 
 @RestController
 @RequestMapping("/attractions")
 public class AttractionController {
-	private AttractionService attractionService;
+	private final AttractionService attractionService;
+	private final AttractionLikeService attractionLikeService;
 
 	@Autowired
-	public AttractionController(AttractionService attractionService) {
+	public AttractionController(AttractionService attractionService, AttractionLikeService attractionLikeService) {
 		this.attractionService = attractionService;
+		this.attractionLikeService = attractionLikeService;
 	}
 
 	@GetMapping
@@ -62,14 +69,28 @@ public class AttractionController {
 	public ResponseEntity<List<Map<String, Object>>> getSceneTitles() {
 		List<Map<String, Object>> response = new ArrayList<>();
 		List<String> titles = attractionService.getSceneTitles();
-		
-		for(String t : titles) {
+
+		for (String t : titles) {
 			Map<String, Object> title = new HashMap<>();
-			
+
 			title.put("title", t);
 			response.add(title);
 		}
-		
+
 		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/like/{attractionNo}")
+	public ResponseEntity<Integer> setLike(
+			@PathVariable("attractionNo") int attractionNo,
+			@RequestBody String userId) {
+		System.out.println(attractionNo + " " + userId);
+		
+		int response = attractionLikeService.likeAttraction(new AttractionLikeDTO(userId, attractionNo));
+		if (response == 1) {
+			return ResponseEntity.ok(response);
+		}
+		
+		return ResponseEntity.badRequest().body(response);
 	}
 }

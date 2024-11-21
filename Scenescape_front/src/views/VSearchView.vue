@@ -198,7 +198,7 @@ const pageInfo = ref({
 
 const onChangePage = (page) => {
   attractionAPI.searchByFilter(
-    { page },
+    { sceneTitle: selectedTitle.value, page },
     ({ data }) => {
       pageInfo.value = data;
       updateMarkers();

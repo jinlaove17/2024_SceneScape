@@ -92,7 +92,9 @@ const onSignup = () => {
       router.push({ name: "login" });
       alert("회원가입 되었습니다.");
     },
-    () => {}
+    (error) => {
+      console.log(error);
+    }
   );
 };
 

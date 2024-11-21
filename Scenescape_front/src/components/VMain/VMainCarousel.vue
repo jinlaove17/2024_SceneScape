@@ -49,19 +49,32 @@ const isLastContent = computed(() => {
       class="h-full flex transition-transform duration-1000"
       :style="{ transform: `translateX(-${100 * curIndex}%)` }"
     >
-      <div class="relative min-w-full">
+      <div class="relative min-w-full overflow-hidden">
         <img
           src="@/assets/img/Traveller.jpg"
-          class="w-full h-full object-cover blur-sm"
+          class="w-full h-full object-cover blur-md animate-zoom"
         />
         <img
           src="@/assets/img/Traveller.jpg"
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[45rem] max-w-[45rem] mask-radial-opacity"
         />
-        <div class="absolute top-24 left-1/2 transform -translate-x-1/2 z-10">
-          <h1 class="text-3xl text-black">
+
+        <div class="w-max">
+          <h1
+            class="animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-black pr-5 text-5xl font-bold"
+          >
+            Hello World
+          </h1>
+        </div>
+
+        <div
+          class="absolute top-24 left-1/2 transform -translate-x-1/2 z-10 w-max"
+        >
+          <h1
+            class="text-3xl text-black animate-typing overflow-hidden whitespace-nowrap border-r-2 border-r-black px-14"
+          >
             당신의 여정이 영화가 되는 곳&nbsp;
-            <span class="text-6xl text-white">SCENE SCAPE&nbsp;</span>에서
+            <span class="text-5xl text-white">SCENE SCAPE&nbsp;</span>에서
             당신만의 한 장면을 담아보세요.
           </h1>
         </div>
@@ -70,11 +83,11 @@ const isLastContent = computed(() => {
       <div
         v-for="content in carouselContents"
         :key="content.title"
-        class="relative min-w-full"
+        class="relative min-w-full overflow-hidden"
       >
         <img
           :src="getImageUrl(content.img)"
-          class="w-full h-full object-cover blur-md"
+          class="w-full h-full object-cover blur-md animate-zoom"
         />
         <img
           :src="getImageUrl(content.img)"
@@ -160,5 +173,19 @@ const isLastContent = computed(() => {
   );
   mask-repeat: no-repeat;
   mask-size: cover;
+}
+
+@keyframes zoom-in-out {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.animate-zoom {
+  animation: zoom-in-out 20s ease-in-out infinite;
 }
 </style>

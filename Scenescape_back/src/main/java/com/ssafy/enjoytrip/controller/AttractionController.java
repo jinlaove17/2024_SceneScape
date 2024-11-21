@@ -58,8 +58,14 @@ public class AttractionController {
 	}
 
 	@GetMapping("/titles")
-	public ResponseEntity<List<String>> getSceneTitles() {
+	public ResponseEntity<Map<String, Object>> getSceneTitles() {
+		Map<String, Object> response = new HashMap<>();
 		List<String> titles = attractionService.getSceneTitles();
-		return ResponseEntity.ok(titles);
+		
+		for(String t : titles) {
+			response.put("title", t);
+		}
+		
+		return ResponseEntity.ok(response);
 	}
 }

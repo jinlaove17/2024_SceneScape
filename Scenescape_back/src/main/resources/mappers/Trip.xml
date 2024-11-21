@@ -4,7 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssafy.enjoytrip.mode.dao.TripDAO">
     <!-- 사용자의 여행 일정과 포함된 관광지를 가져오는 쿼리 -->
-    <select id="selectAll" resultMap="tripAttractionsResultMap">
+<!--     <select id="selectAll" resultMap="tripAttractionsResultMap">
         SELECT 
             t.no AS tripNo,
             t.user_id AS userId,
@@ -29,10 +29,10 @@
             t.user_id = #{userId}
         ORDER BY 
             t.no, ta.sequence;
-    </select>
+    </select> -->
 
     <!-- Result Map 정의 -->
-    <resultMap id="tripAttractionsResultMap" type="com.example.dto.TripDTO">
+<!--     <resultMap id="tripAttractionsResultMap" type="com.example.dto.TripDTO">
         <id property="no" column="tripNo"/>
         <result property="userId" column="userId"/>
         <result property="title" column="title"/>
@@ -48,5 +48,5 @@
             <result property="latitude" column="attractionLatitude"/>
             <result property="longitude" column="attractionLongitude"/>
         </collection>
-    </resultMap>
+    </resultMap> -->
 </mapper>

@@ -1,5 +1,6 @@
 package com.ssafy.enjoytrip.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class AttractionController {
 			@RequestParam(value = "sceneTitle", required = false) String sceneTitle,
 			@RequestParam(value = "sortType", required = false) String sortType,
 			@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "pageSize", defaultValue = "5") int pageSize) {
+			@RequestParam(value = "pageSize", defaultValue = "6") int pageSize) {
 		Map<String, Object> filter = new HashMap<>();
 		filter.put("area", area);
 		filter.put("subArea", subArea);
@@ -58,12 +59,15 @@ public class AttractionController {
 	}
 
 	@GetMapping("/titles")
-	public ResponseEntity<Map<String, Object>> getSceneTitles() {
-		Map<String, Object> response = new HashMap<>();
+	public ResponseEntity<List<Map<String, Object>>> getSceneTitles() {
+		List<Map<String, Object>> response = new ArrayList<>();
 		List<String> titles = attractionService.getSceneTitles();
 		
 		for(String t : titles) {
-			response.put("title", t);
+			Map<String, Object> title = new HashMap<>();
+			
+			title.put("title", t);
+			response.add(title);
 		}
 		
 		return ResponseEntity.ok(response);

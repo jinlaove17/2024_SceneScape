@@ -26,9 +26,6 @@ const endPage = computed(() => {
   let lastPage =
     parseInt((props.pageInfo.page - 1) / NAVIGATION_SIZE) * NAVIGATION_SIZE +
     NAVIGATION_SIZE;
-
-  console.log(lastPage, totalPage.value);
-
   return lastPage < totalPage.value ? lastPage : totalPage.value;
 });
 const totalPage = computed(() => {

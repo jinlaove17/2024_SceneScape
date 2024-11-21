@@ -1,60 +1,61 @@
 <script setup>
-import VSearchDropdown from "@/components/VSearchDropdown.vue";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, reactive } from "vue";
 import { KakaoMap } from "vue3-kakao-maps";
+
 import attractionAPI from "@/api/attraction";
 import areaAPI from "@/api/area";
+
+import VSearchDropdown from "@/components/VSearchDropdown.vue";
 import VPagenation from "@/components/VPagenation.vue";
 
-// Kakao Map
+// 카카오 맵 관련
 const map = ref();
-let originPosition = {
+const originPosition = {
   lat: 37.501286,
   lng: 127.0396029,
 };
-let markerInfoList = [];
+let markerInfoList = ref([]);
+const markerList = computed(() => markerInfoList.value);
 let markerCount = ref(0);
-let bounds;
 
-const markerList = computed(() => markerInfoList.slice(0, markerCount.value));
 const onLoadKakaoMap = (mapRef) => {
   map.value = mapRef;
 };
 
 const updateMarkers = () => {
   const length = pageInfo.value.items.length;
+  const bounds = new kakao.maps.LatLngBounds();
 
-  bounds = new kakao.maps.LatLngBounds();
-  markerInfoList = [];
+  markerInfoList.value = [];
 
   for (let i = 0; i < length; ++i) {
-    markerInfoList.push({
+    markerInfoList.value.push({
       key: pageInfo.value.items[i].no,
       lat: pageInfo.value.items[i].latitude,
       lng: pageInfo.value.items[i].longitude,
     });
 
-    // 배열의 좌표들이 잘 보이게 마커를 지도에 추가합니다.
-    let point = new kakao.maps.LatLng(
-      markerInfoList[i].lat,
-      markerInfoList[i].lng
+    bounds.extend(
+      new kakao.maps.LatLng(
+        markerInfoList.value[i].lat,
+        markerInfoList.value[i].lng
+      )
     );
-
-    bounds.extend(point);
   }
 
+  // computed 객체 markerList 갱신
   markerCount.value = length;
-  setBounds();
+  setBounds(bounds);
 };
 
 const clearMakers = () => {
-  markerInfoList = [];
+  markerInfoList.value = [];
   markerCount.value = 0;
   panTo(originPosition.lat, originPosition.lng);
 };
 
-const setBounds = () => {
-  // LatLngBounds 객체에 추가된 좌표들을 기준으로 지도의 범위를 재설정합니다.
+const setBounds = (bounds) => {
+  // 추가된 좌표들을 기준으로 지도의 범위를 재설정합니다.
   // 이때 지도의 중심좌표와 레벨이 변경될 수 있습니다.
   if (map.value) {
     map.value.setBounds(bounds);
@@ -76,23 +77,23 @@ const sideBarAnimation = computed(() =>
   isOpenSideBar.value ? "translate-x-0" : "translate-x-full"
 );
 
-// 일반 검색 관련
-const selectedBit = ref(0);
+// 검색 관련
+const searchMode = ref(1);
+
+const isSceneSearchBarActive = ref(true);
+const isNoramlSearchBarActive = ref(true);
+
+const contentBit = 0;
 const isSelectedContent = (num) => {
-  return selectedBit.value & (1 << num);
+  return contentBit.value & (1 << num);
 };
 const onSelectContent = (num) => {
   if (isSelectedContent(num)) {
-    selectedBit.value &= ~(1 << num);
+    contentBit.value &= ~(1 << num);
   } else {
-    selectedBit.value |= 1 << num;
+    contentBit.value |= 1 << num;
   }
 };
-
-const searchMode = ref(1);
-
-// 씬 검색 데이터
-// 검색 조건
 const searchContents = [
   {
     id: 12,
@@ -127,21 +128,51 @@ const searchContents = [
     name: "음식점",
   },
 ];
-const sceneTitles = ref([]);
-const selectedTitle = ref("");
-const areaInfoList = ref([]);
-const selectedArea = ref("");
-const selectedSubArea = ref("");
 
-const getSubArea = (areaName) => {
-  const area = areaInfoList.value.find((item) => item.areaName === "서울");
-  return area ? area.subAreas.map((item) => item.subAreaName) : [];
+const sceneTitleList = ref([]);
+const selectedScene = ref({
+  title: "",
+});
+
+const searchTerm = ref("");
+
+const areaInfoList = ref([]);
+const selectedArea = ref({
+  areaCode: 0,
+  areaName: "",
+});
+const selectedSubArea = ref({
+  subAreaCode: 0,
+  subAreaName: "",
+});
+
+const setSelectedArea = (item) => {
+  selectedArea.value.areaCode = item.areaCode;
+  selectedArea.value.areaName = item.areaName;
+  selectedSubArea.value.subAreaCode = 0;
+  selectedSubArea.value.subAreaName = "";
+};
+
+// 특정 areaName의 subAreas를 반환하는 함수
+const getSubAreas = (areaName) => {
+  for (let i = 0; i < areaInfoList.value.length; ++i) {
+    if (areaInfoList.value[i].areaName === areaName) {
+      return areaInfoList.value[i].subAreas;
+    }
+  }
+
+  return [];
+};
+
+const setSelectedSubArea = (item) => {
+  selectedSubArea.value.subAreaCode = item.subAreaCode;
+  selectedSubArea.value.subAreaName = item.subAreaName;
 };
 
 onMounted(() => {
   attractionAPI.getSceneTitles(
     ({ data }) => {
-      sceneTitles.value = data;
+      sceneTitleList.value = data;
     },
     () => {
       console.log("SceneTitles 로드 실패");
@@ -156,7 +187,6 @@ onMounted(() => {
           areaName: item.areaName,
           subAreas: [],
         };
-
         for (const sub of item.subAreas) {
           area.subAreas.push(sub);
         }
@@ -170,7 +200,7 @@ onMounted(() => {
 });
 
 const onReset = () => {
-  selectedTitle.value = "";
+  selectedScene.value.title = "";
   pageInfo.value.totalCount = 0;
   pageInfo.value.curPage = 1;
   pageInfo.value.curPageCount = 0;
@@ -178,16 +208,15 @@ const onReset = () => {
   clearMakers();
 };
 
-const onSearchScene = () => {
-  if (!selectedTitle.value) {
+const onSearchByScene = () => {
+  if (!selectedScene.value.title) {
     return;
   }
 
   attractionAPI.searchByFilter(
-    { sceneTitle: selectedTitle.value },
+    { sceneTitle: selectedScene.value.title },
     ({ data }) => {
       pageInfo.value = data;
-      console.log(pageInfo.value);
       updateMarkers();
     },
     (error) => {
@@ -196,11 +225,41 @@ const onSearchScene = () => {
   );
 };
 
-const setSelectedTitle = (title) => {
-  selectedTitle.value = title;
+const onSearchByNormal = () => {
+  let contents = [];
+
+  for (let i = 0; i < searchContents.length; ++i) {
+    if (contentBit & (1 << i)) {
+      contents.push(searchContents[i]);
+    }
+  }
+  console.log(
+    selectedArea.value.areaCode,
+    selectedSubArea.value.subAreaCode,
+    contents
+  );
+
+  attractionAPI.searchByFilter(
+    {
+      area: selectedArea.value.areaCode,
+      subArea: selectedSubArea.value.subAreaCode,
+      contents: contents,
+    },
+    ({ data }) => {
+      pageInfo.value = data;
+      updateMarkers();
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
 };
 
-// 페이지네이션
+const setSelectedTitle = (item) => {
+  selectedScene.value.title = item.title;
+};
+
+// 페이지네이션 관련
 const pageInfo = ref({
   totalCount: 0,
   page: 1,
@@ -209,7 +268,7 @@ const pageInfo = ref({
 
 const onChangePage = (page) => {
   attractionAPI.searchByFilter(
-    { sceneTitle: selectedTitle.value, page },
+    { sceneTitle: selectedScene.value.title, page },
     ({ data }) => {
       pageInfo.value = data;
       updateMarkers();
@@ -222,7 +281,8 @@ const onChangePage = (page) => {
 </script>
 
 <template>
-  <div class="relative h-[50rem] flex overflow-hidden">
+  <!-- overflow-hidden -->
+  <div class="relative h-[50rem] flex">
     <KakaoMap
       class="z-0"
       :width="1920"
@@ -237,11 +297,11 @@ const onChangePage = (page) => {
 
     <form
       :class="sideBarAnimation"
-      class="absolute w-96 h-full right-16 transition-transform duration-500 bg-white"
+      class="absolute w-96 h-full right-16 transition-transform duration-500 bg-white border border-l-gray-100"
       @submit.prevent
     >
       <button
-        class="absolute w-7 h-12 flex justify-center items-center top-1/2 transform -translate-x-full -translate-y-1/2 bg-white rounded-l-lg"
+        class="absolute w-7 h-12 flex justify-center items-center top-1/2 transform -translate-x-full -translate-y-1/2 bg-white rounded-l-lg drop-shadow-lg"
         type="button"
         @click="isOpenSideBar = !isOpenSideBar"
       >
@@ -268,20 +328,174 @@ const onChangePage = (page) => {
         </svg>
       </button>
 
-      <div class="w-full h-full pb-3 flex flex-col items-center">
+      <div
+        class="w-full h-full pb-3 flex flex-col items-center overflow-hidden"
+      >
         <!-- 씬 검색 -->
-        <div v-show="searchMode === 1" class="pb-2 border-b-2 border-gray-200">
-          <div class="w-80 mx-auto">
-            <VSearchDropdown
-              :info="'컨텐츠'"
-              :selectedItem="selectedTitle"
-              :items="sceneTitles"
-              @change-selection="setSelectedTitle"
-            />
+        <div v-show="searchMode === 1" class="relative w-full pb-2">
+          <div
+            class="absolute w-96 bg-gray-50 drop-shadow-md transition-all duration-300 rounded-b-xl"
+            :class="
+              isSceneSearchBarActive ? 'translate-y-0' : '-translate-y-full'
+            "
+          >
+            <div class="w-80 mx-auto">
+              <VSearchDropdown
+                :header="'컨텐츠 검색'"
+                :items="sceneTitleList"
+                :selected-item="selectedScene"
+                :use-property="'title'"
+                @change-selection="setSelectedTitle"
+              />
 
-            <div class="text-end">
+              <div class="text-center mb-3 mx-auto">
+                <button
+                  class="w-24 mt-1 mr-2 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+                  type="button"
+                  @click="onReset"
+                >
+                  초기화
+                </button>
+
+                <button
+                  class="w-24 mt-1 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+                  @click="onSearchByScene"
+                >
+                  검색하기
+                </button>
+              </div>
+            </div>
+
+            <button
+              class="absolute flex justify-center items-center w-12 h-5 transform left-1/2 -translate-x-1/2 rounded-b-md bg-white drop-shadow-md text-center cursor-pointer"
+              type="button"
+              @click="isSceneSearchBarActive = !isSceneSearchBarActive"
+            >
+              <svg
+                v-show="!isSceneSearchBarActive"
+                class="w-5 h-5 fill-main-300 mb-3"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 320 512"
+              >
+                <path
+                  d="M182.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-9.2-9.2-11.9-22.9-6.9-34.9s16.6-19.8 29.6-19.8l256 0c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-128 128z"
+                />
+              </svg>
+
+              <svg
+                v-show="isSceneSearchBarActive"
+                class="w-5 h-5 fill-main-300 mt-2"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 320 512"
+              >
+                <path
+                  d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8l256 0c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- 일반 검색 -->
+        <div
+          v-show="searchMode === 2"
+          class="relative w-full pb-2 border-gray-200"
+        >
+          <div
+            class="absolute w-96 bg-gray-50 drop-shadow-md transition-all duration-300 rounded-b-xl"
+            :class="
+              isSceneSearchBarActive ? 'translate-y-0' : '-translate-y-full'
+            "
+          >
+            <div class="group relative w-80 mx-auto my-3">
+              <label for="search" class="block text-sm text-gray-500">
+                검색하기
+              </label>
+              <input
+                class="block w-full px-10 pt-3 pb-1 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 peer"
+                type="text"
+                id="search"
+                placeholder="당신만의 씬을 검색해보세요..."
+                v-model.lazy="searchTerm"
+              />
+              <svg
+                class="absolute left-3 top-8 w-5 h-5 fill-gray-300 peer-focus-within:fill-main-300"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+              >
+                <path
+                  d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+                />
+              </svg>
+            </div>
+
+            <div class="w-80 mx-auto">
+              <VSearchDropdown
+                :header="'지역'"
+                :items="areaInfoList"
+                :selected-item="selectedArea"
+                :use-property="'areaName'"
+                @change-selection="setSelectedArea"
+              />
+              <VSearchDropdown
+                :header="'세부 지역'"
+                :items="getSubAreas(selectedArea.areaName)"
+                :selected-item="selectedSubArea"
+                :use-property="'subAreaName'"
+                @change-selection="setSelectedSubArea"
+              />
+            </div>
+
+            <div class="w-80 mx-auto mb-3 flex flex-col">
+              <p class="text-sm text-gray-500">분류</p>
+              <div class="w-80 mx-auto grid grid-cols-8">
+                <label
+                  v-for="(content, index) in searchContents"
+                  :key="content.id"
+                  class="relative flex justify-center items-center w-8 h-8 cursor-pointer border-2 rounded-md"
+                  :class="
+                    isSelectedContent(index)
+                      ? 'border-main-200'
+                      : 'border-gray-200'
+                  "
+                >
+                  <input
+                    type="checkbox"
+                    class="absolute w-0 h-0"
+                    :value="content.id"
+                    @click="onSelectContent(index)"
+                  />
+                  <svg
+                    class="w-5 h-5 fill-yellow-200"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      opacity="0.5"
+                      d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                      fill="#1C274C"
+                    />
+                    <path
+                      d="M8.39747 15.5534C8.64413 15.2206 9.11385 15.1508 9.44661 15.3975C10.175 15.9373 11.0541 16.25 12 16.25C12.9459 16.25 13.825 15.9373 14.5534 15.3975C14.8862 15.1508 15.3559 15.2206 15.6025 15.5534C15.8492 15.8862 15.7794 16.3559 15.4466 16.6025C14.4742 17.3233 13.285 17.75 12 17.75C10.715 17.75 9.5258 17.3233 8.55339 16.6025C8.22062 16.3559 8.15082 15.8862 8.39747 15.5534Z"
+                      fill="#1C274C"
+                    />
+                    <path
+                      d="M15 12C15.5523 12 16 11.3284 16 10.5C16 9.67157 15.5523 9 15 9C14.4477 9 14 9.67157 14 10.5C14 11.3284 14.4477 12 15 12Z"
+                      fill="#1C274C"
+                    />
+                    <path
+                      d="M9 12C9.55228 12 10 11.3284 10 10.5C10 9.67157 9.55228 9 9 9C8.44772 9 8 9.67157 8 10.5C8 11.3284 8.44772 12 9 12Z"
+                      fill="#1C274C"
+                    />
+                  </svg>
+                </label>
+              </div>
+            </div>
+
+            <div class="text-center mb-3">
               <button
-                class="w-24 mt-1 mr-2 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+                class="w-24 mt-2 mr-2 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
                 type="button"
                 @click="onReset"
               >
@@ -290,105 +504,37 @@ const onChangePage = (page) => {
 
               <button
                 class="w-24 mt-1 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
-                @click="onSearchScene"
+                @click="onSearchByNormal"
               >
                 검색하기
               </button>
             </div>
-          </div>
-        </div>
-
-        <!-- 일반 검색 -->
-        <div v-show="searchMode === 2" class="pb-2 border-b-2 border-gray-200">
-          <div class="group relative w-80 my-3 mx-auto">
-            <label
-              for="search"
-              class="block text-sm text-gray-500 group-focus-within:text-main-300"
+            <button
+              class="absolute flex justify-center items-center w-12 h-5 transform left-1/2 -translate-x-1/2 rounded-b-md bg-white drop-shadow-md text-center cursor-pointer"
+              type="button"
+              @click="isSceneSearchBarActive = !isSceneSearchBarActive"
             >
-              검색하기
-            </label>
-            <input
-              class="block w-full px-10 pt-3 pb-2 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300"
-              type="text"
-              id="search"
-              placeholder="당신만의 씬을 검색해보세요..."
-            />
-            <svg
-              class="absolute left-3 top-8 w-5 h-5 fill-gray-300 group-focus-within:fill-main-300"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-            >
-              <path
-                d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
-              />
-            </svg>
-
-            <VSearchDropdown
-              :selected-item="selectedArea"
-              :items="areaInfoList.map((area) => area.areaName)"
-            />
-            <VSearchDropdown
-              :selected-item="selectedSubArea"
-              :items="getSubArea(selectedArea)"
-            />
-          </div>
-
-          <div class="w-64 mx-auto grid grid-cols-8">
-            <label
-              v-for="(content, index) in searchContents"
-              :key="content.id"
-              class="relative flex justify-center items-center w-8 h-8 cursor-pointer border-2 rounded-md"
-              :class="
-                isSelectedContent(index) ? 'border-main-200' : 'border-gray-200'
-              "
-            >
-              <input
-                type="checkbox"
-                class="absolute w-0 h-0"
-                :value="content.id"
-                @click="onSelectContent(index)"
-              />
               <svg
-                class="w-5 h-5 fill-yellow-200"
-                viewBox="0 0 24 24"
-                fill="none"
+                v-show="!isSceneSearchBarActive"
+                class="w-5 h-5 fill-main-300 mb-3"
                 xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 320 512"
               >
                 <path
-                  opacity="0.5"
-                  d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                  fill="#1C274C"
-                />
-                <path
-                  d="M8.39747 15.5534C8.64413 15.2206 9.11385 15.1508 9.44661 15.3975C10.175 15.9373 11.0541 16.25 12 16.25C12.9459 16.25 13.825 15.9373 14.5534 15.3975C14.8862 15.1508 15.3559 15.2206 15.6025 15.5534C15.8492 15.8862 15.7794 16.3559 15.4466 16.6025C14.4742 17.3233 13.285 17.75 12 17.75C10.715 17.75 9.5258 17.3233 8.55339 16.6025C8.22062 16.3559 8.15082 15.8862 8.39747 15.5534Z"
-                  fill="#1C274C"
-                />
-                <path
-                  d="M15 12C15.5523 12 16 11.3284 16 10.5C16 9.67157 15.5523 9 15 9C14.4477 9 14 9.67157 14 10.5C14 11.3284 14.4477 12 15 12Z"
-                  fill="#1C274C"
-                />
-                <path
-                  d="M9 12C9.55228 12 10 11.3284 10 10.5C10 9.67157 9.55228 9 9 9C8.44772 9 8 9.67157 8 10.5C8 11.3284 8.44772 12 9 12Z"
-                  fill="#1C274C"
+                  d="M182.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-9.2-9.2-11.9-22.9-6.9-34.9s16.6-19.8 29.6-19.8l256 0c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-128 128z"
                 />
               </svg>
-            </label>
-          </div>
 
-          <div class="text-end">
-            <button
-              class="w-24 mt-2 mr-2 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
-              type="button"
-              @click="onReset"
-            >
-              초기화
-            </button>
-
-            <button
-              class="w-24 mt-1 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
-              @click="onSearchScene"
-            >
-              검색하기
+              <svg
+                v-show="isSceneSearchBarActive"
+                class="w-5 h-5 fill-main-300 mt-2"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 320 512"
+              >
+                <path
+                  d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8l256 0c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"
+                />
+              </svg>
             </button>
           </div>
         </div>

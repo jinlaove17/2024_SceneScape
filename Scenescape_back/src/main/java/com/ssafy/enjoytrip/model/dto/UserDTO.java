@@ -6,6 +6,10 @@ public class UserDTO {
 	private String nickname;
 	private String email;
 
+	public UserDTO() {
+		super();
+	}
+	
 	public UserDTO(String id, String pwd, String nickname, String email) {
 		super();
 		this.id = id;

@@ -24,6 +24,11 @@ const onLoadKakaoMap = (mapRef) => {
 
 const updateMarkers = () => {
   const length = pageInfo.value.items.length;
+
+  if (length <= 0) {
+    return;
+  }
+
   const bounds = new kakao.maps.LatLngBounds();
 
   markerInfoList.value = [];
@@ -83,7 +88,7 @@ const searchMode = ref(1);
 const isSceneSearchBarActive = ref(true);
 const isNoramlSearchBarActive = ref(true);
 
-const contentBit = 0;
+const contentBit = ref(0);
 const isSelectedContent = (num) => {
   return contentBit.value & (1 << num);
 };
@@ -94,6 +99,18 @@ const onSelectContent = (num) => {
     contentBit.value |= 1 << num;
   }
 };
+const contents = computed(() => {
+  let list = [];
+
+  for (let i = 0; i < searchContents.length; ++i) {
+    if (contentBit.value & (1 << i)) {
+      list.push(searchContents[i].id);
+    }
+  }
+
+  return list;
+});
+
 const searchContents = [
   {
     id: 12,
@@ -201,10 +218,15 @@ onMounted(() => {
 
 const onReset = () => {
   selectedScene.value.title = "";
+  selectedArea.value.areaCode = 0;
+  selectedArea.value.areaName = "";
+  selectedSubArea.value.subAreaCode = 0;
+  selectedSubArea.value.subAreaName = "";
   pageInfo.value.totalCount = 0;
   pageInfo.value.curPage = 1;
   pageInfo.value.curPageCount = 0;
   pageInfo.value.items = [];
+  contentBit.value = 0;
   clearMakers();
 };
 
@@ -226,24 +248,11 @@ const onSearchByScene = () => {
 };
 
 const onSearchByNormal = () => {
-  let contents = [];
-
-  for (let i = 0; i < searchContents.length; ++i) {
-    if (contentBit & (1 << i)) {
-      contents.push(searchContents[i]);
-    }
-  }
-  console.log(
-    selectedArea.value.areaCode,
-    selectedSubArea.value.subAreaCode,
-    contents
-  );
-
   attractionAPI.searchByFilter(
     {
-      area: selectedArea.value.areaCode,
-      subArea: selectedSubArea.value.subAreaCode,
-      contents: contents,
+      area: selectedArea.value.areaCode || null,
+      subArea: selectedSubArea.value.subAreaCode || null,
+      contents: contents.value,
     },
     ({ data }) => {
       pageInfo.value = data;
@@ -267,22 +276,46 @@ const pageInfo = ref({
 });
 
 const onChangePage = (page) => {
-  attractionAPI.searchByFilter(
-    { sceneTitle: selectedScene.value.title, page },
-    ({ data }) => {
-      pageInfo.value = data;
-      updateMarkers();
-    },
-    (error) => {
-      console.log(error);
-    }
-  );
+  switch (searchMode.value) {
+    case 1: // 씬 검색
+      attractionAPI.searchByFilter(
+        {
+          sceneTitle: selectedScene.value.title,
+          page,
+        },
+        ({ data }) => {
+          pageInfo.value = data;
+          updateMarkers();
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+      break;
+    case 2: // 일반 검색
+      attractionAPI.searchByFilter(
+        {
+          page,
+          area: selectedArea.value.areaCode || null,
+          subArea: selectedSubArea.value.subAreaCode || null,
+          contents: contents.value,
+        },
+        ({ data }) => {
+          pageInfo.value = data;
+          updateMarkers();
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+      break;
+  }
 };
 </script>
 
 <template>
   <!-- overflow-hidden -->
-  <div class="relative h-[50rem] flex">
+  <div class="relative h-[50rem] flex overflow-hidden">
     <KakaoMap
       class="z-0"
       :width="1920"
@@ -328,9 +361,7 @@ const onChangePage = (page) => {
         </svg>
       </button>
 
-      <div
-        class="w-full h-full pb-3 flex flex-col items-center overflow-hidden"
-      >
+      <div class="w-full h-full pb-3 flex flex-col items-center">
         <!-- 씬 검색 -->
         <div v-show="searchMode === 1" class="relative w-full pb-2">
           <div
@@ -404,7 +435,7 @@ const onChangePage = (page) => {
           <div
             class="absolute w-96 bg-gray-50 drop-shadow-md transition-all duration-300 rounded-b-xl"
             :class="
-              isSceneSearchBarActive ? 'translate-y-0' : '-translate-y-full'
+              isNoramlSearchBarActive ? 'translate-y-0' : '-translate-y-full'
             "
           >
             <div class="group relative w-80 mx-auto my-3">
@@ -452,7 +483,7 @@ const onChangePage = (page) => {
                 <label
                   v-for="(content, index) in searchContents"
                   :key="content.id"
-                  class="relative flex justify-center items-center w-8 h-8 cursor-pointer border-2 rounded-md"
+                  class="relative flex justify-center items-center w-8 h-8 cursor-pointer border-2 rounded-md bg-white text-xs"
                   :class="
                     isSelectedContent(index)
                       ? 'border-main-200'
@@ -465,30 +496,6 @@ const onChangePage = (page) => {
                     :value="content.id"
                     @click="onSelectContent(index)"
                   />
-                  <svg
-                    class="w-5 h-5 fill-yellow-200"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      opacity="0.5"
-                      d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                      fill="#1C274C"
-                    />
-                    <path
-                      d="M8.39747 15.5534C8.64413 15.2206 9.11385 15.1508 9.44661 15.3975C10.175 15.9373 11.0541 16.25 12 16.25C12.9459 16.25 13.825 15.9373 14.5534 15.3975C14.8862 15.1508 15.3559 15.2206 15.6025 15.5534C15.8492 15.8862 15.7794 16.3559 15.4466 16.6025C14.4742 17.3233 13.285 17.75 12 17.75C10.715 17.75 9.5258 17.3233 8.55339 16.6025C8.22062 16.3559 8.15082 15.8862 8.39747 15.5534Z"
-                      fill="#1C274C"
-                    />
-                    <path
-                      d="M15 12C15.5523 12 16 11.3284 16 10.5C16 9.67157 15.5523 9 15 9C14.4477 9 14 9.67157 14 10.5C14 11.3284 14.4477 12 15 12Z"
-                      fill="#1C274C"
-                    />
-                    <path
-                      d="M9 12C9.55228 12 10 11.3284 10 10.5C10 9.67157 9.55228 9 9 9C8.44772 9 8 9.67157 8 10.5C8 11.3284 8.44772 12 9 12Z"
-                      fill="#1C274C"
-                    />
-                  </svg>
                 </label>
               </div>
             </div>
@@ -512,10 +519,10 @@ const onChangePage = (page) => {
             <button
               class="absolute flex justify-center items-center w-12 h-5 transform left-1/2 -translate-x-1/2 rounded-b-md bg-white drop-shadow-md text-center cursor-pointer"
               type="button"
-              @click="isSceneSearchBarActive = !isSceneSearchBarActive"
+              @click="isNoramlSearchBarActive = !isNoramlSearchBarActive"
             >
               <svg
-                v-show="!isSceneSearchBarActive"
+                v-show="!isNoramlSearchBarActive"
                 class="w-5 h-5 fill-main-300 mb-3"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 320 512"
@@ -526,7 +533,7 @@ const onChangePage = (page) => {
               </svg>
 
               <svg
-                v-show="isSceneSearchBarActive"
+                v-show="isNoramlSearchBarActive"
                 class="w-5 h-5 fill-main-300 mt-2"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 320 512"
@@ -539,6 +546,7 @@ const onChangePage = (page) => {
           </div>
         </div>
 
+        <!-- 관광지 목록 -->
         <div
           class="flex flex-col items-center w-96 flex-grow text-sm mt-2"
           :class="pageInfo.items.length > 0 ? '' : 'justify-center text-center'"
@@ -570,6 +578,7 @@ const onChangePage = (page) => {
           </div>
         </div>
 
+        <!-- 페이지네이션 -->
         <VPagenation
           v-if="pageInfo.items.length > 0"
           :pageInfo="pageInfo"
@@ -580,9 +589,9 @@ const onChangePage = (page) => {
 
     <!-- 사이드 바 -->
     <div
-      class="flex flex-col items-center absolute right-0 w-16 h-full pt-5 bg-white border-l border-gray-200"
+      class="flex flex-col items-center absolute right-0 w-16 h-full bg-white border-l border-gray-200"
     >
-      <div class="flex flex-col items-center mb-5 group">
+      <div class="flex flex-col items-center group mb-2">
         <button @click="searchMode = 1">
           <svg
             class="w-7 h-7 mb-1 group-hover:fill-main-300"
@@ -604,7 +613,7 @@ const onChangePage = (page) => {
         </button>
       </div>
 
-      <div class="flex flex-col items-center mb-5 group">
+      <div class="flex flex-col items-center group mb-2">
         <button @click="searchMode = 2">
           <svg
             class="w-7 h-7 mb-1 group-hover:fill-main-300"

@@ -42,11 +42,11 @@
 		where no = #{no}
 	</update>
 
-	<delete id="delete" parameterType="long">
+	<update id="logicalDelete" parameterType="long">
 		update posts
 		set is_deleted = 1
 		where no = #{no}
-	</delete>
+	</update>
 
 	<update id="setThumbnail" parameterType="Map">
 		update posts

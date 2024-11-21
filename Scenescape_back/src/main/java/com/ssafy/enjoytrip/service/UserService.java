@@ -71,7 +71,7 @@ public class UserService {
 	}
 
 	public boolean deleteUser(String id) {
-		return userDao.logicallyDelete(id) != 0;
+		return userDao.logicalDelete(id) != 0;
 	}
 
 	public UserDTO findPassword(String id, String email) {

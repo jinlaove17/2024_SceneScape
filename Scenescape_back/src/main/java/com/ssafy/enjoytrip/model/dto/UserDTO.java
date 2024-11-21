@@ -10,10 +10,6 @@ public class UserDTO {
 		super();
 	}
 
-	public UserDTO() {
-		super();
-	}
-	
 	public UserDTO(String id, String pwd, String nickname, String email) {
 		super();
 		this.id = id;

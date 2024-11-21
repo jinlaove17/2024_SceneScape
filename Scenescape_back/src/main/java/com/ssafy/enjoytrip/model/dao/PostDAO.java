@@ -11,7 +11,7 @@ import com.ssafy.enjoytrip.model.dto.PostDTO;
 public interface PostDAO {
 	int insert(PostDTO post);
 	int update(PostDTO post);
-	int delete(long no);
+	int logicalDelete(long no);
 	PostDTO select(long no);
 	List<PostDTO> selectAll(Map<String, Object> filter);
 	int countAll(Map<String, Object> filter);

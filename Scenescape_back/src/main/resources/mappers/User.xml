@@ -14,7 +14,7 @@
 		where id = #{id}
 	</update>
 
-	<update id="logicallyDelete">
+	<update id="logicalDelete">
 		update users
 		set id = null, nickname = null, is_deleted = 1
 		where id = #{id}

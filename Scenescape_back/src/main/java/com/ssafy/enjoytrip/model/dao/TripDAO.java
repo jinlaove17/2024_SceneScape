@@ -14,7 +14,7 @@ public interface TripDAO {
 	TripDTO selectTrip(int no);
 	int insertTrip(TripDTO trip);
 	int updateTrip(TripDTO trip);
-	int deleteTrip(int no);
+	int logicalDeleteTrip(int no);
 	int insertTripAttraction(TripAttractionDTO tripAttraction);
     int deleteTripAttraction(TripAttractionDTO tripAttraction);
     List<Integer> selectTripAttractions(int tripNo);

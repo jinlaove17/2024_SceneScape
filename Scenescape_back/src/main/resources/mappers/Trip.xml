@@ -53,6 +53,8 @@
 			attractions a ON ta.attraction_no = a.no
 		WHERE
 			t.no = #{tripNo}
+		AND
+			t.is_deleted = 1
 		ORDER BY
 			ta.sequence;
 	</select>
@@ -60,14 +62,16 @@
 
 	<insert id="insertTrip" useGeneratedKeys="true" keyProperty="no"
 		keyColumn="no">
-		INSERT INTO trips (
-		user_id, title, description, start_date,
-		end_date, created, updated
+		INSERT
+		INTO
+			trips (
+			user_id, title, description, start_date,
+			end_date, created, updated
 		) VALUES (
-		#{userId}, #{title},
-		#{description}, #{startDate}, #{endDate},
-		CURRENT_TIMESTAMP,
-		CURRENT_TIMESTAMP
+			#{userId}, #{title},
+			#{description}, #{startDate}, #{endDate},
+			CURRENT_TIMESTAMP,
+			CURRENT_TIMESTAMP
 		)
 	</insert>
 
@@ -83,26 +87,36 @@
 		WHERE
 			no = #{no}
 	</update>
+	
+	<update id="logicalDeleteTrip" parameterType="int">
+		UPDATE
+			trips
+		SET
+			is_deleted = 1
+		WHERE
+			no = #{no}
+	</update>
 
 	<insert id="insertTripAttraction"
 		parameterType="TripAttractionDTO">
-		INSERT INTO
-		trip_attractions (
-		trip_no, attraction_no,
-		sequence
+		INSERT
+		INTO
+			trip_attractions (
+			trip_no, attraction_no,
+			sequence
 		) VALUES (
-		#{tripNo}, #{attractionNo}, #{sequence}
+			#{tripNo}, #{attractionNo}, #{sequence}
 		)
 	</insert>
 
 	<delete id="deleteTripAttraction"
 		parameterType="TripAttractionDTO">
 		DELETE FROM
-		trip_attractions
+			trip_attractions
 		WHERE
-		trip_no = #{tripNo}
+			trip_no = #{tripNo}
 		AND
-		attraction_no = #{attractionNo}
+			attraction_no = #{attractionNo}
 	</delete>
 
 	<select id="selectTripAttractions" resultType="int">
@@ -118,10 +132,12 @@
 
 	<update id="updateTripAttractionSequence"
 		parameterType="TripAttractionDTO">
-		UPDATE trip_attractions
-		SET sequence = #{sequence}
+		UPDATE
+			trip_attractions
+		SET
+			sequence = #{sequence}
 		WHERE
-		trip_no = #{tripNo} AND attraction_no = #{attractionNo}
+			trip_no = #{tripNo} AND attraction_no = #{attractionNo}
 	</update>
 
 	<resultMap id="TripAttractionIdsMap" type="TripDTO">

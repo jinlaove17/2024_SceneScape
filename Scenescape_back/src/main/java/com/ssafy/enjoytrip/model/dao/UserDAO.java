@@ -13,7 +13,7 @@ public interface UserDAO {
 
 	int update(UserDTO user);
 
-	int logicallyDelete(String userId);
+	int logicalDelete(String userId);
 
 	int countById(String userId);
 	

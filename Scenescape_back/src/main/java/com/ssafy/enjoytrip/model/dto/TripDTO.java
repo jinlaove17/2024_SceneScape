@@ -2,24 +2,29 @@ package com.ssafy.enjoytrip.model.dto;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class TripDTO {
-	int no;
-	String userId;
-	String title;
-	String description;
-	LocalDate startDate;
-	LocalDate endDate;
-	Timestamp created;
-	Timestamp updated;
-	Map<String, Object> attractions;
+	private int no;
+	private String userId;
+	private String title;
+	private String description;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private LocalDate startDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private LocalDate endDate;
+	private Timestamp created;
+	private Timestamp updated;
+	private List<Object> attractions;
 	
 	public TripDTO() {
 		super();
 	}
 	
-	public TripDTO(String title, String description, LocalDate startDate, LocalDate endDate) {
+	public TripDTO(String userId, String title, String description, LocalDate startDate, LocalDate endDate) {
+		this.userId = userId;
 		this.title = title;
 		this.description = description;
 		this.startDate = startDate;
@@ -27,6 +32,24 @@ public class TripDTO {
 	}
 	
 	public TripDTO(String title, String description, LocalDate startDate, LocalDate endDate, Timestamp created, Timestamp updated) {
+		this.title = title;
+		this.description = description;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.created = created;
+		this.updated = updated;
+	}
+	
+	public TripDTO(String title, String description, LocalDate startDate, LocalDate endDate, List<Object> attractions) {
+		this.title = title;
+		this.description = description;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.attractions = attractions;
+	}
+	
+	public TripDTO(String userId, String title, String description, LocalDate startDate, LocalDate endDate, Timestamp created, Timestamp updated) {
+		this.userId = userId;
 		this.title = title;
 		this.description = description;
 		this.startDate = startDate;
@@ -98,4 +121,13 @@ public class TripDTO {
 	public void setUpdated(Timestamp updated) {
 		this.updated = updated;
 	}
+
+	public List<Object> getAttractions() {
+		return attractions;
+	}
+
+	public void setAttractions(List<Object> attractions) {
+		this.attractions = attractions;
+	}
+	
 }

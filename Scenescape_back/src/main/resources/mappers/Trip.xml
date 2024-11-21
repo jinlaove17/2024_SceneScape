@@ -2,51 +2,167 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ssafy.enjoytrip.mode.dao.TripDAO">
-    <!-- 사용자의 여행 일정과 포함된 관광지를 가져오는 쿼리 -->
-    <select id="selectAll" resultMap="tripAttractionsResultMap">
-        SELECT 
-            t.no AS tripNo,
-            t.user_id AS userId,
-            t.title AS title,
-            t.description AS description,
-            t.start_date AS startDate,
-            t.end_date AS endDate,
-            t.created AS created,
-            t.updated AS updated,
-            a.no AS attractionNo,
-            a.title AS attractionTitle,
-            a.address AS attractionAddress,
-            a.latitude AS attractionLatitude,
-            a.longitude AS attractionLongitude
-        FROM 
-            trips t
-        LEFT JOIN 
-            trip_attraction ta ON t.no = ta.trip_no
-        LEFT JOIN 
-            attractions a ON ta.attraction_no = a.no
-        WHERE 
-            t.user_id = #{userId}
-        ORDER BY 
-            t.no, ta.sequence;
-    </select>
 
-    <!-- Result Map 정의 -->
-    <resultMap id="tripAttractionsResultMap" type="com.example.dto.TripDTO">
-        <id property="no" column="tripNo"/>
-        <result property="userId" column="userId"/>
-        <result property="title" column="title"/>
-        <result property="description" column="description"/>
-        <result property="startDate" column="startDate" javaType="java.time.LocalDate"/>
-        <result property="endDate" column="endDate" javaType="java.time.LocalDate"/>
-        <result property="created" column="created" javaType="java.sql.Timestamp"/>
-        <result property="updated" column="updated" javaType="java.sql.Timestamp"/>
-        <collection property="attractions" ofType="java.util.HashMap">
-            <result property="no" column="attractionNo" javaType="java.lang.String"/>
-            <result property="title" column="attractionTitle"/>
-            <result property="address" column="attractionAddress"/>
-            <result property="latitude" column="attractionLatitude"/>
-            <result property="longitude" column="attractionLongitude"/>
-        </collection>
-    </resultMap>
+<mapper namespace="com.ssafy.enjoytrip.model.dao.TripDAO">
+
+	<!-- 모든 여행 일정 요청 / 해당 일정에 포함된 관광지의 no 만 포함한 배열 리턴 -->
+	<select id="selectTrips" parameterType="string" resultMap="TripAttractionIdsMap">
+		SELECT
+			t.*, ta.attraction_no
+		FROM
+			trips t
+		LEFT JOIN
+			trip_attractions ta
+		ON
+			t.no = ta.trip_no
+		WHERE
+			t.user_id = #{userId}
+		ORDER BY
+			t.no, ta.sequence;
+	</select>
+
+	<!-- 하나의 여행 일정에 대한 세부 정보 요청 / 포함된 관광지의 모든 정보를 포함한 배열 리턴 -->
+	<select id="selectTrip" resultMap="TripAttractionDetailsMap">
+		SELECT
+			t.no AS trip_no,
+			t.user_id,
+			t.title AS trip_title,
+			t.description,
+			t.start_date,
+			t.end_date,
+			t.created,
+			t.updated,
+			a.no AS attraction_no,
+			a.title AS attraction_title,
+			a.content_type_id,
+			a.area_code,
+			a.si_gun_gu_code,
+			a.scene_title,
+			a.address,
+			a.latitude,
+			a.longitude,
+			a.overview,
+			a.img,
+			a.tel,
+			a.like_count
+		FROM
+			trips t
+		LEFT JOIN
+			trip_attractions ta ON t.no = ta.trip_no
+		LEFT JOIN
+			attractions a ON ta.attraction_no = a.no
+		WHERE
+			t.no = #{tripNo}
+		ORDER BY
+			ta.sequence;
+	</select>
+
+
+	<insert id="insertTrip" useGeneratedKeys="true" keyProperty="no"
+		keyColumn="no">
+		INSERT INTO trips (
+		user_id, title, description, start_date,
+		end_date, created, updated
+		) VALUES (
+		#{userId}, #{title},
+		#{description}, #{startDate}, #{endDate},
+		CURRENT_TIMESTAMP,
+		CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<update id="updateTrip">
+		UPDATE
+			trips
+		SET
+			title = #{title},
+			description = #{description},
+			start_date = #{startDate},
+			end_date = #{endDate},
+			updated = CURRENT_TIMESTAMP
+		WHERE
+			no = #{no}
+	</update>
+
+	<insert id="insertTripAttraction"
+		parameterType="TripAttractionDTO">
+		INSERT INTO
+		trip_attractions (
+		trip_no, attraction_no,
+		sequence
+		) VALUES (
+		#{tripNo}, #{attractionNo}, #{sequence}
+		)
+	</insert>
+
+	<delete id="deleteTripAttraction"
+		parameterType="TripAttractionDTO">
+		DELETE FROM
+		trip_attractions
+		WHERE
+		trip_no = #{tripNo}
+		AND
+		attraction_no = #{attractionNo}
+	</delete>
+
+	<select id="selectTripAttractions" resultType="int">
+		SELECT
+			attraction_no
+		FROM
+			trip_attractions
+		WHERE
+			trip_no = #{tripNo}
+		ORDER BY
+			sequence
+	</select>
+
+	<update id="updateTripAttractionSequence"
+		parameterType="TripAttractionDTO">
+		UPDATE trip_attractions
+		SET sequence = #{sequence}
+		WHERE
+		trip_no = #{tripNo} AND attraction_no = #{attractionNo}
+	</update>
+
+	<resultMap id="TripAttractionIdsMap" type="TripDTO">
+		<id property="no" column="no" />
+		<result property="userId" column="user_id" />
+		<result property="title" column="title" />
+		<result property="description" column="description" />
+		<result property="startDate" column="start_date" />
+		<result property="endDate" column="end_date" />
+		<result property="created" column="created" />
+		<result property="updated" column="updated" />
+		<collection property="attractions"
+			ofType="java.lang.Integer">
+			<result column="attraction_no" />
+		</collection>
+	</resultMap>
+
+	<resultMap id="TripAttractionDetailsMap" type="TripDTO">
+		<id property="no" column="trip_no" />
+		<result property="userId" column="user_id" />
+		<result property="title" column="trip_title" />
+		<result property="description" column="description" />
+		<result property="startDate" column="start_date" />
+		<result property="endDate" column="end_date" />
+		<result property="created" column="created" />
+		<result property="updated" column="updated" />
+		<collection property="attractions" ofType="AttractionDTO">
+			<id property="no" column="attraction_no" />
+			<result property="title" column="attraction_title" />
+			<result property="sceneTitle" column="scene_title" />
+			<result property="contentTypeId" column="content_type_id"/>
+			<result property="areaCode" column="area_code"/>
+			<result property="sigunguCode" column="si_gun_gu_code"/>
+			<result property="address" column="address" />
+			<result property="latitude" column="latitude" />
+			<result property="longitude" column="longitude" />
+			<result property="overview" column="overview" />
+			<result property="img" column="img" />
+			<result property="tel" column="tel" />
+			<result property="likeCount" column="like_count" />
+		</collection>
+	</resultMap>
+
 </mapper>

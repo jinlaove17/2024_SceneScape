@@ -104,10 +104,8 @@ public class TripService {
 
 	    return result;
 	}
-
-
 	
 	public int removeTrip(int tripNo) {
-		return tripDao.delete(tripNo);
+		return tripDao.logicalDeleteTrip(tripNo);
 	}
 }

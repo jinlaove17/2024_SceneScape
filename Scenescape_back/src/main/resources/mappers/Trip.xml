@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.enjoytrip.mode.dao.TripDAO">
+    <!-- 사용자의 여행 일정과 포함된 관광지를 가져오는 쿼리 -->
+    <select id="selectAll" resultMap="tripAttractionsResultMap">
+        SELECT 
+            t.no AS tripNo,
+            t.user_id AS userId,
+            t.title AS title,
+            t.description AS description,
+            t.start_date AS startDate,
+            t.end_date AS endDate,
+            t.created AS created,
+            t.updated AS updated,
+            a.no AS attractionNo,
+            a.title AS attractionTitle,
+            a.address AS attractionAddress,
+            a.latitude AS attractionLatitude,
+            a.longitude AS attractionLongitude
+        FROM 
+            trips t
+        LEFT JOIN 
+            trip_attraction ta ON t.no = ta.trip_no
+        LEFT JOIN 
+            attractions a ON ta.attraction_no = a.no
+        WHERE 
+            t.user_id = #{userId}
+        ORDER BY 
+            t.no, ta.sequence;
+    </select>
+
+    <!-- Result Map 정의 -->
+    <resultMap id="tripAttractionsResultMap" type="com.example.dto.TripDTO">
+        <id property="no" column="tripNo"/>
+        <result property="userId" column="userId"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="startDate" column="startDate" javaType="java.time.LocalDate"/>
+        <result property="endDate" column="endDate" javaType="java.time.LocalDate"/>
+        <result property="created" column="created" javaType="java.sql.Timestamp"/>
+        <result property="updated" column="updated" javaType="java.sql.Timestamp"/>
+        <collection property="attractions" ofType="java.util.HashMap">
+            <result property="no" column="attractionNo" javaType="java.lang.String"/>
+            <result property="title" column="attractionTitle"/>
+            <result property="address" column="attractionAddress"/>
+            <result property="latitude" column="attractionLatitude"/>
+            <result property="longitude" column="attractionLongitude"/>
+        </collection>
+    </resultMap>
+</mapper>

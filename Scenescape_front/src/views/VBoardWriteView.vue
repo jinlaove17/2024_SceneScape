@@ -1,18 +1,23 @@
 <script setup>
-import { onMounted, ref, nextTick } from "vue";
+import { onMounted, ref, nextTick, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import attractionAPI from "@/api/attraction";
 import boardAPI from "@/api/board";
 import { VMarkdownEditor } from "vue3-markdown";
 
 const route = useRoute();
 const router = useRouter();
+const sceneTitleList = ref([]);
+const attractionList = ref([]);
+
 const inputParams = ref({
   postNo: "",
   title: "",
   content: "",
-  category: "",
+  category: "SCENE",
   sceneTitle: "",
   thumbnailUrl: "",
+  attractionNo: "",
 });
 const editorRef = ref(null); // VMarkdownEditor DOM 요소를 참조할 ref
 
@@ -34,7 +39,41 @@ onMounted(() => {
       }
     );
   }
+  attractionAPI.getSceneTitles(
+    ({ data }) => {
+      sceneTitleList.value = data;
+      console.log(sceneTitleList);
+    },
+    () => {
+      console.log("SceneTitles 로드 실패");
+    }
+  );
 });
+
+const getAttractionsBySceneTitle = (sceneTitle) => {
+  attractionAPI.searchByFilter(
+    { sceneTitle: sceneTitle, pageSize: 400 },
+    ({ data }) => {
+      console.log(data);
+      attractionList.value = data.items;
+      console.log(attractionList);
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
+// watch로 SCENE 변경 감지
+watch(
+  () => inputParams.value.sceneTitle,
+  (newSceneTitle) => {
+    if (newSceneTitle) {
+      getAttractionsBySceneTitle(newSceneTitle);
+    } else {
+      attractionList.value = []; // SCENE 선택이 초기화되면 촬영지도 초기화
+    }
+  }
+);
 
 // 이미지 업로드 함수
 const handleImageUpload = async (file) => {
@@ -158,16 +197,41 @@ const onUpdatePost = () => {
             v-model.lazy="inputParams.title"
           />
         </div>
+
         <div class="flex text-center mb-3">
-          <label class="basis-12 mr-3" for="postcategory">카테고리</label>
+          <label class="basis-12 mr-3" for="postscenetitle">SCENE</label>
           <select
             class="border border-b-gray-300"
-            name="postcategory"
-            id="postcategory"
-            v-model="inputParams.category"
+            name="postscenetitle"
+            id="postscenetitle"
+            v-model="inputParams.sceneTitle"
           >
-            <option value="SCENE" selected>씬</option>
-            <option value="NOTICE">공지사항</option>
+            <option value="" disabled selected>--SCENE을 선택해주세요--</option>
+            <option
+              v-for="(scene, index) in sceneTitleList"
+              :key="index"
+              :value="scene.title"
+            >
+              {{ scene.title }}
+            </option>
+          </select>
+        </div>
+        <div class="flex text-center mb-3">
+          <label class="basis-12 mr-3" for="postattraction">촬영지</label>
+          <select
+            class="border border-b-gray-300"
+            name="postattraction"
+            id="postattraction"
+            v-model="inputParams.attractionNo"
+          >
+            <option value="" disabled selected>--SCENE을 선택해주세요--</option>
+            <option
+              v-for="(attraction, index) in attractionList"
+              :key="index"
+              :value="attraction.no"
+            >
+              {{ attraction.title }}
+            </option>
           </select>
         </div>
         <VMarkdownEditor v-model="inputParams.content" ref="editorRef" />

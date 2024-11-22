@@ -16,10 +16,24 @@
 	</delete>
 	
 	<select id="select" parameterType="AttractionLikeDTO">
-    select exists (
-    	select 1
+	    select exists (
+	    	select 1
+	    	from attractionlikes
+	    	where user_id = #{userId} and attraction_no = #{attractionNo}
+	    );
+    </select>
+    
+    <select id="getLikeAttractionNoList" parameterType="map">
+    	select attraction_no
     	from attractionlikes
-    	where user_id = #{userId} and attraction_no = #{attractionNo}
-    );
+    	
+    	<where>
+    		user_id = #{userId}
+    		
+    		<foreach item="item" index="index" collection="attractionNoList"
+    				 open="and attraction_no in (" separator="," close=")">
+          		#{item}
+    		</foreach>
+  		</where>
 	</select>
 </mapper>

@@ -1,5 +1,8 @@
 package com.ssafy.enjoytrip.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +30,10 @@ public class AttractionLikeService {
 		
 		// 이미 있다면, 좋아요를 취소한 것이므로 삭제한다.
 		return -attractionLikeDAO.delete(attractionLikeDTO);
+	}
+	
+
+	public List<Integer> getLikeAttractionNoList(Map<String, Object> filter) {
+		return attractionLikeDAO.getLikeAttractionNoList(filter);
 	}
 }

@@ -44,7 +44,8 @@ public class AttractionController {
 			@RequestParam(value = "sceneTitle", required = false) String sceneTitle,
 			@RequestParam(value = "sortType", required = false) String sortType,
 			@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "pageSize", defaultValue = "6") int pageSize) {
+			@RequestParam(value = "pageSize", defaultValue = "6") int pageSize,
+			HttpSession session) {
 		Map<String, Object> filter = new HashMap<>();
 		filter.put("searchTerm", searchTerm);
 		filter.put("area", area);
@@ -66,6 +67,23 @@ public class AttractionController {
 		response.put("totalCount", totalCount); // 전체 결과 수
 		response.put("page", page);
 		response.put("items", attractions);
+		
+		// 로그인 된 상태라면 좋아요 관련 데이터를 가져온다.
+		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+
+		if (userInfo != null) {
+			int[] attractionNoList = new int[attractions.size()];
+			
+			for (int i = 0; i < attractions.size(); ++i) {
+				attractionNoList[i] = attractions.get(i).getNo();
+			}
+			
+			filter.put("userId", userInfo.getId());
+			filter.put("attractionNoList", attractionNoList);
+			
+			List<Integer> likeAttractionNoList = attractionLikeService.getLikeAttractionNoList(filter);
+			response.put("likes", likeAttractionNoList);
+		}
 
 		return ResponseEntity.ok(response);
 	}

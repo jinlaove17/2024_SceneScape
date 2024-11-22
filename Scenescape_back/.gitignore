@@ -39,4 +39,3 @@ build/
 target/
 bin/
 .DS_Store
-**/media

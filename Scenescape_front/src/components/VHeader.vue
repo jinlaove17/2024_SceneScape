@@ -28,9 +28,11 @@ const onLogout = () => {
   >
     <div class="text-2xl flex-grow-0 me-5">
       <RouterLink :to="{ name: 'main' }" class="select-none">
-        <span class="text-main-300">S</span>CENE
-        <br />
-        <span class="text-main-300">S</span>CAPE
+        <div>
+          <span class="text-main-300">S</span>CENE
+          <br />
+          <span class="text-main-300">S</span>CAPE
+        </div>
       </RouterLink>
     </div>
 

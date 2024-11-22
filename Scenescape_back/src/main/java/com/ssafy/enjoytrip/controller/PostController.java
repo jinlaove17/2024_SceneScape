@@ -80,6 +80,7 @@ public class PostController {
 		return ResponseEntity.ok(response);
 	}
 
+	// searchType : title, userId, sceneTitle
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> getPostsByFilter(
 			@RequestParam(value = "searchType", required = false) String searchType,

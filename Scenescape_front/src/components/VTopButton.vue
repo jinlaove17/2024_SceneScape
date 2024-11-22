@@ -2,7 +2,7 @@
 
 <template>
   <a
-    class="flex justify-center items-center fixed w-9 h-9 bottom-8 right-12 bg-white border-4 border-main-200 rounded-full"
+    class="flex justify-center items-center fixed w-9 h-9 bottom-8 left-12 bg-white border-4 border-main-200 rounded-full"
     href="#"
   >
     <svg

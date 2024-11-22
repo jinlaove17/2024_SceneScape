@@ -166,8 +166,8 @@ const onUpdatePost = () => {
             id="postcategory"
             v-model="inputParams.category"
           >
-            <option value="NOTICE" selected>공지사항</option>
-            <option value="SCENE">씬</option>
+            <option value="SCENE" selected>씬</option>
+            <option value="NOTICE">공지사항</option>
           </select>
         </div>
         <VMarkdownEditor v-model="inputParams.content" ref="editorRef" />

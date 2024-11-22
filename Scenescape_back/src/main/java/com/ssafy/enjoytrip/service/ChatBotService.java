@@ -37,6 +37,8 @@ public class ChatBotService {
                 .append("좋아요 수: ").append(attraction.getLikeCount()).append("\n")
                 .append("\n");
         }
+        
+        System.out.println(userPrompt.toString());
 
         List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage("system", systemMessageContent));

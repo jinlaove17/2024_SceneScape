@@ -35,7 +35,7 @@ public class ChatBotController {
 		List<AttractionDTO> attractions = attractionService.searchAll(filter);
 		
 		String recommend = chatBotService.getRecommendation(sceneTitle, region, attractions);
-		
+		System.out.println(recommend);
 		response.put("recommend", recommend);
 		return ResponseEntity.ok(response);
 	}

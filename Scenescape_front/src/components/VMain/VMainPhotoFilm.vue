@@ -87,7 +87,7 @@ function animate() {
   </div>
 
   <div
-    class="relative w-full h-52 overflow-hidden"
+    class="relative w-[120rem] h-52 mx-auto overflow-hidden bg-red-500"
     @mouseenter="stopAutoplay"
     @mouseleave="startAutoplay"
   >

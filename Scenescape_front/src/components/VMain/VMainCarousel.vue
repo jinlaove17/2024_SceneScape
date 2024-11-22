@@ -41,7 +41,9 @@ const isLastContent = computed(() => {
 </script>
 
 <template>
-  <div class="relative h-[30rem] mx-auto mb-12 overflow-hidden select-none">
+  <div
+    class="relative w-full h-[30rem] mx-auto mb-12 overflow-hidden select-none"
+  >
     <div
       class="h-full flex transition-transform duration-1000"
       :style="{ transform: `translateX(-${100 * curIndex}%)` }"

@@ -20,12 +20,12 @@ const closeChatBot = () => {
 </script>
 
 <template>
-  <div class="w-[120rem] min-h-[67.5rem] mx-auto flex flex-col relative">
+  <div class="min-h-screen flex flex-col overflow-hidden">
     <header>
       <VHeader />
     </header>
 
-    <main class="flex-grow">
+    <main class="w-screen flex-grow">
       <RouterView />
     </main>
 
@@ -48,8 +48,8 @@ const closeChatBot = () => {
         v-if="isChatBotOpen"
         class="fixed bottom-20 left-5 z-50 w-96 h-3/5 bg-white border rounded-lg shadow-lg overflow-hidden"
       >
-        <VChatBot @close="closeChatBot" />
         <!-- 닫기 버튼 (컴포넌트 내부에서 제공) -->
+        <VChatBot @close="closeChatBot" />
       </div>
     </transition>
   </div>

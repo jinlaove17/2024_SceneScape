@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +37,7 @@ public class AttractionController {
 
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> getAttractions(
+			@RequestParam(value = "searchTerm", required = false) String searchTerm,
 			@RequestParam(value = "area", required = false) String area,
 			@RequestParam(value = "subArea", required = false) String subArea,
 			@RequestParam(value = "contents", required = false) String[] contents,
@@ -44,6 +46,7 @@ public class AttractionController {
 			@RequestParam(value = "page", defaultValue = "1") int page,
 			@RequestParam(value = "pageSize", defaultValue = "6") int pageSize) {
 		Map<String, Object> filter = new HashMap<>();
+		filter.put("searchTerm", searchTerm);
 		filter.put("area", area);
 		filter.put("subArea", subArea);
 		filter.put("contents", contents);
@@ -82,6 +85,7 @@ public class AttractionController {
 		return ResponseEntity.ok(response);
 	}
 
+	@Transactional
 	@PostMapping("/like/{attractionNo}")
 	public ResponseEntity<Integer> updateLikeCount(@PathVariable("attractionNo") int attractionNo, HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");

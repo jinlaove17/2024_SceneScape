@@ -221,6 +221,7 @@ onMounted(() => {
 });
 
 const onReset = () => {
+  searchTerm.value = "";
   selectedScene.value.title = "";
   selectedArea.value.areaCode = 0;
   selectedArea.value.areaName = "";
@@ -254,6 +255,7 @@ const onSearchByScene = () => {
 const onSearchByNormal = () => {
   attractionAPI.searchByFilter(
     {
+      searchTerm: searchTerm.value || null,
       area: selectedArea.value.areaCode || null,
       subArea: selectedSubArea.value.subAreaCode || null,
       contents: contents.value,
@@ -299,10 +301,11 @@ const onChangePage = (page) => {
     case 2: // 일반 검색
       attractionAPI.searchByFilter(
         {
-          page,
+          searchTerm: searchTerm.value || null,
           area: selectedArea.value.areaCode || null,
           subArea: selectedSubArea.value.subAreaCode || null,
           contents: contents.value,
+          page,
         },
         ({ data }) => {
           pageInfo.value = data;

@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import boardAPI from "@/api/board";
-import commentAPI from "@/api/comment"
+import commentAPI from "@/api/comment";
 import { VMarkdownView } from "vue3-markdown";
 import VCommentItem from "@/components/VPost/VCommentItem.vue";
 
@@ -60,14 +60,13 @@ const onDeletePost = () => {
 const pushLikeButton = (value) => {
   const userId = useUserStore().orgUserInfo.id;
 
-  if(!userId) {
+  if (!userId) {
     alert("로그인이 필요합니다.");
     return;
   }
 
   boardAPI.likePost(
     post.value.no,
-    userId,
     value,
     () => {
       if (value == 1) {
@@ -333,7 +332,8 @@ const commentTree = computed(() => {
               v-for="comment in commentTree"
               :key="comment.no"
               :comment="comment"
-              @add-reply="(data) => submitComment(data)"/>
+              @add-reply="(data) => submitComment(data)"
+            />
           </ul>
         </div>
       </div>

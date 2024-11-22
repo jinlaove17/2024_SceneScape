@@ -241,12 +241,24 @@ public class PostController {
 	}
 	
 	@PutMapping("/like/{no}")
-	public ResponseEntity<Integer> updateLikeCount(@PathVariable("no") int postNo, @RequestBody Map<String, Object> payload) {
-		String userId = (String) payload.get("userId");
-		int likeStatus = (int) payload.get("likeStatus");
-
-		postLikeService.like(new PostLikeDTO(userId, postNo, likeStatus));
+	public ResponseEntity<Map<String, Object>> updateLikeCount(@PathVariable("no") int postNo, @RequestBody Map<String, Object> payload, HttpSession session) {
+		Map<String, Object> response = new HashMap<>();
+		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+		// 세션 유효성 확인
+		if (userInfo == null) {
+			response.put("errorMsg", "로그인 정보가 없습니다.");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+		}
 		
-		return ResponseEntity.ok(postService.updateLikeCount(postNo, likeStatus));
+		int likeStatus = (int) payload.get("likeStatus");
+		postLikeService.like(new PostLikeDTO(userInfo.getId(), postNo, likeStatus));
+		
+		int result = postService.updateLikeCount(postNo, likeStatus); 
+		
+		if (result == 1) {
+			return ResponseEntity.ok(null);
+		}
+		
+		return ResponseEntity.badRequest().build();
 	}
 }

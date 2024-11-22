@@ -38,7 +38,7 @@
 	    <where>
 	        <trim prefixOverrides="AND">
 	        	<!-- searchTerm이 존재할 경우 조건 추가 -->
-	        	<if test="searchTerm != null and area != ''">
+	        	<if test="searchTerm != null and searchTerm != ''">
 	        		AND title like CONCAT("%", #{searchTerm}, "%")
 	        	</if>
 	        
@@ -91,10 +91,11 @@
 		from attractions
 		<where>
 			<!-- 조건이 있을 경우 추가 -->
+
 			<if test="area != null and area != ''">
 				area_code = #{area}
 			</if>
-			<if test="subArea != null and subArea != ''">
+			<if test="subuArea != null and subArea != ''">
 				<if test="area != null and area != ''">
 					AND
 				</if>

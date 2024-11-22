@@ -1,6 +1,9 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import imageLoader from "@/utils/imageLoader";
+
+const FILM_FRAME_SIZE = 320;
+const MAX_WIDTH = 1920;
 
 const films = ref([
   {
@@ -41,43 +44,43 @@ const films = ref([
 ]);
 
 let isHovered = ref(false);
-const startAutoplay = () => {
+const startAnimation = () => {
   isHovered.value = false;
-  animate();
+  animateFlims();
 };
-const stopAutoplay = () => {
+const stopAnimation = () => {
   isHovered.value = true;
 };
 
-onMounted(() => {
-  for (let i = 1; i < films.value.length; ++i) {
-    films.value[i].shift = 320 * i;
-  }
-
-  animate();
-});
-
-function animate() {
+const animateFlims = () => {
   if (isHovered.value) {
     return;
   }
 
-  const speed = 1;
+  const speed = 0.5;
 
-  for (let f of films.value) {
-    f.shift -= speed;
+  for (let film of films.value) {
+    film.shift -= speed;
 
-    if (f.shift <= -320) {
-      f.shift = 1920;
+    if (film.shift <= -FILM_FRAME_SIZE) {
+      film.shift = MAX_WIDTH;
     }
   }
 
-  requestAnimationFrame(animate);
-}
+  requestAnimationFrame(animateFlims);
+};
+
+onMounted(() => {
+  for (let i = 1; i < films.value.length; ++i) {
+    films.value[i].shift = FILM_FRAME_SIZE * i;
+  }
+
+  animateFlims();
+});
 </script>
 
 <template>
-  <div class="w-[80rem] mx-auto mb-5 overflow-hidden">
+  <div class="w-[80rem] mb-5 overflow-hidden">
     <h1 class="text-3xl">
       📸 이곳의 <span class="text-blue-500">주인공</span>은 바로 나!
     </h1>
@@ -87,9 +90,9 @@ function animate() {
   </div>
 
   <div
-    class="relative w-[120rem] h-52 mx-auto overflow-hidden bg-red-500"
-    @mouseenter="stopAutoplay"
-    @mouseleave="startAutoplay"
+    class="relative w-full h-52 bg-black overflow-hidden"
+    @mouseenter="stopAnimation"
+    @mouseleave="startAnimation"
   >
     <img
       v-for="film in films"

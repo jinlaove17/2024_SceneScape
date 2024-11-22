@@ -6,7 +6,7 @@ import VTopButton from "@/components/VTopButton.vue";
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-col items-center">
     <VMainCarousel />
     <VMainHotPlace />
     <VMainPhotoFilm />

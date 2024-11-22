@@ -20,12 +20,12 @@ const closeChatBot = () => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col overflow-hidden">
+  <div class="min-w-screen max-w-[120rem] min-h-screen mx-auto flex flex-col">
     <header>
       <VHeader />
     </header>
 
-    <main class="w-screen flex-grow">
+    <main class="flex-grow">
       <RouterView />
     </main>
 

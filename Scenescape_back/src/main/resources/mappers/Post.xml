@@ -8,14 +8,15 @@
 		parameterType="PostDTO">
 		insert into posts (title, content, user_id, view_count,
 		like_count,
-		dislike_count, category, thumbnail_url, scene_title)
+		dislike_count, category, thumbnail_url, scene_title, attraction_no, attraction_title)
 		values
 		(#{title},
 		#{content}, #{userId}, 0, 0, 0, #{category},
 		#{thumbnailUrl},
-		#{sceneTitle})
+		#{sceneTitle},
+		#{attractionNo},
+		#{attractionTitle})
 	</insert>
-
 
 	<update id="update" parameterType="PostDTO">
 		update posts
@@ -37,6 +38,12 @@
 			</if>
 			<if test="sceneTitle != null">
 				scene_title = #{sceneTitle},
+			</if>
+			<if test="attractionNo != null">
+				attraction_no = #{attractionNo},
+			</if>
+			<if test="attractionTitle != null">
+				attraction_title = #{attractionTitle},
 			</if>
 		</set>
 		where no = #{no}
@@ -109,6 +116,9 @@
 					<when test="searchType == 'sceneTitle'">
 						scene_title LIKE CONCAT('%', #{searchKeyword}, '%')
 					</when>
+					<when test="searchType == 'attractionTitle'">
+						attraction_title LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
 				</choose>
 			</if>
 		</where>
@@ -159,6 +169,9 @@
 					<when test="searchType == 'sceneTitle'">
 						scene_title LIKE CONCAT('%', #{searchKeyword}, '%')
 					</when>
+					<when test="searchType == 'attractionTitle'">
+						attraction_title LIKE CONCAT('%', #{searchKeyword}, '%')
+					</when>
 				</choose>
 			</if>
 		</where>
@@ -177,6 +190,8 @@
 		<result property="category" column="category" />
 		<result property="thumbnailUrl" column="thumbnail_url" />
 		<result property="sceneTitle" column="scene_title" />
+		<result property="attractionNo" column="attraction_no" />
+		<result property="attractionTitle" column="attraction_title" />
 	</resultMap>
 
 </mapper>

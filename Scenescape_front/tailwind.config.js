@@ -25,6 +25,9 @@ export default {
             width: "0%",
             visibility: "hidden",
           },
+          "80%": {
+            width: "100%",
+          },
           "100%": {
             width: "100%",
           },

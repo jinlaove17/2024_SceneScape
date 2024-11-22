@@ -1,41 +1,79 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import imageLoader from "@/utils/imageLoader";
 
 const films = ref([
   {
     id: 1,
     shift: 0,
-    img: "https://via.placeholder.com/800x400?text=Image+1",
+    img: imageLoader.getImageUrl("Guardian.jpg"),
   },
   {
     id: 2,
     shift: 0,
-    img: "https://via.placeholder.com/800x400?text=Image+2",
+    img: imageLoader.getImageUrl("Sample/SamplePhoto_1.jfif"),
   },
   {
     id: 3,
     shift: 0,
-    img: "https://via.placeholder.com/800x400?text=Image+3",
+    img: imageLoader.getImageUrl("Sample/SamplePhoto_2.jpeg"),
   },
   {
     id: 4,
     shift: 0,
-    img: "https://via.placeholder.com/800x400?text=Image+4",
+    img: imageLoader.getImageUrl("Sample/SamplePhoto_3.jfif"),
   },
   {
     id: 5,
     shift: 0,
-    img: "https://via.placeholder.com/800x400?text=Image+1",
+    img: imageLoader.getImageUrl("Sample/SamplePhoto_4.jpg"),
   },
   {
     id: 6,
     shift: 0,
-    img: "https://via.placeholder.com/800x400?text=Image+2",
+    img: imageLoader.getImageUrl("Sample/SamplePhoto_5.jfif"),
+  },
+  {
+    id: 7,
+    shift: 0,
+    img: imageLoader.getImageUrl("Sample/SamplePhoto_6.jpg"),
   },
 ]);
 
-const startAutoplay = () => {};
-const stopAutoplay = () => {};
+let isHovered = ref(false);
+const startAutoplay = () => {
+  isHovered.value = false;
+  animate();
+};
+const stopAutoplay = () => {
+  isHovered.value = true;
+};
+
+onMounted(() => {
+  for (let i = 1; i < films.value.length; ++i) {
+    films.value[i].shift = 320 * i;
+  }
+
+  animate();
+});
+
+function animate() {
+  if (isHovered.value) {
+    return;
+  }
+
+  const speed = 1;
+
+  for (let f of films.value) {
+    f.shift -= speed;
+
+    if (f.shift <= -320) {
+      f.shift = 1920;
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
 </script>
 
 <template>
@@ -49,30 +87,28 @@ const stopAutoplay = () => {};
   </div>
 
   <div
-    class="flex overflow-hidden"
+    class="relative w-full h-52 overflow-hidden"
     @mouseenter="stopAutoplay"
     @mouseleave="startAutoplay"
   >
     <img
       v-for="film in films"
       :key="film.id"
-      class="w-80 object-center"
-      :style="{ transform: `translateX(-${film.shift}px)` }"
+      class="absolute w-80 h-full object-cover"
+      :style="{
+        transform: `translateX(${film.shift}px)`,
+      }"
       :src="film.img"
       alt=""
     />
-  </div>
-  <div
-    class="flex overflow-hidden"
-    @mouseenter="stopAutoplay"
-    @mouseleave="startAutoplay"
-  >
     <img
       v-for="film in films"
       :key="film.id"
-      class="w-80 object-center"
-      :style="{ transform: `translateX(-${film.shift}px)` }"
-      :src="film.img"
+      class="absolute w-80 h-full object-center"
+      :style="{
+        transform: `translateX(${film.shift}px)`,
+      }"
+      src="@/assets/img/FlimFrame.png"
       alt=""
     />
   </div>

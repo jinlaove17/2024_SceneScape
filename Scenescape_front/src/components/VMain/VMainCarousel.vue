@@ -1,9 +1,6 @@
 <script setup>
 import { ref, computed } from "vue";
-
-const getImageUrl = (fileName) => {
-  return new URL(`/src/assets/img/${fileName}`, import.meta.url).href;
-};
+import imageLoader from "@/utils/imageLoader";
 
 const carouselContents = ref([
   {
@@ -86,11 +83,11 @@ const isLastContent = computed(() => {
         class="relative min-w-full overflow-hidden"
       >
         <img
-          :src="getImageUrl(content.img)"
+          :src="imageLoader.getImageUrl(content.img)"
           class="w-full h-full object-cover blur-md animate-zoom"
         />
         <img
-          :src="getImageUrl(content.img)"
+          :src="imageLoader.getImageUrl(content.img)"
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 min-w-[45rem] max-w-[45rem] mask-radial-opacity"
         />
         <div class="absolute left-32 top-24">

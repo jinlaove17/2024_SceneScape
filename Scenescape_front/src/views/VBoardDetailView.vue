@@ -74,9 +74,7 @@ const pushLikeButton = (value) => {
       }
       likeStatus.value = value;
     },
-    (error) => {
-      return;
-    }
+    () => {}
   );
 };
 

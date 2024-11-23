@@ -20,7 +20,9 @@ public class PostLikeService {
 		return postLike.isLike()?1:-1;
 	}
 	
-	public Integer getLikeStatus(PostLikeDTO postLike) {
-		return postLikeDao.select(postLike);
+	public int getLikeStatus(PostLikeDTO postLikeDTO) {
+	    // 데이터베이스 조회 결과가 null이면 기본값 0 반환
+	    Integer status = postLikeDao.select(postLikeDTO);
+	    return (status != null) ? status : 0;
 	}
 }

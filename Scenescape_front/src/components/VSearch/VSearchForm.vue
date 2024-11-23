@@ -20,7 +20,7 @@ onMounted(() => {
 
   areaAPI.getAreas(
     ({ data }) => {
-      data.areas.forEach((item) => {
+      data.forEach((item) => {
         const area = {
           areaCode: item.areaCode,
           areaName: item.areaName,

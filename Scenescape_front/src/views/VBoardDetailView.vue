@@ -90,7 +90,7 @@ const submitComment = ({ content, parentNo }) => {
   commentAPI.createComment(
     { postNo: post.value.no, userId, content: content, parentNo },
     ({ data }) => {
-      comments.value.push(data.comment); // 새 댓글(또는 대댓글) 추가
+      comments.value.push(data); // 새 댓글(또는 대댓글) 추가
       console.log("createComment: ");
       console.log(data);
       console.log(comments);

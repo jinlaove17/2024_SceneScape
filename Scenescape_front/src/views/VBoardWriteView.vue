@@ -95,8 +95,8 @@ const handleImageUpload = async (file) => {
     // 임시 게시글 번호가 없으면 서버에서 생성
     if (inputParams.value.postNo == "") {
       const tempPostResponse = await boardAPI.createTempPost();
-      inputParams.value.postNo = tempPostResponse.data.postNo;
-      console.log("임시 게시글 번호 생성: ", inputParams.value.postNo);
+      inputParams.value.postNo = tempPostResponse.data;
+      console.log("임시 게시글 번호 생성: ", inputParams.value);
     }
 
     // 이미지 업로드
@@ -105,7 +105,7 @@ const handleImageUpload = async (file) => {
     formData.append("postNo", inputParams.value.postNo);
 
     const response = await boardAPI.uploadImage(formData);
-    const imageUrl = response.data.url;
+    const imageUrl = response.data;
 
     console.log("이미지 업로드 성공: ", imageUrl);
 

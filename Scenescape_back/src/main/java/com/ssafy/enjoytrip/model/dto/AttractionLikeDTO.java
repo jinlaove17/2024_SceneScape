@@ -1,9 +1,18 @@
 package com.ssafy.enjoytrip.model.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "관광지 좋아요 정보를 담는 객체")
 public class AttractionLikeDTO {
-	private int no;
-	private String userId;
-	private int attractionNo;
+
+    @Schema(description = "좋아요 ID", example = "1")
+    private int no;
+
+    @Schema(description = "사용자 ID", example = "user123")
+    private String userId;
+
+    @Schema(description = "관광지 번호", example = "1001")
+    private int attractionNo;
 	
 	public AttractionLikeDTO(int no, String userId, int attractionNo) {
 		super();

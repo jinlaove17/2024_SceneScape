@@ -4,14 +4,14 @@ public class ImageDTO {
 	private int no;
 	private long postNo;
 	private String url;
-	private MediaType mediaType;
+	private String mediaType;
 	private String altText;
 	
 	public ImageDTO() {
 		super();
 	}
 
-	public ImageDTO(long postNo, String url, MediaType mediaType, String altText) {
+	public ImageDTO(long postNo, String url, String mediaType, String altText) {
 		super();
 		this.postNo = postNo;
 		this.url = url;
@@ -19,7 +19,7 @@ public class ImageDTO {
 		this.altText = altText;
 	}
 
-	public ImageDTO(int no, long postNo, String url, MediaType mediaType, String altText) {
+	public ImageDTO(int no, long postNo, String url, String mediaType, String altText) {
 		super();
 		this.no = no;
 		this.postNo = postNo;
@@ -52,11 +52,11 @@ public class ImageDTO {
 		this.url = url;
 	}
 
-	public MediaType getMediaType() {
+	public String getMediaType() {
 		return mediaType;
 	}
 
-	public void setMediaType(MediaType mediaType) {
+	public void setMediaType(String mediaType) {
 		this.mediaType = mediaType;
 	}
 

@@ -2,20 +2,51 @@ package com.ssafy.enjoytrip.model.dto;
 
 import java.sql.Timestamp;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "게시글 정보를 담는 DTO")
 public class PostDTO {
-    private long no;
+
+    @Schema(description = "게시글 번호", example = "1")
+    private int no;
+
+    @Schema(description = "게시글 제목", example = "서울의 멋진 풍경")
     private String title;
+
+    @Schema(description = "게시글 내용", example = "서울의 멋진 풍경을 소개합니다.")
     private String content;
+
+    @Schema(description = "작성자 ID", example = "user123")
     private String userId;
+
+    @Schema(description = "조회수", example = "100")
     private int viewCount;
+
+    @Schema(description = "좋아요 수", example = "50")
     private int likeCount;
+
+    @Schema(description = "싫어요 수", example = "2")
     private int dislikeCount;
+
+    @Schema(description = "작성 시간", example = "2024-11-23T12:34:56.789+09:00")
     private Timestamp created;
+
+    @Schema(description = "수정 시간", example = "2024-11-24T15:12:34.567+09:00")
     private Timestamp updated;
+
+    @Schema(description = "썸네일 URL", example = "https://example.com/image.jpg")
     private String thumbnailUrl;
+
+    @Schema(description = "게시글 카테고리", example = "SCENE")
     private String category;
+
+    @Schema(description = "관련 드라마/영화 제목", example = "도깨비")
     private String sceneTitle;
+
+    @Schema(description = "관련 관광지 번호", example = "123")
     private Integer attractionNo;
+
+    @Schema(description = "관련 관광지 제목", example = "남산타워")
     private String attractionTitle;
 
     public PostDTO() {
@@ -31,7 +62,7 @@ public class PostDTO {
 	}
 	
 
-	public PostDTO(long no, String title, String content, String thumbnailUrl, String sceneTitle, Integer attractionNo, String attractionTitle) {
+	public PostDTO(int no, String title, String content, String thumbnailUrl, String sceneTitle, Integer attractionNo, String attractionTitle) {
 		super();
 		this.no = no;
 		this.title = title;
@@ -42,11 +73,11 @@ public class PostDTO {
 		this.attractionTitle = attractionTitle;
 	}
 
-	public long getNo() {
+	public int getNo() {
 		return no;
 	}
 
-	public void setNo(long no) {
+	public void setNo(int no) {
 		this.no = no;
 	}
 

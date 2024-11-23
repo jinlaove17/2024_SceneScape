@@ -31,7 +31,7 @@ public class PostService {
 		return posts;
 	}
 	
-	public long createPost(PostDTO post) {
+	public int createPost(PostDTO post) {
 		postDao.insert(post);
 		return post.getNo();
 	}

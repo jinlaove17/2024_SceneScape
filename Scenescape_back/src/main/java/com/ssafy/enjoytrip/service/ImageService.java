@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.enjoytrip.model.dao.ImageDAO;
 import com.ssafy.enjoytrip.model.dto.ImageDTO;
-import com.ssafy.enjoytrip.model.dto.MediaType;
 
 @Service
 public class ImageService {
@@ -59,7 +58,7 @@ public class ImageService {
         ImageDTO imageDTO = new ImageDTO();
         imageDTO.setPostNo(postNo);
         imageDTO.setUrl(url);
-        imageDTO.setMediaType(MediaType.IMAGE);
+        imageDTO.setMediaType("IMAGE");
 
         imageDao.insert(imageDTO); // 데이터베이스에 이미지 정보 저장
 

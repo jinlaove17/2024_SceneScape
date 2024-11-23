@@ -2,14 +2,32 @@ package com.ssafy.enjoytrip.model.dto;
 
 import java.sql.Timestamp;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+
+@Schema(description = "댓글 정보를 담는 객체")
 public class CommentDTO {
-	private int no;
-	private int postNo;
-	private String userId;
-	private String content;
-	private Integer parentNo;
-	private Timestamp created;
-	private Timestamp updated;
+
+    @Schema(description = "댓글 번호", example = "1")
+    private int no;
+
+    @Schema(description = "댓글 내용", example = "이곳은 정말 멋진 장소입니다.")
+    private String content;
+
+    @Schema(description = "작성자 ID", example = "user123")
+    private String userId;
+
+    @Schema(description = "게시글 번호", example = "100")
+    private int postNo;
+
+    @Schema(description = "상위 댓글 번호", example = "0")
+    private Integer parentNo;
+
+    @Schema(description = "생성 시간", example = "2024-11-23T12:34:56.789+09:00")
+    private Timestamp created;
+
+    @Schema(description = "수정 시간", example = "2024-11-23T12:34:56.789+09:00")
+    private Timestamp updated;
 	
 	public CommentDTO() {
 		super();

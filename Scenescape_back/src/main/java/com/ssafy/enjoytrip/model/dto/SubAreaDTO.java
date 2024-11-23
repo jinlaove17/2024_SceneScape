@@ -1,7 +1,14 @@
 package com.ssafy.enjoytrip.model.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "하위 지역 정보를 나타내는 DTO")
 public class SubAreaDTO {
+	
+    @Schema(description = "하위 지역 코드", example = "1", required = true)
 	private int subAreaCode;
+    
+    @Schema(description = "하위 지역 이름", example = "강남구", required = true)
 	private String subAreaName;
 
 	public SubAreaDTO() {

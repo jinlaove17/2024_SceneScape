@@ -17,14 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.enjoytrip.model.dto.AttractionDTO;
 import com.ssafy.enjoytrip.model.dto.AttractionLikeDTO;
+import com.ssafy.enjoytrip.model.dto.PagenatedAttractionDTO;
+import com.ssafy.enjoytrip.model.dto.SceneTitleDTO;
 import com.ssafy.enjoytrip.model.dto.UserDTO;
 import com.ssafy.enjoytrip.service.AttractionLikeService;
 import com.ssafy.enjoytrip.service.AttractionService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/attractions")
+@Tag(name = "Attraction API", description = "관광지 관리와 관련된 API")
 public class AttractionController {
 	private final AttractionService attractionService;
 	private final AttractionLikeService attractionLikeService;
@@ -36,16 +44,26 @@ public class AttractionController {
 	}
 
 	@GetMapping
-	public ResponseEntity<Map<String, Object>> getAttractions(
-			@RequestParam(value = "searchTerm", required = false) String searchTerm,
-			@RequestParam(value = "area", required = false) String area,
-			@RequestParam(value = "subArea", required = false) String subArea,
-			@RequestParam(value = "contents", required = false) String[] contents,
-			@RequestParam(value = "sceneTitle", required = false) String sceneTitle,
-			@RequestParam(value = "sortType", required = false) String sortType,
-			@RequestParam(value = "page", defaultValue = "1") int page,
-			@RequestParam(value = "pageSize", defaultValue = "6") int pageSize,
-			HttpSession session) {
+	@Operation(
+	    summary = "관광지 목록 조회",
+	    description = "검색 필터와 페이지네이션 옵션을 사용해 관광지 목록을 조회합니다."
+	)
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "관광지 목록 조회 성공"),
+	    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+	    @ApiResponse(responseCode = "500", description = "서버 오류")
+	})
+	public ResponseEntity<PagenatedAttractionDTO> getAttractions(
+	    @Parameter(description = "검색어", required = false) @RequestParam(value = "searchTerm", required = false) String searchTerm,
+	    @Parameter(description = "지역 이름", required = false) @RequestParam(value = "area", required = false) String area,
+	    @Parameter(description = "하위 지역 이름", required = false) @RequestParam(value = "subArea", required = false) String subArea,
+	    @Parameter(description = "콘텐츠 유형 (복수 선택 가능)", required = false) @RequestParam(value = "contents", required = false) String[] contents,
+	    @Parameter(description = "드라마/영화 이름", required = false) @RequestParam(value = "sceneTitle", required = false) String sceneTitle,
+	    @Parameter(description = "정렬 방식", required = false) @RequestParam(value = "sortType", required = false) String sortType,
+	    @Parameter(description = "페이지 번호", example = "1") @RequestParam(value = "page", defaultValue = "1") int page,
+	    @Parameter(description = "페이지 크기", example = "6") @RequestParam(value = "pageSize", defaultValue = "6") int pageSize,
+	    HttpSession session
+	) {
 		Map<String, Object> filter = new HashMap<>();
 		filter.put("searchTerm", searchTerm);
 		filter.put("area", area);
@@ -63,11 +81,11 @@ public class AttractionController {
 		int totalCount = attractionService.countAll(filter);
 		List<AttractionDTO> attractions = attractionService.searchAll(filter);
 
-		Map<String, Object> response = new HashMap<>();
-		response.put("totalCount", totalCount); // 전체 결과 수
-		response.put("page", page);
-		response.put("items", attractions);
-		
+		PagenatedAttractionDTO result = new PagenatedAttractionDTO();
+		result.setTotalCount(totalCount);
+		result.setPage(pageSize);
+		result.setItems(attractions);
+
 		// 로그인 된 상태라면 좋아요 관련 데이터를 가져온다.
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
 
@@ -82,49 +100,68 @@ public class AttractionController {
 			filter.put("attractionNoList", attractionNoList);
 			
 			List<Integer> likeAttractionNoList = attractionLikeService.getLikeAttractionNoList(filter);
-			response.put("likes", likeAttractionNoList);
+			result.setLikes(likeAttractionNoList);
 		}
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(result);
 	}
 
 	@GetMapping("/titles")
-	public ResponseEntity<List<Map<String, Object>>> getSceneTitles() {
-		List<Map<String, Object>> response = new ArrayList<>();
+	@Operation(
+	    summary = "관광지 제목 목록 조회",
+	    description = "모든 관광지 제목 목록을 조회합니다."
+	)
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "관광지 제목 목록 조회 성공"),
+	    @ApiResponse(responseCode = "500", description = "서버 오류")
+	})
+	public ResponseEntity<List<SceneTitleDTO>> getSceneTitles() {
+		List<SceneTitleDTO> result = new ArrayList<>();
 		List<String> titles = attractionService.getSceneTitles();
 
 		for (String t : titles) {
-			Map<String, Object> title = new HashMap<>();
+			SceneTitleDTO title = new SceneTitleDTO();
 
-			title.put("title", t);
-			response.add(title);
+			title.setTitle(t);
+			result.add(title);
 		}
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(result);
 	}
 
 	@Transactional
 	@PostMapping("/like/{attractionNo}")
-	public ResponseEntity<Integer> updateLikeCount(@PathVariable("attractionNo") int attractionNo, HttpSession session) {
+	@Operation(
+	    summary = "관광지 좋아요 업데이트",
+	    description = "특정 관광지의 좋아요 상태를 업데이트합니다."
+	)
+	@ApiResponses({
+	    @ApiResponse(responseCode = "200", description = "좋아요 업데이트 성공"),
+	    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+	    @ApiResponse(responseCode = "500", description = "서버 오류")
+	})
+	public ResponseEntity<Integer> updateLikeCount(
+	    @Parameter(description = "관광지 번호", required = true) @PathVariable("attractionNo") int attractionNo,
+	    HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
 		if (userInfo == null) {
 			return ResponseEntity.badRequest().build();
 		}
 		
 		String userId = userInfo.getId();
-		int response = attractionLikeService.updateLikeCount(new AttractionLikeDTO(userId, attractionNo));
+		int result = attractionLikeService.updateLikeCount(new AttractionLikeDTO(userId, attractionNo));
 
-		if (response != 0) {
+		if (result != 0) {
 			// 관계 테이블을 만드는데 성공했으면, attraction의 likeCount를 1 증가시킨다
 			// 관계 테이블을 삭제하는데 성공했으면, attraction의 likeCount를 1 감소시킨다.
 			Map<String, Object> filter = new HashMap<>();
 			filter.put("userId", userId);
 			filter.put("attractionNo", attractionNo);
-			filter.put("shift", response);
+			filter.put("shift", result);
 			attractionService.updateLikeCount(filter);
-			return ResponseEntity.ok(response);
+			return ResponseEntity.ok(result);
 		}
 
-		return ResponseEntity.badRequest().body(response);
+		return ResponseEntity.badRequest().build();
 	}
 }

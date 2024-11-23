@@ -2,9 +2,17 @@ package com.ssafy.enjoytrip.model.dto;
 
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "지역 정보를 나타내는 DTO")
 public class AreaDTO {
+	@Schema(description = "지역 코드", example = "1")
 	private int areaCode;
+	
+	@Schema(description = "지역 이름", example = "서울")
 	private String areaName;
+	
+	@Schema(description = "하위 지역 목록")
 	List<SubAreaDTO> subAreas;
 	
 	public AreaDTO() {

@@ -37,14 +37,12 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class PostController {
 	private PostService postService;
-	private ImageService imageService;
 	private CommentService commentService;
 	private PostLikeService postLikeService;
 
 	@Autowired
-	public PostController(PostService postService, ImageService imageService, CommentService commentService, PostLikeService postLikeService) {
+	public PostController(PostService postService, CommentService commentService, PostLikeService postLikeService) {
 		this.postService = postService;
-		this.imageService = imageService;
 		this.commentService = commentService;
 		this.postLikeService = postLikeService;
 	}
@@ -80,7 +78,7 @@ public class PostController {
 		return ResponseEntity.ok(response);
 	}
 
-	// searchType : title, userId, sceneTitle
+	// searchType : title, userId, sceneTitle, attractionTitle
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> getPostsByFilter(
 			@RequestParam(value = "searchType", required = false) String searchType,
@@ -120,7 +118,7 @@ public class PostController {
 		if (userInfo != null) {
 			userId = userInfo.getId();
 		}
-		long postNo = postService.createPost(new PostDTO(null, null, userId, null, null));
+		long postNo = postService.createPost(new PostDTO(null, null, userId, "SCENE"));
 
 		System.out.println("boardController.createTempPost: new PostNo " + postNo);
 
@@ -144,14 +142,16 @@ public class PostController {
 		String category = payload.get("category").toString();
 		String sceneTitle = payload.get("sceneTitle").toString();
 		String thumbnailUrl = payload.get("thumbnailUrl").toString();
+		String attractionNo = payload.get("attractionNo").toString();
+		String attractionTitle = payload.get("attractionTitle").toString();
 
 		System.out.println("boardController.createPost: ");
 		System.out.println("received postNo:" + postNo);
 
 		if(postNo == null || postNo.equals("")) {
-			postNo = String.valueOf(postService.createPost(new PostDTO(title, content, userId, category, sceneTitle)));
+			postNo = String.valueOf(postService.createPost(new PostDTO(title, content, userId, "NOTICE")));
 		} else {
-			postService.updatePost(new PostDTO(Long.parseLong(postNo), title, content, category, sceneTitle, thumbnailUrl));
+			postService.updatePost(new PostDTO(Long.parseLong(postNo), title, content, thumbnailUrl, sceneTitle, Integer.parseInt(attractionNo), attractionTitle));
 		}
 
 		Map<String, Object> response = new HashMap<>();

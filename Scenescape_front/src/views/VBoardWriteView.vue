@@ -9,6 +9,7 @@ const route = useRoute();
 const router = useRouter();
 const sceneTitleList = ref([]);
 const attractionList = ref([]);
+const selectedAttraction = ref(null);
 
 const inputParams = ref({
   postNo: "",
@@ -18,6 +19,7 @@ const inputParams = ref({
   sceneTitle: "",
   thumbnailUrl: "",
   attractionNo: "",
+  attractionTitle: ""
 });
 const editorRef = ref(null); // VMarkdownEditor DOM 요소를 참조할 ref
 
@@ -74,6 +76,18 @@ watch(
     }
   }
 );
+
+// watch를 통해 inputParams 업데이트
+watch(selectedAttraction, (newValue) => {
+  if (newValue) {
+    inputParams.value.attractionNo = newValue.attractionNo;
+    inputParams.value.attractionTitle = newValue.attractionTitle;
+    console.log(inputParams.value.attractionNo, inputParams.value.attractionTitle);
+  } else {
+    inputParams.value.attractionNo = "";
+    inputParams.value.attractionTitle = "";
+  }
+});
 
 // 이미지 업로드 함수
 const handleImageUpload = async (file) => {
@@ -222,13 +236,13 @@ const onUpdatePost = () => {
             class="border border-b-gray-300"
             name="postattraction"
             id="postattraction"
-            v-model="inputParams.attractionNo"
+            v-model="selectedAttraction"
           >
             <option value="" disabled selected>--SCENE을 선택해주세요--</option>
             <option
               v-for="(attraction, index) in attractionList"
               :key="index"
-              :value="attraction.no"
+              :value="{attractionNo: attraction.no, attractionTitle: attraction.title}"
             >
               {{ attraction.title }}
             </option>

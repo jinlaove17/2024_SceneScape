@@ -54,7 +54,7 @@
 		WHERE
 			t.no = #{tripNo}
 		AND
-			t.is_deleted = 1
+			t.is_deleted = 0
 		ORDER BY
 			ta.sequence;
 	</select>

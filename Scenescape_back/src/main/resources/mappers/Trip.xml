@@ -17,6 +17,8 @@
 			t.no = ta.trip_no
 		WHERE
 			t.user_id = #{userId}
+		AND
+			t.is_deleted = 0
 		ORDER BY
 			t.no, ta.sequence;
 	</select>
@@ -54,7 +56,7 @@
 		WHERE
 			t.no = #{tripNo}
 		AND
-			t.is_deleted = 1
+			t.is_deleted = 0
 		ORDER BY
 			ta.sequence;
 	</select>
@@ -65,8 +67,8 @@
 		INSERT
 		INTO
 			trips (
-			user_id, title, description, start_date,
-			end_date, created, updated
+				user_id, title, description, start_date,
+				end_date, created, updated
 		) VALUES (
 			#{userId}, #{title},
 			#{description}, #{startDate}, #{endDate},

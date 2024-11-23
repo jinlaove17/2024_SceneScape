@@ -107,7 +107,6 @@ public class AttractionController {
 	@PostMapping("/like/{attractionNo}")
 	public ResponseEntity<Integer> updateLikeCount(@PathVariable("attractionNo") int attractionNo, HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
-		System.out.println(userInfo);
 		if (userInfo == null) {
 			return ResponseEntity.badRequest().build();
 		}

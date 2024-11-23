@@ -1,9 +1,9 @@
 <script setup>
 import { ref } from "vue";
 
-import VSearchForm from "@/components/VSearch/VSearchForm.vue";
 import VSearchKakaoMap from "@/components/VSearch/VSearchKakaoMap.vue";
-import VSearchPlanForm from "@/components/VSearch/VSearchPlanForm.vue";
+import VSearchSidebarPlan from "@/components/VSearch/VSearchSidebarPlan.vue";
+import VSearchSidebarSearch from "@/components/VSearch/VSearchSidebarSearch.vue";
 
 // 지도 관련
 const searchMap = ref(null);
@@ -16,18 +16,24 @@ const clearMarkers = () => {
 const panTo = (lat, lng) => {
   searchMap.value.panTo(lat, lng);
 };
+
+// 일정 관련
+const searchSidebarPlan = ref(null);
+const insertAttractionToPlan = (attraction) => {
+  searchSidebarPlan.value.insertAttractionToPlan(attraction);
+};
 </script>
 
 <template>
-  <div class="relative flex">
+  <div class="relative flex overflow-hidden">
+    <VSearchSidebarPlan ref="searchSidebarPlan" />
     <VSearchKakaoMap ref="searchMap" />
-    <VSearchForm
+    <VSearchSidebarSearch
       @update-markers="updateMarkers"
       @clear-markers="clearMarkers"
       @pan-to="panTo"
+      @insert-attraction-to-plan="insertAttractionToPlan"
     />
-
-    <!-- <VSearchPlanForm /> -->
   </div>
 </template>
 

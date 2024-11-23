@@ -46,8 +46,7 @@ public class TripController {
 //		}
 //		
 //		String userId = userInfo.getId();
-		List<TripDTO> trips = tripService.selectTrips("ssafy");
-		
+		List<TripDTO> trips = tripService.selectTrips(userInfo.getId());
 		response.put("trips", trips);
 		return ResponseEntity.ok(response);
 	}
@@ -83,7 +82,7 @@ public class TripController {
 	public ResponseEntity<Map<String, Object>> createTrip(@RequestBody TripDTO request, HttpSession session) {
 		Map<String, Object> response = new HashMap<>();
 		
-//		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
 		
 //		String userId = (String) payload.get("userId");
 //		String title = (String) payload.get("title");
@@ -103,9 +102,10 @@ public class TripController {
 //		response.put("trip", trip);
 //		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 		
-		request.setUserId("ssafy");
+		request.setUserId(userInfo.getId());
 		int no = tripService.createTrip(request);
 		request.setNo(no);
+		
 		response.put("trip", request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
@@ -148,7 +148,7 @@ public class TripController {
 //			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 //		}
 		
-		TripDTO trip = tripService.selectTrip(tripNo);
+//		TripDTO trip = tripService.selectTrip(tripNo);
 //		if(trip == null) {
 //			response.put("errorMsg", "해당 여행 일정을 찾을 수 없습니다.");
 //			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);

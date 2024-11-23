@@ -2,6 +2,7 @@ package com.ssafy.enjoytrip.service;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,7 +42,11 @@ public class TripService {
         List<Object> attractions = trip.getAttractions();
         if (attractions != null && !attractions.isEmpty()) {
             for (int i = 0; i < attractions.size(); i++) {
-                tripDao.insertTripAttraction(new TripAttractionDTO(trip.getNo(), (int)attractions.get(i), i+1));
+                // LinkedHashMap으로 매핑된 값을 처리
+                LinkedHashMap<String, Object> attractionMap = (LinkedHashMap<String, Object>) attractions.get(i);
+                int attractionNo = (int) attractionMap.get("attractionNo"); // "attractionNo" 키로 값 추출
+                int sequence = (int) attractionMap.get("sequence");       // "sequence" 키로 값 추출
+                tripDao.insertTripAttraction(new TripAttractionDTO(trip.getNo(), attractionNo, sequence));
             }
         }
         
@@ -51,7 +56,6 @@ public class TripService {
 	@Transactional
 	public int modifyTrip(TripDTO trip) {
 	    // 1. trips 테이블 업데이트
-		
 		System.out.println(trip.getTitle());
 		System.out.println("고쳐주세요");
 		System.out.println(trip.getNo());

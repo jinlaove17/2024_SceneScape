@@ -50,7 +50,7 @@ const range = (start, end) => {
 
 <template>
   <nav>
-    <ul class="flex items-center h-8 cursor-pointer">
+    <ul class="flex items-center h-8 cursor-pointer text-sm">
       <li
         class="flex items-center justify-center px-2 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
         @click="onChangePage(1)"

@@ -43,11 +43,11 @@
 	        	</if>
 	        
 	            <!-- area가 존재할 경우 조건 추가 -->
-	            <if test="area != null and area != ''">
+	            <if test="area != null and area > 0">
 	                AND area_code = #{area}
 	                
 	                <!-- area가 존재할 때만 subArea 조건 추가 -->
-	                <if test="subArea != null and subArea != ''">
+	                <if test="subArea != null and subArea > 0">
 	                    AND si_gun_gu_code = #{subArea}
 	                </if>
 	            </if>
@@ -89,33 +89,38 @@
 	<select id="countAll" parameterType="map" resultType="int">
 		select count(*)
 		from attractions
-		<where>
-			<!-- 조건이 있을 경우 추가 -->
-
-			<if test="area != null and area != ''">
-				area_code = #{area}
-			</if>
-			<if test="subuArea != null and subArea != ''">
-				<if test="area != null and area != ''">
-					AND
-				</if>
-				si_gun_gu_code = #{subArea}
-			</if>
-			<if test="contents != null and contents.length > 0">
-				<if
-					test="(area != null and area != '') or (subArea != null and subArea != '')">
-					AND
-				</if>
-				content_type_id IN
-				<foreach item="content" index="index" collection="contents"
-					open="(" separator="," close=")">
-					#{content}
-				</foreach>
-			</if>
-			<if test="sceneTitle != null and sceneTitle != ''">
-				scene_title = #{sceneTitle}
-			</if>
-		</where>
+	    <where>
+	        <trim prefixOverrides="AND">
+	        	<!-- searchTerm이 존재할 경우 조건 추가 -->
+	        	<if test="searchTerm != null and searchTerm != ''">
+	        		AND title like CONCAT("%", #{searchTerm}, "%")
+	        	</if>
+	        
+	            <!-- area가 존재할 경우 조건 추가 -->
+	            <if test="area != null and area > 0">
+	                AND area_code = #{area}
+	                
+	                <!-- area가 존재할 때만 subArea 조건 추가 -->
+	                <if test="subArea != null and subArea > 0">
+	                    AND si_gun_gu_code = #{subArea}
+	                </if>
+	            </if>
+	            
+	            <!-- contents가 존재할 경우 조건 추가 -->
+	            <if test="contents != null and contents.length > 0">
+	                AND content_type_id IN
+	                <foreach item="content" index="index" collection="contents"
+	                         open="(" separator="," close=")">
+	                    #{content}
+	                </foreach>
+	            </if>
+	            
+	            <!-- sceneTitle이 존재할 경우 조건 추가 -->
+	            <if test="sceneTitle != null and sceneTitle != ''">
+	                AND scene_title = #{sceneTitle}
+	            </if>
+	        </trim>
+	    </where>
 	</select>
 
 	<update id="updateLikeCount" parameterType="map">

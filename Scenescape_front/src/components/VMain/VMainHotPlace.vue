@@ -21,7 +21,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-[80rem]">
+  <div class="w-[80rem] mx-auto">
     <div class="mb-5">
       <h1 class="text-3xl">
         🔥 지금 <span class="text-rose-500">핫플레이스</span>는?

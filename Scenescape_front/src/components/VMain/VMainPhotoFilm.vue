@@ -80,7 +80,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-[80rem] mb-5 overflow-hidden">
+  <div class="w-[80rem] mx-auto mb-5 overflow-hidden">
     <h1 class="text-3xl">
       📸 이곳의 <span class="text-blue-500">주인공</span>은 바로 나!
     </h1>

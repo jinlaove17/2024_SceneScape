@@ -200,6 +200,7 @@ const clearPathMarkers = inject("clearPathMarkers");
             :key="attraction.no"
             class="drag-item flex justify-center items-center w-full h-20 p-1 text-sm bg-white border-b hover:bg-gray-100"
           >
+            <div> {{ index + 1}} </div>
             <!-- 이미지 -->
             <img
               class="w-16 h-16 m-1 object-cover"

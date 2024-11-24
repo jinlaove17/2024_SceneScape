@@ -172,10 +172,36 @@ defineExpose({
       <div
         v-for="(attraction, index) in includedAttractions"
         :key="attraction.no"
-        class="flex justify-center items-center w-full h-20 px-2 py-2 text-sm bg-white border-b hover:bg-gray-100"
+        class="flex justify-center items-center w-full h-20 p-1 text-sm bg-white border-b hover:bg-gray-100"
       >
+        <div class="flex flex-col gap-4">
+          <div>
+            <svg
+              class="w-7 h-7 mb-1 fill-main-300 hover:scale-110 cursor-pointer"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              @click="onSwapOrder(index, true)"
+            >
+              <path
+                d="M64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zm224 64c6.7 0 13 2.8 17.6 7.7l104 112c6.5 7 8.2 17.2 4.4 25.9s-12.5 14.4-22 14.4l-208 0c-9.5 0-18.2-5.7-22-14.4s-2.1-18.9 4.4-25.9l104-112c4.5-4.9 10.9-7.7 17.6-7.7z"
+              />
+            </svg>
+
+            <svg
+              class="w-7 h-7 fill-main-300 hover:scale-110 cursor-pointer"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              @click="onSwapOrder(index, false)"
+            >
+              <path
+                d="M384 432c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l320 0zm64-16c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320zM224 352c-6.7 0-13-2.8-17.6-7.7l-104-112c-6.5-7-8.2-17.2-4.4-25.9s12.5-14.4 22-14.4l208 0c9.5 0 18.2 5.7 22 14.4s2.1 18.9-4.4 25.9l-104 112c-4.5 4.9-10.9 7.7-17.6 7.7z"
+              />
+            </svg>
+          </div>
+        </div>
+
         <img
-          class="w-16 h-16 mr-2 object-cover"
+          class="w-16 h-16 m-1 object-cover"
           :src="
             !attraction.img
               ? imageLoader.getImageUrl('Danbam.jpg')
@@ -191,9 +217,9 @@ defineExpose({
           <p>TEL: {{ attraction.tel || "-" }}</p>
         </div>
 
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col self-start m-1">
           <svg
-            class="w-4 h-4 fill-gray-300 hover:scale-110 cursor-pointer"
+            class="w-5 h-5 fill-gray-300 hover:scale-110 cursor-pointer"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"
             @click="removeAttractionFromPlan(index)"
@@ -202,30 +228,6 @@ defineExpose({
               d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z"
             />
           </svg>
-
-          <div>
-            <svg
-              class="w-4 h-4 mb-1 fill-main-300 hover:scale-110 cursor-pointer"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 448 512"
-              @click="onSwapOrder(index, true)"
-            >
-              <path
-                d="M64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zm224 64c6.7 0 13 2.8 17.6 7.7l104 112c6.5 7 8.2 17.2 4.4 25.9s-12.5 14.4-22 14.4l-208 0c-9.5 0-18.2-5.7-22-14.4s-2.1-18.9 4.4-25.9l104-112c4.5-4.9 10.9-7.7 17.6-7.7z"
-              />
-            </svg>
-
-            <svg
-              class="w-4 h-4 fill-main-300 hover:scale-110 cursor-pointer"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 448 512"
-              @click="onSwapOrder(index, false)"
-            >
-              <path
-                d="M384 432c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l320 0zm64-16c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320zM224 352c-6.7 0-13-2.8-17.6-7.7l-104-112c-6.5-7-8.2-17.2-4.4-25.9s12.5-14.4 22-14.4l208 0c9.5 0 18.2 5.7 22 14.4s2.1 18.9-4.4 25.9l-104 112c-4.5 4.9-10.9 7.7-17.6 7.7z"
-              />
-            </svg>
-          </div>
         </div>
       </div>
     </div>

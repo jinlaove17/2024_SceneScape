@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import attractionAPI from "@/api/attraction";
 import boardAPI from "@/api/board";
 import { VMarkdownEditor } from "vue3-markdown";
+import 'vue3-markdown/dist/style.css';
 import '@/assets/css/markdownEditor.css'
 
 const route = useRoute();

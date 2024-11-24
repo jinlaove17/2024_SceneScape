@@ -6,6 +6,8 @@ import { storeToRefs } from "pinia";
 import boardAPI from "@/api/board";
 import commentAPI from "@/api/comment";
 import { VMarkdownView } from "vue3-markdown";
+import 'vue3-markdown/dist/style.css';
+import '@/assets/css/markdownEditor.css'
 import VCommentItem from "@/components/VPost/VCommentItem.vue";
 
 const route = useRoute();

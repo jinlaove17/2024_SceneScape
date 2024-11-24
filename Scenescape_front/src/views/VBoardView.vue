@@ -23,9 +23,9 @@ const pageInfo = ref({
 const isPostExist = computed(() => pageInfo.value.items.length > 0);
 const isLoading = ref(true);
 const searchFilter = ref({
-  searchType: "",
+  searchType: "title",
   searchKeyword: "",
-  sortType: "",
+  sortType: "created",
   page: 1,
 });
 
@@ -111,10 +111,10 @@ const onChangePage = (page) => {
         >
         <select
           id="searchTerm"
-          class="block w-full h-10 px-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 leading-7"
+          class="block w-28 h-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center"
           v-model.lazy="searchFilter.searchType"
         >
-          <option value="title" selected>글 제목</option>
+          <option value="title">글 제목</option>
           <option value="userId">작성자명</option>
           <option value="sceneTitle">컨텐츠명</option>
           <option value="attractionTitle">촬영지명</option>
@@ -158,11 +158,11 @@ const onChangePage = (page) => {
 
       <select
         id="sortType"
-        class="w-24 h-8 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 leading-7"
+        class="w-24 h-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center"
         v-model="searchFilter.sortType"
         @change="onSearch"
       >
-        <option value="created" selected>최신순</option>
+        <option value="created">최신순</option>
         <option value="view">조회순</option>
         <option value="like">좋아요순</option>
       </select>

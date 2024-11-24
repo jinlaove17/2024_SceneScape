@@ -85,9 +85,6 @@ public class PostController {
             @Parameter(description = "정렬 방식", required = false) @RequestParam(value = "sortType", required = false) String sortType,
             @Parameter(description = "페이지 번호", example = "1") @RequestParam(value = "page", defaultValue = "1") int page,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
-
-    	System.out.println(searchType + " " + searchKeyword + " " + sortType);
-    	
         // 필터링 및 페이지네이션 데이터 생성
         Map<String, Object> filter = new HashMap<>();
         filter.put("searchType", searchType);

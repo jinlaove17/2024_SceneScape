@@ -143,7 +143,7 @@ const onChangePage = (page) => {
       </div>
 
       <button
-        class="w-24 h-10 mt-5 h mx-1 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+        class="w-24 h-10 mt-5 mx-1 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
         type="button"
         @click="onSearch"
       >
@@ -153,7 +153,7 @@ const onChangePage = (page) => {
 
     <div class="flex justify-between items-center">
       <span class="cursor-pointer hover:text-gray-600" @click="onWritePost">
-        🖉 글 작성
+        🖉 새 글 작성
       </span>
 
       <select
@@ -168,7 +168,7 @@ const onChangePage = (page) => {
       </select>
     </div>
 
-    <div class="w-fit grid grid-cols-5 gap-4 mx-auto my-5">
+    <div class="w-fit grid grid-cols-5 gap-4 mx-auto my-3">
       <template v-if="isLoading">
         <div v-for="index in 10" :key="index">
           <VSkeleton />
@@ -177,7 +177,7 @@ const onChangePage = (page) => {
 
       <template v-else>
         <div
-          class="w-60 mx-auto bg-white border-2 border-gray-200 rounded-md shadow-md border-transparent hover:cursor-pointer hover:border-teal-300 transform duration-200 ease-in-out hover:scale-[1.02]"
+          class="w-60 mx-auto bg-white border-2 border-gray-200 rounded-md shadow-md border-transparent hover:cursor-pointer hover:border-main-300 transform duration-200 ease-in-out hover:scale-[1.02]"
           v-for="post in pageInfo.items"
           :key="post.no"
           @click="onPickPost(post.no)"

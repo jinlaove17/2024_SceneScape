@@ -1,4 +1,5 @@
 import "@/assets/css/main.css";
+import "@/assets/css/markdownEditor.css";
 import "vue3-markdown/dist/style.css";
 
 import { createApp } from "vue";

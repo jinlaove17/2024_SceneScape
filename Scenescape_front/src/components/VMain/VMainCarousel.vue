@@ -23,14 +23,33 @@ const carouselContents = ref([
     <p class="text-end">- 드라마 <미스터 션샤인> -</p>`,
     img: "MrSunshine.jpg",
   },
+  {
+    title: "포항 구룡포",
+    desc: `
+    "의미가 생기는 순간 특별한 곳이 되니까."<br/ >
+    <p class="text-end">- 드라마 <갯마을 차차차> -</p>`,
+    img: "GetMaeulChaChaCha.jpg",
+  },
 ]);
 
 const curIndex = ref(0);
+const showTitle = ref(false);
+
 const next = () => {
   ++curIndex.value;
+  showTitle.value = false;
+
+  setTimeout(() => {
+    showTitle.value = true;
+  }, 1000);
 };
 const prev = () => {
   --curIndex.value;
+  showTitle.value = false;
+
+  setTimeout(() => {
+    showTitle.value = true;
+  }, 1000);
 };
 const isFirstContent = computed(() => {
   return curIndex.value === 0;
@@ -87,7 +106,7 @@ const isLastContent = computed(() => {
         <div class="absolute left-32 top-24">
           <p class="text-2xl text-white">이곳은 어떠세요?</p>
           <h1 class="text-5xl mt-3 mb-14">{{ content.title }} 여행</h1>
-          <p class="text-lg text-gray-300 ps-4" v-html="content.desc"></p>
+          <p class="text-lg text-gray-100 ps-4" v-html="content.desc"></p>
         </div>
       </div>
     </div>

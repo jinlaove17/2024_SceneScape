@@ -1,11 +1,11 @@
 <script setup>
 import { onMounted, ref, nextTick, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
 import attractionAPI from "@/api/attraction";
 import boardAPI from "@/api/board";
+
 import { VMarkdownEditor } from "vue3-markdown";
-import 'vue3-markdown/dist/style.css';
-import '@/assets/css/markdownEditor.css'
 
 const route = useRoute();
 const router = useRouter();
@@ -21,7 +21,7 @@ const inputParams = ref({
   sceneTitle: "",
   thumbnailUrl: "",
   attractionNo: "",
-  attractionTitle: ""
+  attractionTitle: "",
 });
 const editorRef = ref(null); // VMarkdownEditor DOM 요소를 참조할 ref
 
@@ -84,7 +84,10 @@ watch(selectedAttraction, (newValue) => {
   if (newValue) {
     inputParams.value.attractionNo = newValue.attractionNo;
     inputParams.value.attractionTitle = newValue.attractionTitle;
-    console.log(inputParams.value.attractionNo, inputParams.value.attractionTitle);
+    console.log(
+      inputParams.value.attractionNo,
+      inputParams.value.attractionTitle
+    );
   } else {
     inputParams.value.attractionNo = "";
     inputParams.value.attractionTitle = "";
@@ -205,7 +208,7 @@ const onUpdatePost = () => {
         <div class="flex items-center text-center">
           <label class="basis-12 mr-3" for="posttitle">글 제목</label>
           <input
-            class="flex-grow h-8 my-3 px-2 rounded-sm border border-gray-300"
+            class="flex-grow h-8 my-3 px-2 rounded-md border outline-none focus:border-main-300 border-gray-300"
             type="text"
             name="posttitle"
             id="posttitle"
@@ -214,10 +217,10 @@ const onUpdatePost = () => {
           />
         </div>
 
-        <div class="flex text-center mb-3">
+        <div class="flex items-center text-center mb-3">
           <label class="basis-12 mr-3" for="postscenetitle">SCENE</label>
           <select
-            class="border border-b-gray-300"
+            class="w-72 h-8 px-2 rounded-md border border-gray-300 focus:border-main-300"
             name="postscenetitle"
             id="postscenetitle"
             v-model="inputParams.sceneTitle"
@@ -232,10 +235,11 @@ const onUpdatePost = () => {
             </option>
           </select>
         </div>
-        <div class="flex text-center mb-3">
+
+        <div class="flex items-center text-center mb-3">
           <label class="basis-12 mr-3" for="postattraction">촬영지</label>
           <select
-            class="border border-b-gray-300"
+            class="w-72 h-8 px-2 rounded-md border border-gray-300 focus:border-main-300"
             name="postattraction"
             id="postattraction"
             v-model="selectedAttraction"
@@ -244,7 +248,10 @@ const onUpdatePost = () => {
             <option
               v-for="(attraction, index) in attractionList"
               :key="index"
-              :value="{attractionNo: attraction.no, attractionTitle: attraction.title}"
+              :value="{
+                attractionNo: attraction.no,
+                attractionTitle: attraction.title,
+              }"
             >
               {{ attraction.title }}
             </option>
@@ -256,7 +263,7 @@ const onUpdatePost = () => {
     <div class="text-end">
       <button
         v-if="!route.params.no"
-        class="w-24 h-8 text-sm rounded-md bg-teal-400 hover:bg-teal-500 text-white"
+        class="w-24 h-10 mx-1 text-sm rounded-md bg-main-300 hover:bg-main-400 text-white"
         type="button"
         @click="onCreatePost"
       >
@@ -264,7 +271,7 @@ const onUpdatePost = () => {
       </button>
       <button
         v-else
-        class="w-24 h-8 text-sm rounded-md bg-teal-400 hover:bg-teal-500 text-white"
+        class="w-24 h-10 mx-1 text-sm rounded-md bg-main-300 hover:bg-main-400 text-white"
         type="button"
         @click="onUpdatePost"
       >
@@ -284,5 +291,4 @@ const onUpdatePost = () => {
 .vmd-body textarea {
   font-family: "GangwonEdu_OTFBoldA";
 }
-
 </style>

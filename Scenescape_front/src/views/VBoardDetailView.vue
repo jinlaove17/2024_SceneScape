@@ -1,13 +1,15 @@
 <script setup>
 import { onMounted, ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
+
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+
 import boardAPI from "@/api/board";
 import commentAPI from "@/api/comment";
+
 import { VMarkdownView } from "vue3-markdown";
-import 'vue3-markdown/dist/style.css';
-import '@/assets/css/markdownEditor.css'
+
 import VCommentItem from "@/components/VPost/VCommentItem.vue";
 
 const route = useRoute();
@@ -32,7 +34,6 @@ onMounted(() => {
       commentsCount.value = comments.value.length;
       likeStatus.value = data.likeStatus;
       isLoading.value = false;
-      console.log("게시판 세부 정보 불러오기 성공!");
       console.log(data);
     },
     () => {
@@ -151,7 +152,7 @@ const commentTree = computed(() => {
         <div role="status">
           <svg
             aria-hidden="true"
-            class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-teal-600"
+            class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-main-600"
             viewBox="0 0 100 101"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -227,56 +228,55 @@ const commentTree = computed(() => {
             </div>
           </div>
 
-          <div
-            class="flex flex-col justify-centertext-gray-800 text-sm text-end"
-          >
-            <span class>조회수: {{ post.viewCount }}</span>
-            <span class="ms-2">좋아요: {{ post.likeCount }}</span>
+          <div class="flex justify-center items-center gap-3">
+            <div class="flex justify-center items-center gap-1">
+              <svg
+                class="w-4 h-4 fill-gray-500"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 576 512"
+              >
+                <path
+                  d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"
+                />
+              </svg>
+              <p class="pt-1">{{ post.viewCount }}</p>
+            </div>
+
+            <div class="flex justify-center items-center gap-1">
+              <svg
+                class="w-4 h-4 fill-blue-300"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+              >
+                <path
+                  d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.2s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16l-97.5 0c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8l97.5 0c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32L0 448c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-224c0-17.7-14.3-32-32-32l-64 0z"
+                />
+              </svg>
+              <p class="pt-1">{{ post.likeCount }}</p>
+            </div>
           </div>
         </div>
 
         <VMarkdownView :mode="mode" :content="post.content"></VMarkdownView>
 
-        <div class="flex justify-center items-center space-x-10 my-10">
+        <div class="flex justify-center items-center m-3">
           <!--좋아요 버튼-->
-          <span>
+          <div class="flex flex-col items-center">
             <button
-              class="w-24 border-4 rounded-2xl"
+              class="w-16 h-16 m-2 rounded-2xl"
               :class="
                 likeStatus === 1
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-blue-300 text-white'
                   : 'bg-gray-200 text-black'
               "
               :disabled="likeStatus !== 0"
               @click="pushLikeButton(1)"
             >
-              <div class="flex w-full px-5 py-4 justify-between items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                  <path
-                    d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.2s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16l-97.5 0c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8l97.5 0c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32L0 448c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-224c0-17.7-14.3-32-32-32l-64 0z"
-                  />
-                </svg>
-              </div>
-            </button>
-          </span>
-
-          <!--싫어요 버튼-->
-          <span>
-            <button
-              class="w-24 border-4 rounded-2xl"
-              :class="
-                likeStatus === -1
-                  ? 'bg-red-500 text-white'
-                  : 'bg-gray-200 text-black'
-              "
-              :disabled="likeStatus !== 0"
-              @click="pushLikeButton(-1)"
-            >
-              <div class="flex w-full px-5 py-4 justify-between items-center">
+              <div class="flex justify-center items-center">
                 <svg
+                  class="w-8 h-8"
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 512 512"
-                  class="transform scale-y-[-1]"
                 >
                   <path
                     d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.2s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16l-97.5 0c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8l97.5 0c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32L0 448c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-224c0-17.7-14.3-32-32-32l-64 0z"
@@ -284,19 +284,47 @@ const commentTree = computed(() => {
                 </svg>
               </div>
             </button>
-          </span>
+            <p class="text-sm">좋아요</p>
+          </div>
+
+          <!--싫어요 버튼-->
+          <div class="flex flex-col items-center">
+            <button
+              class="w-16 h-16 m-2 rounded-2xl"
+              :class="
+                likeStatus === -1
+                  ? 'bg-red-300 text-white'
+                  : 'bg-gray-200 text-black'
+              "
+              :disabled="likeStatus !== 0"
+              @click="pushLikeButton(-1)"
+            >
+              <div class="flex justify-center items-center">
+                <svg
+                  class="w-8 h-8 transform scale-y-[-1]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                >
+                  <path
+                    d="M323.8 34.8c-38.2-10.9-78.1 11.2-89 49.4l-5.7 20c-3.7 13-10.4 25-19.5 35l-51.3 56.4c-8.9 9.8-8.2 25 1.6 33.9s25 8.2 33.9-1.6l51.3-56.4c14.1-15.5 24.4-34 30.1-54.1l5.7-20c3.6-12.7 16.9-20.1 29.7-16.5s20.1 16.9 16.5 29.7l-5.7 20c-5.7 19.9-14.7 38.7-26.6 55.5c-5.2 7.3-5.8 16.9-1.7 24.9s12.3 13 21.3 13L448 224c8.8 0 16 7.2 16 16c0 6.8-4.3 12.7-10.4 15c-7.4 2.8-13 9-14.9 16.7s.1 15.8 5.3 21.7c2.5 2.8 4 6.5 4 10.6c0 7.8-5.6 14.3-13 15.7c-8.2 1.6-15.1 7.3-18 15.2s-1.6 16.7 3.6 23.3c2.1 2.7 3.4 6.1 3.4 9.9c0 6.7-4.2 12.6-10.2 14.9c-11.5 4.5-17.7 16.9-14.4 28.8c.4 1.3 .6 2.8 .6 4.3c0 8.8-7.2 16-16 16l-97.5 0c-12.6 0-25-3.7-35.5-10.7l-61.7-41.1c-11-7.4-25.9-4.4-33.3 6.7s-4.4 25.9 6.7 33.3l61.7 41.1c18.4 12.3 40 18.8 62.1 18.8l97.5 0c34.7 0 62.9-27.6 64-62c14.6-11.7 24-29.7 24-50c0-4.5-.5-8.8-1.3-13c15.4-11.7 25.3-30.2 25.3-51c0-6.5-1-12.8-2.8-18.7C504.8 273.7 512 257.7 512 240c0-35.3-28.6-64-64-64l-92.3 0c4.7-10.4 8.7-21.2 11.8-32.2l5.7-20c10.9-38.2-11.2-78.1-49.4-89zM32 192c-17.7 0-32 14.3-32 32L0 448c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-224c0-17.7-14.3-32-32-32l-64 0z"
+                  />
+                </svg>
+              </div>
+            </button>
+            <p class="text-sm">싫어요</p>
+          </div>
         </div>
 
         <div v-show="userInfo.id === post.userId" class="text-end">
           <button
-            class="w-24 h-8 mt-2 ml-2 text-sm rounded-md bg-teal-400 hover:bg-teal-500 text-white"
+            class="w-24 h-10 mx-1 text-sm rounded-md bg-main-300 hover:bg-main-400 text-white"
             type="button"
             @click="onUpdatePost"
           >
             글 수정
           </button>
           <button
-            class="w-24 h-8 mt-2 ml-2 text-sm rounded-md bg-red-400 hover:bg-red-500 text-white"
+            class="w-24 h-10 mx-1 text-sm rounded-md bg-red-300 hover:bg-red-400 text-white"
             type="button"
             @click="onDeletePost"
           >
@@ -305,20 +333,29 @@ const commentTree = computed(() => {
         </div>
 
         <div>
-          <h2 class="text-xl mt-6 mb-3 border-b-2 border-gray-300">
-            댓글 ( {{ commentsCount }} )
-          </h2>
+          <div class="flex items-center gap-2">
+            <svg
+              class="w-4 h-4 fill-gray-300 mb-1"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+            >
+              <path
+                d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l96 0 0 80c0 6.1 3.4 11.6 8.8 14.3s11.9 2.1 16.8-1.5L309.3 416 448 416c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0z"
+              />
+            </svg>
+            <h1 class="text-xl">댓글 ( {{ commentsCount }} )</h1>
+          </div>
 
           <!-- 댓글 입력 영역 -->
           <div class="flex items-center space-x-3 mb-4">
             <textarea
               v-model="newComment"
               placeholder="댓글을 입력하세요..."
-              class="flex-1 p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
+              class="flex-1 p-3 border border-gray-300 rounded-md outline-none focus:border-main-300 resize-none"
               rows="3"
             ></textarea>
             <button
-              class="w-24 h-10 bg-teal-500 text-white rounded-md hover:bg-teal-600"
+              class="w-24 h-10 text-sm rounded-md bg-main-300 hover:bg-main-400 text-white"
               @click="submitComment({ content: newComment })"
               :disabled="newComment.length === 0"
             >

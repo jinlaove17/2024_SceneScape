@@ -55,6 +55,11 @@ const setBounds = (bounds) => {
   // 추가된 좌표들을 기준으로 지도의 범위를 재설정합니다.
   // 이때 지도의 중심좌표와 레벨이 변경될 수 있습니다.
   map.value.setBounds(bounds);
+  if (map.value) {
+    const level = map.value.getLevel();
+    // 지도를 1레벨 올립니다 (지도가 축소됩니다)
+    map.value.setLevel(level + 1);
+  }
 };
 
 const panTo = (lat, lng) => {

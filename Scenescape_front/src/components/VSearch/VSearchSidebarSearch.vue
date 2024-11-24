@@ -40,6 +40,13 @@ onMounted(() => {
   );
 });
 
+// 프롭스 관련
+const props = defineProps({
+  planMode: {
+    type: Number,
+  },
+});
+
 // 유저 관련
 const { userInfo } = useUserStore();
 
@@ -272,8 +279,6 @@ const onUpdateLikeCount = (item) => {
     alert("로그인 후 이용 가능합니다.");
     return;
   }
-
-  console.log(searchResult.value);
 
   let idx = searchResult.value.likes.indexOf(item.no);
 
@@ -599,9 +604,9 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
               <p class="text-base truncate" :title="item.title">
                 {{ item.title }}
               </p>
-              <p class="truncate">{{ item.address }}</p>
-              <p>TEL: {{ item.tel || "-" }}</p>
-              <p class="truncate" :title="item.overview">
+              <p class="text-gray-800 truncate">{{ item.address }}</p>
+              <p class="text-gray-800">TEL: {{ item.tel || "-" }}</p>
+              <p class="text-gray-800 truncate" :title="item.overview">
                 {{ item.overview }}
               </p>
             </div>
@@ -652,6 +657,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
               </svg>
 
               <svg
+                v-if="props.planMode > 0"
                 class="w-5 h-5 mb-2 fill-violet-300 hover:scale-110 cursor-pointer"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"

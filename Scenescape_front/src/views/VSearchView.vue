@@ -1,5 +1,5 @@
 <script setup>
-import { ref, provide } from "vue";
+import { ref, provide, watchEffect } from "vue";
 
 import VSearchKakaoMap from "@/components/VSearch/VSearchKakaoMap.vue";
 import VSearchSidebarPlan from "@/components/VSearch/VSearchSidebarPlan.vue";
@@ -36,13 +36,22 @@ const insertAttractionToPlan = (attraction) => {
 };
 
 provide("insertAttractionToPlan", insertAttractionToPlan);
+
+let planMode = ref(0);
+watchEffect(() => {
+  if (searchSidebarPlan.value) {
+    planMode.value = searchSidebarPlan.value.mode;
+  }
+});
 </script>
 
 <template>
   <div class="relative flex overflow-hidden">
     <VSearchSidebarPlan ref="searchSidebarPlan" />
     <VSearchKakaoMap ref="searchMap" />
-    <VSearchSidebarSearch />
+
+    <!-- defineExpose 된 searchSidebarPlan.mode를 props로 넘기면 왜 안되는지 모르겠음. 일단은 watchEffect로 해결 -->
+    <VSearchSidebarSearch :planMode="planMode" />
   </div>
 </template>
 

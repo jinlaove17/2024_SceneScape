@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, readonly } from "vue";
 
 import { useUserStore } from "@/stores/user";
 
@@ -51,6 +51,7 @@ const insertAttractionToPlan = (attraction) => {
 };
 
 defineExpose({
+  mode: readonly(mode), // mode를 readonly로 감싸서 읽기 전용으로 노출
   insertAttractionToPlan,
 });
 </script>
@@ -95,7 +96,6 @@ defineExpose({
       :plan="selectedPlan"
       ref="searchSidebarPlanForm"
       @go-list="onGoList"
-      @pan-to="$emit('panTo')"
     />
   </div>
 </template>

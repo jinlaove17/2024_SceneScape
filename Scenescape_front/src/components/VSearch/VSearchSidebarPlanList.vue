@@ -36,11 +36,11 @@ const onDeletePlan = (index) => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full">
-    <div class="flex justify-between items-center p-3 bg-white">
+  <div class="w-full h-full flex flex-col">
+    <div class="flex justify-between items-center mx-5 mt-5 mb-3 bg-white">
       <div>
         <h1 class="text-2xl">나의 여행 계획</h1>
-        <p class="text-gray-400">어떤 곳으로 떠나볼까요?!</p>
+        <p class="text-gray-400">어떤 곳으로 떠나볼까요?</p>
       </div>
 
       <div
@@ -63,10 +63,10 @@ const onDeletePlan = (index) => {
     </div>
 
     <div
-      class="flex flex-col flex-grow items-center overflow-y-auto bg-gray-50"
+      class="flex flex-col w-full flex-grow items-center overflow-y-auto bg-gray-50"
       :class="isPlanExist ? '' : 'justify-center'"
     >
-      <div v-if="isPlanExist" class="flex flex-col w-full items-center py-3">
+      <div v-if="isPlanExist" class="flex flex-col items-center py-3">
         <div
           v-for="(plan, index) in planList"
           :key="plan.no"

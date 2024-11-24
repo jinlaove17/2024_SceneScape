@@ -4,6 +4,7 @@ import { useRoute, useRouter } from "vue-router";
 import attractionAPI from "@/api/attraction";
 import boardAPI from "@/api/board";
 import { VMarkdownEditor } from "vue3-markdown";
+import '@/assets/css/markdownEditor.css'
 
 const route = useRoute();
 const router = useRouter();
@@ -275,5 +276,12 @@ const onUpdatePost = () => {
 <style scoped>
 .vmd-box {
   height: 24rem;
+  font-family: "GangwonEdu_OTFBoldA";
+  white-space: nowrap;
 }
+
+.vmd-body textarea {
+  font-family: "GangwonEdu_OTFBoldA";
+}
+
 </style>

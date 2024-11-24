@@ -1,11 +1,16 @@
 package com.ssafy.enjoytrip.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 @Schema(description = "사용자 정보를 나타내는 객체")
 public class UserDTO {
 	
     @Schema(description = "사용자 ID", example = "user123")
+    @NotNull
+    @NotEmpty
 	private String id;
     
     @Schema(description = "사용자 비밀번호", example = "password123")
@@ -15,6 +20,8 @@ public class UserDTO {
 	private String nickname;
     
     @Schema(description = "사용자 이메일 주소", example = "johndoe@example.com")
+    @NotNull
+    @Email
 	private String email;
 	
 	public UserDTO() {

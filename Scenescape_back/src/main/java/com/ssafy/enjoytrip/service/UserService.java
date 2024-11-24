@@ -24,6 +24,13 @@ public class UserService {
 	public List<UserDTO> getUsers() {
 		return userDao.selectAll();
 	}
+	
+	public UserDTO getUser(String id) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("id", id);
+		
+		return userDao.select(param);
+	}
 
 	public String registerUser(String id, String pwd, String nickname, String email) {
 		// 아이디 중복 검사
@@ -61,10 +68,10 @@ public class UserService {
 		return null;
 	}
 
-	public UserDTO updateUser(String id, String pwd, String nickname, String email) {
-		UserDTO userDto = new UserDTO(id, encryptPassword(pwd), nickname, email);
-		if (userDao.update(userDto) != 0) {
-			return userDto;
+	public UserDTO updateUser(UserDTO user) {
+		user.setPwd(encryptPassword(user.getPwd()));
+		if (userDao.update(user) != 0) {
+			return user;
 		}
 
 		return null;

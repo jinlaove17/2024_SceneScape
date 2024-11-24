@@ -103,6 +103,6 @@ export const useUserStore = defineStore(
       updateUser,
       deleteUser,
     };
-  }
-  // { persist: true }
+  },
+  { persist: true }
 );

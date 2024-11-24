@@ -16,9 +16,8 @@ onMounted(() => {
     tripAPI.getTrip(
       props.plan.no,
       ({ data }) => {
-        planParams.value = data.trip;
-        includedAttractions.value = data.trip.attractions;
-        console.log(planParams.value);
+        planParams.value = data;
+        includedAttractions.value = data.attractions;
       },
       (error) => {
         console.log("계획을 불러오지 못했습니다.", error);
@@ -64,7 +63,7 @@ const onCreatePlan = () => {
     planParams.value,
     () => {
       alert("새로운 계획이 생성되었습니다!");
-      onReset();
+      onGoList();
     },
     (error) => {
       console.log("계획을 생성하지 못했습니다.", error);

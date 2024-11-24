@@ -275,6 +275,7 @@ const onChangePage = (page) => {
 const onUpdateLikeCount = (item) => {
   if (!userInfo.id) {
     alert("로그인 후 이용 가능합니다.");
+    return;
   }
 
   console.log(searchResult.value);

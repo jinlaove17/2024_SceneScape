@@ -1,8 +1,12 @@
 <script setup>
 import { ref, computed } from "vue";
 
+import { useUserStore } from "@/stores/user";
+
 import VSearchSidebarPlanList from "./VSearchSidebarPlanList.vue";
 import VSearchSidebarPlanForm from "./VSearchSidebarPlanForm.vue";
+
+const { userInfo } = useUserStore();
 
 // 애니메이션 관련
 const isOpen = ref(true);
@@ -17,6 +21,11 @@ const mode = ref(MODE_LIST);
 const selectedPlan = ref({});
 
 const onGoForm = (plan) => {
+  if (!userInfo.id) {
+    alert("로그인 후 이용 가능합니다.");
+    return;
+  }
+
   mode.value = MODE_WRITE;
 
   // 기존 계획 수정

@@ -29,9 +29,9 @@ const closeChatBot = () => {
       <RouterView />
     </main>
 
-    <footer>
+    <!-- <footer>
       <VFooter />
-    </footer>
+    </footer> -->
 
     <!-- 챗봇 버튼 -->
     <button

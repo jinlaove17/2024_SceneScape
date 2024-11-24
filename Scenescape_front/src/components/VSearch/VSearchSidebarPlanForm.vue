@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref, computed, inject } from "vue";
-
+import { vDraggable } from "vue-draggable-plus";
 import { useUserStore } from "@/stores/user";
 
 import tripAPI from "@/api/trip";
@@ -22,6 +22,7 @@ onMounted(() => {
       ({ data }) => {
         planParams.value = data;
         includedAttractions.value = data.attractions;
+        console.log(includedAttractions.value);
         updatePathMarkers(includedAttractions.value);
       },
       (error) => {
@@ -95,31 +96,36 @@ const onUpdatePlan = () => {
   );
 };
 
-const onSwapOrder = (index, isUp) => {
-  if (isUp) {
-    if (index - 1 >= 0) {
-      [includedAttractions.value[index - 1], includedAttractions.value[index]] =
-        [
-          includedAttractions.value[index],
-          includedAttractions.value[index - 1],
-        ];
-    }
-  } else {
-    if (index + 1 < includedAttractions.value.length) {
-      [includedAttractions.value[index + 1], includedAttractions.value[index]] =
-        [
-          includedAttractions.value[index],
-          includedAttractions.value[index + 1],
-        ];
-    }
-  }
+const dragStartIndex = ref(null);
 
-  updatePathMarkers(includedAttractions.value);
+const onDragStart = (evt) => {
+  dragStartIndex.value = evt.oldDraggableIndex;
+  console.log("Drag started at index:", dragStartIndex.value);
 };
 
-defineExpose({
-  insertAttractionToPlan,
-});
+const onDragEnd = (evt) => {
+  const dragEndIndex = evt.newDraggableIndex;
+  console.log("Drag ended at index:", dragEndIndex.value);
+
+
+  if (
+    dragStartIndex.value !== null &&
+    dragEndIndex !== null &&
+    dragStartIndex.value !== dragEndIndex
+  ) {
+    const movedItem = includedAttractions.value.splice(dragStartIndex.value, 1)[0];
+    includedAttractions.value.splice(dragEndIndex, 0, movedItem);
+
+    // 배열 강제 재할당
+    includedAttractions.value = [...includedAttractions.value];
+
+    // 마커 업데이트
+    updatePathMarkers(includedAttractions.value);
+    console.log("Updated attractions:", includedAttractions.value);
+  }
+
+  dragStartIndex.value = null;
+};
 
 // provide 제공 함수
 const panTo = inject("panTo");
@@ -185,87 +191,49 @@ const clearPathMarkers = inject("clearPathMarkers");
       </div>
     </div>
 
-    <div
-      class="flex flex-col items-center flex-grow overflow-y-auto bg-gray-50"
-      :class="isAttractionExist ? '' : 'justify-center'"
-    >
-      <template v-if="isAttractionExist">
-        <div
-          v-for="(attraction, index) in includedAttractions"
-          :key="attraction.no"
-          class="flex justify-center items-center w-full h-20 p-1 text-sm bg-white border-b hover:bg-gray-100"
-        >
-          <div class="flex flex-col gap-4">
-            <div>
-              <svg
-                class="w-7 h-7 mb-1 fill-main-300 hover:scale-110 cursor-pointer"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                @click="onSwapOrder(index, true)"
-              >
-                <path
-                  d="M64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80zM0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zm224 64c6.7 0 13 2.8 17.6 7.7l104 112c6.5 7 8.2 17.2 4.4 25.9s-12.5 14.4-22 14.4l-208 0c-9.5 0-18.2-5.7-22-14.4s-2.1-18.9 4.4-25.9l104-112c4.5-4.9 10.9-7.7 17.6-7.7z"
-                />
-              </svg>
+    <div class="flex-grow overflow-y-auto mb-2">
+      <div>
+        <!-- 드래그 가능한 리스트 -->
+        <div v-draggable:list="includedAttractions" @start="onDragStart" @end="onDragEnd" class="drag-container">
+          <div
+            v-for="(attraction, index) in includedAttractions"
+            :key="attraction.no"
+            class="drag-item flex justify-center items-center w-full h-20 p-1 text-sm bg-white border-b hover:bg-gray-100"
+          >
+            <!-- 이미지 -->
+            <img
+              class="w-16 h-16 m-1 object-cover"
+              :src="
+                !attraction.img
+                  ? imageLoader.getImageUrl('Danbam.jpg')
+                  : attraction.img
+              "
+            />
 
+            <!-- 텍스트 정보 -->
+            <div class="flex-grow overflow-hidden text-overflow-ellipsis">
+              <p class="text-base truncate" :title="attraction.title">
+                {{ attraction.title }}
+              </p>
+              <p class="truncate">{{ attraction.address }}</p>
+              <p>TEL: {{ attraction.tel || "-" }}</p>
+            </div>
+
+            <!-- 삭제 버튼 -->
+            <div class="h-full flex flex-col justify-around mx-1">
               <svg
-                class="w-7 h-7 fill-main-300 hover:scale-110 cursor-pointer"
+                class="w-5 h-5 fill-gray-300 hover:scale-110 cursor-pointer"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                @click="onSwapOrder(index, false)"
+                @click="removeAttractionFromPlan(index)"
               >
                 <path
-                  d="M384 432c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16L64 80c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l320 0zm64-16c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320zM224 352c-6.7 0-13-2.8-17.6-7.7l-104-112c-6.5-7-8.2-17.2-4.4-25.9s12.5-14.4 22-14.4l208 0c9.5 0 18.2 5.7 22 14.4s2.1 18.9-4.4 25.9l-104 112c-4.5 4.9-10.9 7.7-17.6 7.7z"
+                  d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8-7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z"
                 />
               </svg>
             </div>
           </div>
-
-          <img
-            class="w-16 h-16 m-1 object-cover"
-            :src="
-              !attraction.img
-                ? imageLoader.getImageUrl('Danbam.jpg')
-                : attraction.img
-            "
-          />
-
-          <div class="flex-grow overflow-hidden text-overflow-ellipsis">
-            <p class="text-base truncate" :title="attraction.title">
-              {{ attraction.title }}
-            </p>
-            <p class="truncate">{{ attraction.address }}</p>
-            <p>TEL: {{ attraction.tel || "-" }}</p>
-          </div>
-
-          <div class="h-full flex flex-col justify-around mx-1">
-            <svg
-              class="w-5 h-5 fill-blue-300 hover:scale-110 cursor-pointer"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 384 512"
-              @click="panTo(attraction.latitude, attraction.longitude)"
-            >
-              <path
-                d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
-              />
-            </svg>
-
-            <svg
-              class="w-5 h-5 fill-gray-300 hover:scale-110 cursor-pointer"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 448 512"
-              @click="removeAttractionFromPlan(index)"
-            >
-              <path
-                d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z"
-              />
-            </svg>
-          </div>
         </div>
-      </template>
-      <div v-else class="flex flex-col items-center text-gray-300">
-        <p>등록된 씬이 없습니다.</p>
-        <p>우측 탭에서 씬을 검색하고 추가해보세요.</p>
       </div>
     </div>
 

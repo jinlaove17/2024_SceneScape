@@ -7,7 +7,6 @@ onMounted(() => {
   tripAPI.getTrips(
     ({ data }) => {
       planList.value = data;
-      console.log("가져온 계획들: ", data);
     },
     (error) => {
       console.log(error);

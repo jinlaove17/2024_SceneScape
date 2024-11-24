@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, inject } from "vue";
 
 import tripAPI from "@/api/trip";
 import imageLoader from "@/utils/imageLoader";
@@ -18,6 +18,7 @@ onMounted(() => {
       ({ data }) => {
         planParams.value = data;
         includedAttractions.value = data.attractions;
+        updatePathMarkers(includedAttractions.value);
       },
       (error) => {
         console.log("계획을 불러오지 못했습니다.", error);
@@ -32,10 +33,12 @@ const includedAttractions = ref([]);
 const insertAttractionToPlan = (attraction) => {
   if (attraction) {
     includedAttractions.value.push(attraction);
+    updatePathMarkers(includedAttractions.value);
   }
 };
 const removeAttractionFromPlan = (index) => {
   includedAttractions.value.splice(index, 1);
+  updatePathMarkers(includedAttractions.value);
 };
 const onReset = () => {
   planParams.value.title = "";
@@ -43,7 +46,9 @@ const onReset = () => {
   planParams.value.startDate = "";
   planParams.value.endDate = "";
   planParams.value.attractions = [];
+
   includedAttractions.value = [];
+  clearPathMarkers();
 };
 
 const onGoList = () => {
@@ -55,8 +60,6 @@ const onCreatePlan = () => {
   planParams.value.attractions = includedAttractions.value.map(
     (attraction) => attraction.no
   );
-
-  console.log(planParams.value.attractions);
 
   tripAPI.createTrip(
     planParams.value,
@@ -79,7 +82,7 @@ const onUpdatePlan = () => {
     planParams.value,
     () => {
       alert("계획이 수정되었습니다!");
-      onReset();
+      onGoList();
     },
     (error) => {
       console.log("계획을 수정하지 못했습니다.", error);
@@ -105,11 +108,18 @@ const onSwapOrder = (index, isUp) => {
         ];
     }
   }
+
+  updatePathMarkers(includedAttractions.value);
 };
 
 defineExpose({
   insertAttractionToPlan,
 });
+
+// provide 제공 함수
+const panTo = inject("panTo");
+const updatePathMarkers = inject("updatePathMarkers");
+const clearPathMarkers = inject("clearPathMarkers");
 </script>
 
 <template>
@@ -217,7 +227,18 @@ defineExpose({
           <p>TEL: {{ attraction.tel || "-" }}</p>
         </div>
 
-        <div class="flex flex-col self-start m-1">
+        <div class="h-full flex flex-col justify-around mx-1">
+          <svg
+            class="w-5 h-5 fill-blue-300 hover:scale-110 cursor-pointer"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 384 512"
+            @click="panTo(attraction.latitude, attraction.longitude)"
+          >
+            <path
+              d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
+            />
+          </svg>
+
           <svg
             class="w-5 h-5 fill-gray-300 hover:scale-110 cursor-pointer"
             xmlns="http://www.w3.org/2000/svg"

@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, provide } from "vue";
 
 import VSearchKakaoMap from "@/components/VSearch/VSearchKakaoMap.vue";
 import VSearchSidebarPlan from "@/components/VSearch/VSearchSidebarPlan.vue";
@@ -16,24 +16,33 @@ const clearMarkers = () => {
 const panTo = (lat, lng) => {
   searchMap.value.panTo(lat, lng);
 };
+const updatePathMarkers = (attractions) => {
+  searchMap.value.updatePathMarkers(attractions);
+};
+const clearPathMarkers = () => {
+  searchMap.value.clearPathMarkers();
+};
+
+provide("updateMarkers", updateMarkers);
+provide("clearMarkers", clearMarkers);
+provide("panTo", panTo);
+provide("updatePathMarkers", updatePathMarkers);
+provide("clearPathMarkers", clearPathMarkers);
 
 // 일정 관련
 const searchSidebarPlan = ref(null);
 const insertAttractionToPlan = (attraction) => {
   searchSidebarPlan.value.insertAttractionToPlan(attraction);
 };
+
+provide("insertAttractionToPlan", insertAttractionToPlan);
 </script>
 
 <template>
   <div class="relative flex overflow-hidden">
     <VSearchSidebarPlan ref="searchSidebarPlan" />
     <VSearchKakaoMap ref="searchMap" />
-    <VSearchSidebarSearch
-      @update-markers="updateMarkers"
-      @clear-markers="clearMarkers"
-      @pan-to="panTo"
-      @insert-attraction-to-plan="insertAttractionToPlan"
-    />
+    <VSearchSidebarSearch />
   </div>
 </template>
 

@@ -1,8 +1,14 @@
 <script setup>
-import { ref, computed } from "vue";
-import { KakaoMap } from "vue3-kakao-maps";
+import { ref, computed, inject } from "vue";
+import { KakaoMap, KakaoMapMarkerPolyline } from "vue3-kakao-maps";
 
 // 카카오 맵 관련
+const PATH_MARKER = {
+  imageSrc: "https://vue3-kakao-maps.netlify.app/images/redMarker.png",
+  imageWidth: 36,
+  imageHeight: 36,
+};
+
 const map = ref();
 const originPosition = {
   lat: 37.501286,
@@ -16,6 +22,10 @@ const onLoadKakaoMap = (mapRef) => {
 };
 
 const updateMarkers = (attractions) => {
+  if (attractions.length <= 0) {
+    return;
+  }
+
   const bounds = new kakao.maps.LatLngBounds();
   const newMarkerList = [];
 
@@ -54,11 +64,42 @@ const panTo = (lat, lng) => {
   map.value.panTo(new kakao.maps.LatLng(lat, lng));
 };
 
+// 계획 경로 관련
+const pathMarkerList = ref([]);
+const updatePathMarkers = (attractions) => {
+  if (attractions.length <= 0) {
+    return;
+  }
+
+  const bounds = new kakao.maps.LatLngBounds();
+
+  pathMarkerList.value = attractions.map((attraction, index) => {
+    bounds.extend(
+      new kakao.maps.LatLng(attraction.latitude, attraction.longitude)
+    );
+
+    return {
+      lat: attraction.latitude,
+      lng: attraction.longitude,
+      image: PATH_MARKER,
+      orderBottomMargin: "28px",
+      order: index + 1,
+    };
+  });
+
+  setBounds(bounds);
+};
+const clearPathMarkers = () => {
+  pathMarkerList.value = [];
+};
+
 // 익스포즈 관련
 defineExpose({
   updateMarkers,
   clearMarkers,
   panTo,
+  updatePathMarkers,
+  clearPathMarkers,
 });
 </script>
 
@@ -71,6 +112,14 @@ defineExpose({
     :markerList="markerList"
     @onLoadKakaoMap="onLoadKakaoMap"
   >
+    <KakaoMapMarkerPolyline
+      :markerList="pathMarkerList"
+      :endArrow="true"
+      :strokeStyle="'shortdash'"
+      :strokeWeight="5"
+      :showMarkerOrder="true"
+    />
+    />
   </KakaoMap>
 </template>
 

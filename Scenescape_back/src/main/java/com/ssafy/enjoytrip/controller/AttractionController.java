@@ -83,7 +83,7 @@ public class AttractionController {
 
 		PagenatedAttractionDTO result = new PagenatedAttractionDTO();
 		result.setTotalCount(totalCount);
-		result.setPage(pageSize);
+		result.setPage(page);
 		result.setItems(attractions);
 
 		// 로그인 된 상태라면 좋아요 관련 데이터를 가져온다.

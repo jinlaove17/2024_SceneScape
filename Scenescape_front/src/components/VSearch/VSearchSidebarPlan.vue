@@ -45,7 +45,9 @@ const onGoList = () => {
 const searchSidebarPlanForm = ref(null);
 
 const insertAttractionToPlan = (attraction) => {
-  searchSidebarPlanForm.value.insertAttractionToPlan(attraction);
+  if (searchSidebarPlanForm.value) {
+    searchSidebarPlanForm.value.insertAttractionToPlan(attraction);
+  }
 };
 
 defineExpose({
@@ -93,6 +95,7 @@ defineExpose({
       :plan="selectedPlan"
       ref="searchSidebarPlanForm"
       @go-list="onGoList"
+      @pan-to="$emit('panTo')"
     />
   </div>
 </template>

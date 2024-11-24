@@ -42,14 +42,10 @@ public class TripService {
         List<Object> attractions = trip.getAttractions();
         if (attractions != null && !attractions.isEmpty()) {
             for (int i = 0; i < attractions.size(); i++) {
-                // LinkedHashMap으로 매핑된 값을 처리
-                LinkedHashMap<String, Object> attractionMap = (LinkedHashMap<String, Object>) attractions.get(i);
-                int attractionNo = (int) attractionMap.get("attractionNo"); // "attractionNo" 키로 값 추출
-                int sequence = (int) attractionMap.get("sequence");       // "sequence" 키로 값 추출
-                tripDao.insertTripAttraction(new TripAttractionDTO(trip.getNo(), attractionNo, sequence));
+                tripDao.insertTripAttraction(new TripAttractionDTO(trip.getNo(), (int)attractions.get(i), i+1));
             }
         }
-        
+
         return tripNo;
     }
 	

@@ -53,11 +53,10 @@ const onGoList = () => {
 
 const onCreatePlan = () => {
   planParams.value.attractions = includedAttractions.value.map(
-    (attraction, index) => ({
-      attractionNo: attraction.no,
-      sequence: index + 1,
-    })
+    (attraction) => attraction.no
   );
+
+  console.log(planParams.value.attractions);
 
   tripAPI.createTrip(
     planParams.value,
@@ -73,10 +72,7 @@ const onCreatePlan = () => {
 
 const onUpdatePlan = () => {
   planParams.value.attractions = includedAttractions.value.map(
-    (attraction, index) => ({
-      attractionNo: attraction.no,
-      sequence: index + 1,
-    })
+    (attraction) => attraction.no
   );
 
   tripAPI.modifyTrip(

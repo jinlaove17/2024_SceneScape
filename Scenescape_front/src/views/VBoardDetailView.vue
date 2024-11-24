@@ -339,4 +339,8 @@ const commentTree = computed(() => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.markdown-body {
+  white-space: wrap;
+}
+</style>

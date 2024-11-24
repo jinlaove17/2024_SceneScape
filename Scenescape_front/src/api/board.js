@@ -6,6 +6,28 @@ const getPosts = (success, fail) => {
   boardAPI.get("/posts").then(success).catch(fail);
 };
 
+const searchByFilter = (filter, success, fail) => {
+  const queryParams = new URLSearchParams();
+
+  for (const key in filter) {
+    if (filter[key]) {
+      if (Array.isArray(filter[key])) {
+        filter[key].forEach((value) => {
+          queryParams.append(key, value);
+        });
+      } else {
+        queryParams.append(key, filter[key]);
+      }
+    }
+  }
+
+  console.log(queryParams.toString());
+  boardAPI
+    .get("/posts?" + queryParams.toString())
+    .then(success)
+    .catch(fail);
+};
+
 const getPost = (postNo, success, fail) => {
   boardAPI.get(`/posts/${postNo}`).then(success).catch(fail);
 };
@@ -43,6 +65,7 @@ const likePost = (postNo, likeStatus, success, fail) => {
 
 export default {
   getPosts,
+  searchByFilter,
   getPost,
   createPost,
   updatePost,

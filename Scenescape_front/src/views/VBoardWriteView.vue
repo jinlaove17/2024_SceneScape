@@ -29,16 +29,25 @@ const editorRef = ref(null); // VMarkdownEditor DOM 요소를 참조할 ref
 onMounted(() => {
   if (route.params.no) {
     inputParams.value.postNo = route.params.no;
+
+    console.log("getPost 호출");
     boardAPI.getPost(
       inputParams.value.postNo,
       ({ data }) => {
-        inputParams.value.title = data.result.title;
-        inputParams.value.content = data.result.content;
-        inputParams.value.category = data.result.category;
-        inputParams.value.sceneTitle = data.result.sceneTitle;
+        console.log("data");
+        inputParams.value.title = data.post.title;
+        inputParams.value.content = data.post.content;
+        inputParams.value.category = data.post.category;
+        inputParams.value.sceneTitle = data.post.sceneTitle;
+        selectedAttraction.value = {
+          attractionNo: data.post.attractionNo,
+          attractionTitle: data.post.attractionTitle,
+        };
         console.log("게시판 세부 정보 불러오기 성공!");
+        console.log(selectedAttraction);
       },
-      () => {
+      (error) => {
+        console.log(error);
         console.log("게시판 세부 정보 불러오기 실패!");
       }
     );
@@ -284,11 +293,11 @@ const onUpdatePost = () => {
 <style scoped>
 .vmd-box {
   height: 24rem;
-  font-family: "GangwonEdu_OTFBoldA";
+  font-family: "GangwonEdu_OTFBoldA" !important;
   white-space: nowrap;
 }
 
 .vmd-body textarea {
-  font-family: "GangwonEdu_OTFBoldA";
+  font-family: "GangwonEdu_OTFBoldA" !important;
 }
 </style>

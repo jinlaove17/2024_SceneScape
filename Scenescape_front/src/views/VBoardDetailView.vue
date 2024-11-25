@@ -29,6 +29,7 @@ onMounted(() => {
   boardAPI.getPost(
     route.params.no,
     ({ data }) => {
+      console.log(data);
       post.value = data.post;
       comments.value = data.comments;
       commentsCount.value = comments.value.length;
@@ -173,6 +174,9 @@ const commentTree = computed(() => {
         <h1 class="text-2xl border-b p-3 border-b-gray-200">
           {{ post.no }}. {{ post.title }}
         </h1>
+        <h5 class="text-2xl border-b p-3 border-b-gray-200">
+          {{ post.sceneTitle }} / {{ post.attractionTitle }}
+        </h5>
 
         <div class="flex w-full px-4 py-2 justify-between items-center">
           <div class="flex">

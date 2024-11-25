@@ -130,8 +130,13 @@ public class PostController {
 	@Transactional
 	@PostMapping
 	public ResponseEntity<Integer> createPost(@RequestBody PostDTO postDTO, HttpSession session) {
-	    UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
-
+	    
+		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+	    
+	    if(userInfo == null) {
+	    	return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+	    }
+	    
 	    // 사용자 정보 가져오기
 	    String userId = userInfo.getId();
 	    postDTO.setUserId(userId); // DTO에 사용자 ID 설정

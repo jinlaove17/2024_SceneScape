@@ -70,12 +70,12 @@ onMounted(() => {
           <p class="mb-5 font-normal text-gray-700">{{ hotPlace.address }}</p>
 
           <div class="text-end">
-            <a
-              href="#"
+            <RouterLink
+              :to="{ name: 'search', query: { title: hotPlace.title } }"
               class="px-4 py-3 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400 focus:ring-4 focus:outline-none focus:ring-main-100"
             >
               상세 보기
-            </a>
+            </RouterLink>
           </div>
         </div>
       </div>

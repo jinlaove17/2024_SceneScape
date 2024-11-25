@@ -169,18 +169,18 @@ public class UserController {
 		@Parameter(description = "사용자 정보 (ID와 이메일)", required = true)
 		@RequestBody UserDTO user
 	) {
-		if(user.getId() == null || user.getId().equals("") || user.getEmail() == null || user.getEmail().equals("")) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}
+//		if(user.getId() == null || user.getId().equals("") || user.getEmail() == null || user.getEmail().equals("")) {
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+//		}
 		
 		UserDTO existingUser = userService.getUser(user.getId());
-		if(existingUser == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		}
-		
-		if(!existingUser.getEmail().equals(user.getEmail())) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일을 확인해주세요.");
-		}
+//		if(existingUser == null) {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//		}
+//		
+//		if(!existingUser.getEmail().equals(user.getEmail())) {
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일을 확인해주세요.");
+//		}
 		
         String tempPwd = UUID.randomUUID().toString().substring(0, 8);
         existingUser.setPwd(tempPwd);

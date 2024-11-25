@@ -146,7 +146,7 @@ const clearPathMarkers = inject("clearPathMarkers");
     <div class="mx-5 mt-5 mb-3">
       <h1 class="text-2xl">나의 여행 계획</h1>
       <p class="text-gray-400">
-        {{ userInfo.nickname }}님과 어울리는 멋진 계획이에요!
+        {{ userInfo.nickname }}님과 어울리는 멋진 계획이네요!
       </p>
     </div>
 

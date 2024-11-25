@@ -64,6 +64,9 @@ const onPickPost = (postNo) => {
 const onWritePost = () => {
   if (userInfo.value.id === "") {
     alert("로그인 후 이용 가능합니다.");
+    userStore.setRedirectPath({
+      name: router.currentRoute.value.name,
+    });
     router.push({ name: "login" });
     return;
   }

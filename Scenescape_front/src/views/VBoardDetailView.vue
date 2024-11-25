@@ -2,8 +2,8 @@
 import { onMounted, ref, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
+import { useUserStore } from "@/stores/user";
 
 import boardAPI from "@/api/board";
 import commentAPI from "@/api/comment";
@@ -14,8 +14,9 @@ import VCommentItem from "@/components/VPost/VCommentItem.vue";
 
 const route = useRoute();
 const router = useRouter();
-const store = useUserStore();
-const { userInfo } = storeToRefs(store);
+
+const userStore = useUserStore();
+const { userInfo } = storeToRefs(userStore);
 
 const post = ref(null);
 const comments = ref([]);
@@ -26,10 +27,10 @@ const isLoading = ref(true);
 const newComment = ref("");
 
 onMounted(() => {
+  isLoading.value = true;
   boardAPI.getPost(
     route.params.no,
     ({ data }) => {
-      console.log(data);
       post.value = data.post;
       comments.value = data.comments;
       commentsCount.value = comments.value.length;
@@ -52,8 +53,8 @@ const onDeletePost = () => {
   boardAPI.deletePost(
     post.value.no,
     () => {
-      router.replace({ name: "board" });
       alert("게시글이 삭제 되었습니다.");
+      router.replace({ name: "board" });
     },
     () => {
       console.log("게시글 삭제 실패!");
@@ -62,10 +63,13 @@ const onDeletePost = () => {
 };
 
 const pushLikeButton = (value) => {
-  const userId = useUserStore().orgUserInfo.id;
-
-  if (!userId) {
-    alert("로그인이 필요합니다.");
+  if (!userStore.userInfo.id) {
+    alert("로그인 후 이용 가능합니다.");
+    userStore.setRedirectPath({
+      name: router.currentRoute.value.name,
+      params: { no: route.params.no },
+    });
+    router.push({ name: "login" });
     return;
   }
 
@@ -83,16 +87,24 @@ const pushLikeButton = (value) => {
 };
 
 const submitComment = ({ content, parentNo }) => {
-  const userId = useUserStore().orgUserInfo.id;
-
-  if (!userId) {
-    alert("로그인이 필요합니다.");
+  if (!userStore.userInfo.id) {
+    alert("로그인 후 이용 가능합니다.");
+    userStore.setRedirectPath({
+      name: router.currentRoute.value.name,
+      params: { no: route.params.no },
+    });
+    router.push({ name: "login" });
     return;
   }
 
   // 댓글 생성 API 호출
   commentAPI.createComment(
-    { postNo: post.value.no, userId, content: content, parentNo },
+    {
+      postNo: post.value.no,
+      userId: userStore.userInfo.id,
+      content: content,
+      parentNo,
+    },
     ({ data }) => {
       comments.value.push(data); // 새 댓글(또는 대댓글) 추가
       console.log("createComment: ");

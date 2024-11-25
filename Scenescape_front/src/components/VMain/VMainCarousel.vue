@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from "vue";
-import imageLoader from "@/utils/imageLoader";
+import imageLoader from "@/utils/image-loader";
 
 const carouselContents = ref([
   {

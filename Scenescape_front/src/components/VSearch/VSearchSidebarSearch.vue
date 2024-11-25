@@ -3,8 +3,11 @@ import { ref, computed, onMounted, inject } from "vue";
 
 import attractionAPI from "@/api/attraction";
 import areaAPI from "@/api/area";
+
 import { useUserStore } from "@/stores/user";
-import imageLoader from "@/utils/imageLoader";
+
+import imageLoader from "@/utils/image-loader";
+import areaMapper from "@/utils/areacode-mapper";
 
 import VSearchDropdown from "@/components/VSearchDropdown.vue";
 import VPagenation from "@/components/VPagenation.vue";
@@ -96,15 +99,6 @@ const CONTENT_LIST = [
     name: "음식점",
   },
 ];
-const NUM_TO_CONT_MAPPER = new Map();
-NUM_TO_CONT_MAPPER.set(12, "관광지");
-NUM_TO_CONT_MAPPER.set(14, "문화시설");
-NUM_TO_CONT_MAPPER.set(15, "축제공연행사");
-NUM_TO_CONT_MAPPER.set(25, "여행코스");
-NUM_TO_CONT_MAPPER.set(28, "레포츠");
-NUM_TO_CONT_MAPPER.set(32, "숙박");
-NUM_TO_CONT_MAPPER.set(38, "쇼핑");
-NUM_TO_CONT_MAPPER.set(39, "음식점");
 
 const searchMode = ref(0);
 
@@ -609,9 +603,12 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
             />
 
             <div class="flex-grow overflow-hidden text-overflow-ellipsis">
-              <p class="text-xs text-gray-400">
-                {{ NUM_TO_CONT_MAPPER.get(item.contentTypeId) }}
-              </p>
+              <div class="flex justify-between text-xs">
+                <p class="text-gray-400">
+                  {{ areaMapper.areaCodeToName(item.contentTypeId) }}
+                </p>
+                <p class="text-main-400 mr-2">{{ item.sceneTitle }}</p>
+              </div>
               <p class="text-base truncate" :title="item.title">
                 {{ item.title }}
               </p>

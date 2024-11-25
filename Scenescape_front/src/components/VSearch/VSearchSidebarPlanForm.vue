@@ -4,7 +4,9 @@ import { vDraggable } from "vue-draggable-plus";
 import { useUserStore } from "@/stores/user";
 
 import tripAPI from "@/api/trip";
-import imageLoader from "@/utils/imageLoader";
+
+import imageLoader from "@/utils/image-loader";
+import areaMapper from "@/utils/areacode-mapper";
 
 const { userInfo } = useUserStore();
 
@@ -209,12 +211,14 @@ const clearPathMarkers = inject("clearPathMarkers");
           <div
             v-for="(attraction, index) in includedAttractions"
             :key="attraction.no"
-            class="drag-item flex justify-center items-center w-full h-20 p-1 text-sm bg-white border-b hover:bg-gray-100"
+            class="drag-item flex justify-center items-center w-full h-24 p-1 text-sm bg-white border-b hover:bg-gray-100 select-none"
           >
-            <div>{{ index + 1 }}</div>
+            <div class="text-lg basis-4 self-start text-center">
+              {{ index + 1 }}
+            </div>
             <!-- 이미지 -->
             <img
-              class="w-16 h-16 m-1 object-cover"
+              class="w-20 h-20 m-1 object-cover"
               :src="
                 !attraction.img
                   ? imageLoader.getImageUrl('Danbam.jpg')
@@ -224,6 +228,13 @@ const clearPathMarkers = inject("clearPathMarkers");
 
             <!-- 텍스트 정보 -->
             <div class="flex-grow overflow-hidden text-overflow-ellipsis">
+              <div class="flex justify-between text-xs">
+                <p class="text-gray-400">
+                  {{ areaMapper.areaCodeToName(attraction.contentTypeId) }}
+                </p>
+                <p class="text-main-400 mr-1">{{ attraction.sceneTitle }}</p>
+              </div>
+
               <p class="text-base truncate" :title="attraction.title">
                 {{ attraction.title }}
               </p>

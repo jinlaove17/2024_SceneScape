@@ -51,7 +51,6 @@ onMounted(() => {
 });
 
 const onSearch = () => {
-  console.log(searchFilter.value);
   // isLoading.value = true;
   boardAPI.searchByFilter(
     searchFilter.value,
@@ -87,9 +86,13 @@ const onWritePost = () => {
 };
 
 const onChangePage = (page) => {
+  if (searchFilter.value.page === page) {
+    return;
+  }
+
   searchFilter.value.page = page;
   isLoading.value = true;
-  boardAPI.getPosts(
+  boardAPI.searchByFilter(
     searchFilter.value,
     ({ data }) => {
       pageInfo.value.totalCount = data.totalResults;

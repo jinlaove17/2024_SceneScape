@@ -242,6 +242,12 @@ const searchResult = ref({
 const isItemExist = computed(() => searchResult.value.items.length > 0);
 
 const onChangePage = (page) => {
+  if (searchResult.value.page === page) {
+    return;
+  }
+
+  searchResult.value.page = page;
+
   switch (searchMode.value) {
     case 0: // 씬 검색
       attractionAPI.searchByFilter(

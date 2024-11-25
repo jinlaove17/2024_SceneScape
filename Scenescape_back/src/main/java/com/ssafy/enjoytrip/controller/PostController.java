@@ -142,6 +142,8 @@ public class PostController {
 	    postDTO.setUserId(userId); // DTO에 사용자 ID 설정
 
 	    // 게시글 번호가 없으면 새로 생성, 있으면 업데이트
+	    System.out.println("게시글 번호: ");
+	    System.out.println(postDTO.getNo());
 	    if (postDTO.getNo() == 0) {
 	    	int postNo = postService.createPost(postDTO);
 	        postDTO.setNo(postNo);

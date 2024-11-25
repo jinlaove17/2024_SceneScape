@@ -14,7 +14,7 @@ const attractionList = ref([]);
 const selectedAttraction = ref(null);
 
 const inputParams = ref({
-  postNo: "",
+  no: "",
   title: "",
   content: "",
   category: "SCENE",
@@ -28,11 +28,11 @@ const editorRef = ref(null); // VMarkdownEditor DOM 요소를 참조할 ref
 // 글 수정인 경우
 onMounted(() => {
   if (route.params.no) {
-    inputParams.value.postNo = route.params.no;
+    inputParams.value.no = route.params.no;
 
     console.log("getPost 호출");
     boardAPI.getPost(
-      inputParams.value.postNo,
+      inputParams.value.no,
       ({ data }) => {
         console.log("data");
         inputParams.value.title = data.post.title;
@@ -107,16 +107,18 @@ watch(selectedAttraction, (newValue) => {
 const handleImageUpload = async (file) => {
   try {
     // 임시 게시글 번호가 없으면 서버에서 생성
-    if (inputParams.value.postNo == "") {
+    if (inputParams.value.no == "") {
       const tempPostResponse = await boardAPI.createTempPost();
-      inputParams.value.postNo = tempPostResponse.data;
+      inputParams.value.no = tempPostResponse.data;
+      console.log("server response no: " + tempPostResponse.data);
+      console.log("inputParam updated: " + inputParams.value.no);
       console.log("임시 게시글 번호 생성: ", inputParams.value);
     }
 
     // 이미지 업로드
     const formData = new FormData();
     formData.append("image", file);
-    formData.append("postNo", inputParams.value.postNo);
+    formData.append("postNo", inputParams.value.no);
 
     const response = await boardAPI.uploadImage(formData);
     const imageUrl = response.data;

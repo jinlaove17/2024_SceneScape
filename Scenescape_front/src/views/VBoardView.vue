@@ -11,6 +11,13 @@ import boardAPI from "@/api/board";
 import VSkeleton from "@/components/VSkeleton.vue";
 import VPagenation from "@/components/VPagenation.vue";
 
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 const router = useRouter();
 
 const userStore = useUserStore();
@@ -180,11 +187,24 @@ const onChangePage = (page) => {
             :src="post.thumbnailUrl"
           />
           <div class="p-2 text-sm">
-            <h1 class="text-lg truncate">{{ post.title }}</h1>
+            <p class="text-xs text-main-400">
+              {{ post.sceneTitle }} > {{ post.attractionTitle }}
+            </p>
+            <h1 class="text-lg truncate" :title="post.title">
+              {{ post.title }}
+            </h1>
             <p class="text-gray-700">작성자: {{ post.userId }}</p>
             <div class="flex justify-between items-center text-gray-700">
               <p class="pt-1">
-                {{ post.created ? post.created.substr(0, 10) : "" }}
+                {{
+                  post.created
+                    ? (() => {
+                        return dayjs
+                          .tz(post.created, "Asia/Seoul")
+                          .format("YYYY-MM-DD HH:mm");
+                      })()
+                    : "알 수 없음"
+                }}
               </p>
               <div class="flex justify-center items-center gap-3">
                 <div class="flex justify-center items-center gap-1">

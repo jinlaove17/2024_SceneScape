@@ -42,7 +42,7 @@ const router = createRouter({
       component: () => import("@/views/VBoardView.vue"),
     },
     {
-      path: "/board/detail/:no",
+      path: "/board/:no",
       name: "board_detail",
       component: () => import("@/views/VBoardDetailView.vue"),
     },

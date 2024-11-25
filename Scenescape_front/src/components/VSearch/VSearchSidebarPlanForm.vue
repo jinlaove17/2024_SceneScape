@@ -107,13 +107,15 @@ const onDragEnd = (evt) => {
   const dragEndIndex = evt.newDraggableIndex;
   console.log("Drag ended at index:", dragEndIndex.value);
 
-
   if (
     dragStartIndex.value !== null &&
     dragEndIndex !== null &&
     dragStartIndex.value !== dragEndIndex
   ) {
-    const movedItem = includedAttractions.value.splice(dragStartIndex.value, 1)[0];
+    const movedItem = includedAttractions.value.splice(
+      dragStartIndex.value,
+      1
+    )[0];
     includedAttractions.value.splice(dragEndIndex, 0, movedItem);
 
     // 배열 강제 재할당
@@ -194,13 +196,18 @@ const clearPathMarkers = inject("clearPathMarkers");
     <div class="flex-grow overflow-y-auto mb-2">
       <div>
         <!-- 드래그 가능한 리스트 -->
-        <div v-draggable:list="includedAttractions" @start="onDragStart" @end="onDragEnd" class="drag-container">
+        <div
+          v-draggable:list="includedAttractions"
+          @start="onDragStart"
+          @end="onDragEnd"
+          class="drag-container"
+        >
           <div
             v-for="(attraction, index) in includedAttractions"
             :key="attraction.no"
             class="drag-item flex justify-center items-center w-full h-20 p-1 text-sm bg-white border-b hover:bg-gray-100"
           >
-            <div> {{ index + 1}} </div>
+            <div>{{ index + 1 }}</div>
             <!-- 이미지 -->
             <img
               class="w-16 h-16 m-1 object-cover"
@@ -220,8 +227,20 @@ const clearPathMarkers = inject("clearPathMarkers");
               <p>TEL: {{ attraction.tel || "-" }}</p>
             </div>
 
-            <!-- 삭제 버튼 -->
             <div class="h-full flex flex-col justify-around mx-1">
+              <!-- 지도 이동 버튼 -->
+              <svg
+                class="w-5 h-5 fill-blue-300 hover:scale-110 cursor-pointer"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 384 512"
+                @click="panTo(attraction.latitude, attraction.longitude)"
+              >
+                <path
+                  d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
+                />
+              </svg>
+
+              <!-- 삭제 버튼 -->
               <svg
                 class="w-5 h-5 fill-gray-300 hover:scale-110 cursor-pointer"
                 xmlns="http://www.w3.org/2000/svg"

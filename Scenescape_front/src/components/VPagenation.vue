@@ -2,6 +2,14 @@
 import { computed } from "vue";
 
 const props = defineProps({
+  pageSize: {
+    type: Number,
+    required: true,
+  },
+  navigationSize: {
+    type: Number,
+    required: true,
+  },
   pageInfo: {
     type: Object,
     required: true,
@@ -13,28 +21,27 @@ const onChangePage = (page) => {
   emit("changePage", page);
 };
 
-const PAGE_SIZE = parseInt(import.meta.env.VITE_ATTRACTION_PAGE_SIZE);
-const NAVIGATION_SIZE = parseInt(
-  import.meta.env.VITE_ATTRACTION_NAVIGATION_SIZE
-);
-
 const startPage = computed(() => {
   return (
-    parseInt((props.pageInfo.page - 1) / NAVIGATION_SIZE) * NAVIGATION_SIZE + 1
+    parseInt((props.pageInfo.page - 1) / props.navigationSize) *
+      props.navigationSize +
+    1
   );
 });
 const endPage = computed(() => {
   let lastPage =
-    parseInt((props.pageInfo.page - 1) / NAVIGATION_SIZE) * NAVIGATION_SIZE +
-    NAVIGATION_SIZE;
+    parseInt((props.pageInfo.page - 1) / props.navigationSize) *
+      props.navigationSize +
+    props.navigationSize;
   return lastPage < totalPage.value ? lastPage : totalPage.value;
 });
 const totalPage = computed(() => {
-  return parseInt((props.pageInfo.totalCount - 1) / PAGE_SIZE) + 1;
+  return parseInt((props.pageInfo.totalCount - 1) / props.pageSize) + 1;
 });
 const endRange = computed(() => {
   return (
-    parseInt((totalPage.value - 1) / NAVIGATION_SIZE) * NAVIGATION_SIZE <
+    parseInt((totalPage.value - 1) / props.navigationSize) *
+      props.navigationSize <
     props.pageInfo.page
   );
 });

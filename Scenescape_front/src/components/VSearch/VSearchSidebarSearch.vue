@@ -9,6 +9,11 @@ import imageLoader from "@/utils/imageLoader";
 import VSearchDropdown from "@/components/VSearchDropdown.vue";
 import VPagenation from "@/components/VPagenation.vue";
 
+const PAGE_SIZE = parseInt(import.meta.env.VITE_ATTRACTION_PAGE_SIZE);
+const NAVIGATION_SIZE = parseInt(
+  import.meta.env.VITE_ATTRACTION_NAVIGATION_SIZE
+);
+
 onMounted(() => {
   attractionAPI.getSceneTitles(
     ({ data }) => {
@@ -678,6 +683,8 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
       <!-- 페이지네이션 -->
       <VPagenation
         v-if="isItemExist"
+        :pageSize="PAGE_SIZE"
+        :navigationSize="NAVIGATION_SIZE"
         :pageInfo="searchResult"
         @change-page="onChangePage"
       />

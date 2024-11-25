@@ -257,7 +257,7 @@ const commentTree = computed(() => {
           </div>
         </div>
 
-        <VMarkdownView :mode="mode" :content="post.content"></VMarkdownView>
+        <VMarkdownView :mode="mode" :content="post.content" />
 
         <div class="flex justify-center items-center m-3">
           <!--좋아요 버튼-->

@@ -45,6 +45,8 @@ const onGoList = () => {
 const searchSidebarPlanForm = ref(null);
 
 const insertAttractionToPlan = (attraction) => {
+  console.log("반갑습니다", searchSidebarPlanForm.value);
+
   if (searchSidebarPlanForm.value) {
     searchSidebarPlanForm.value.insertAttractionToPlan(attraction);
   }

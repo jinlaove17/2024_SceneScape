@@ -107,13 +107,15 @@ const onDragEnd = (evt) => {
   const dragEndIndex = evt.newDraggableIndex;
   console.log("Drag ended at index:", dragEndIndex.value);
 
-
   if (
     dragStartIndex.value !== null &&
     dragEndIndex !== null &&
     dragStartIndex.value !== dragEndIndex
   ) {
-    const movedItem = includedAttractions.value.splice(dragStartIndex.value, 1)[0];
+    const movedItem = includedAttractions.value.splice(
+      dragStartIndex.value,
+      1
+    )[0];
     includedAttractions.value.splice(dragEndIndex, 0, movedItem);
 
     // 배열 강제 재할당
@@ -126,6 +128,10 @@ const onDragEnd = (evt) => {
 
   dragStartIndex.value = null;
 };
+
+defineExpose({
+  insertAttractionToPlan,
+});
 
 // provide 제공 함수
 const panTo = inject("panTo");
@@ -194,13 +200,18 @@ const clearPathMarkers = inject("clearPathMarkers");
     <div class="flex-grow overflow-y-auto mb-2">
       <div>
         <!-- 드래그 가능한 리스트 -->
-        <div v-draggable:list="includedAttractions" @start="onDragStart" @end="onDragEnd" class="drag-container">
+        <div
+          v-draggable:list="includedAttractions"
+          @start="onDragStart"
+          @end="onDragEnd"
+          class="drag-container"
+        >
           <div
             v-for="(attraction, index) in includedAttractions"
             :key="attraction.no"
             class="drag-item flex justify-center items-center w-full h-20 p-1 text-sm bg-white border-b hover:bg-gray-100"
           >
-            <div> {{ index + 1}} </div>
+            <div>{{ index + 1 }}</div>
             <!-- 이미지 -->
             <img
               class="w-16 h-16 m-1 object-cover"

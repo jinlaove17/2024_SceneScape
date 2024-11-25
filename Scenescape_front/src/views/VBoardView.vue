@@ -15,6 +15,11 @@ const router = useRouter();
 const store = useUserStore();
 const { userInfo } = storeToRefs(store);
 
+const PAGE_SIZE = parseInt(import.meta.env.VITE_BOARD_PAGE_SIZE);
+const NAVIGATION_SIZE = parseInt(import.meta.env.VITE_BOARD_NAVIGATION_SIZE);
+
+console.log(PAGE_SIZE, NAVIGATION_SIZE);
+
 const pageInfo = ref({
   totalCount: 0,
   items: [],
@@ -227,7 +232,12 @@ const onChangePage = (page) => {
     </div>
 
     <div class="flex justify-center mb-3">
-      <VPagenation :pageInfo="pageInfo" @change-page="onChangePage" />
+      <VPagenation
+        :pageSize="PAGE_SIZE"
+        :navigationSize="NAVIGATION_SIZE"
+        :pageInfo="pageInfo"
+        @change-page="onChangePage"
+      />
     </div>
   </div>
 </template>

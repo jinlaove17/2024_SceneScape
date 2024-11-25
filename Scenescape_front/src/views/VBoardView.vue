@@ -83,7 +83,7 @@ const onWritePost = () => {
 
 const onChangePage = (page) => {
   searchFilter.value.page = page;
-  // isLoading.value = true;
+  isLoading.value = true;
   boardAPI.getPosts(
     searchFilter.value,
     ({ data }) => {

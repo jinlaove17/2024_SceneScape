@@ -134,7 +134,7 @@
 					like_count DESC
 				</when>
 				<otherwise>
-					created_at DESC
+					created DESC
 				</otherwise>
 			</choose>
 		</if>

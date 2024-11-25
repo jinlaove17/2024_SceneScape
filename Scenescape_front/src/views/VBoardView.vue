@@ -4,22 +4,23 @@ import { useRouter } from "vue-router";
 
 import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
+import { useBoardStore } from "@/stores/board";
 
 import boardAPI from "@/api/board";
-import attractionAPI from "@/api/attraction";
 
 import VSkeleton from "@/components/VSkeleton.vue";
 import VPagenation from "@/components/VPagenation.vue";
 
 const router = useRouter();
-const store = useUserStore();
-const { userInfo } = storeToRefs(store);
+
+const userStore = useUserStore();
+const { userInfo } = storeToRefs(userStore);
+
+const boardStore = useBoardStore();
+const { searchFilter } = storeToRefs(boardStore);
 
 const PAGE_SIZE = parseInt(import.meta.env.VITE_BOARD_PAGE_SIZE);
 const NAVIGATION_SIZE = parseInt(import.meta.env.VITE_BOARD_NAVIGATION_SIZE);
-
-console.log(PAGE_SIZE, NAVIGATION_SIZE);
-
 const pageInfo = ref({
   totalCount: 0,
   items: [],
@@ -27,19 +28,18 @@ const pageInfo = ref({
 });
 const isPostExist = computed(() => pageInfo.value.items.length > 0);
 const isLoading = ref(true);
-const searchFilter = ref({
-  searchType: "title",
-  searchKeyword: "",
-  sortType: "created",
-  page: 1,
-});
 
 onMounted(() => {
-  boardAPI.getPosts(
+  loadPost();
+});
+
+const loadPost = () => {
+  isLoading.value = true;
+  boardAPI.searchByFilter(
+    searchFilter.value,
     ({ data }) => {
       pageInfo.value.totalCount = data.totalResults;
       pageInfo.value.items = data.results;
-      pageInfo.value.page = data.page;
       isLoading.value = false;
       console.log(data);
     },
@@ -48,24 +48,10 @@ onMounted(() => {
       console.log("게시판 목록 불러오기 실패!");
     }
   );
-});
+};
 
 const onSearch = () => {
-  // isLoading.value = true;
-  boardAPI.searchByFilter(
-    searchFilter.value,
-    ({ data }) => {
-      pageInfo.value.totalCount = data.totalResults;
-      pageInfo.value.items = data.results;
-      pageInfo.value.page = data.page;
-      isLoading.value = false;
-      console.log(data);
-    },
-    () => {
-      isLoading.value = false;
-      console.log("검색 후 게시판 목록 불러오기 실패!");
-    }
-  );
+  loadPost();
 };
 
 const onPickPost = (postNo) => {
@@ -90,28 +76,14 @@ const onChangePage = (page) => {
     return;
   }
 
-  searchFilter.value.page = page;
-  isLoading.value = true;
-  boardAPI.searchByFilter(
-    searchFilter.value,
-    ({ data }) => {
-      pageInfo.value.totalCount = data.totalResults;
-      pageInfo.value.items = data.results;
-      pageInfo.value.page = data.page;
-      isLoading.value = false;
-      console.log(data);
-    },
-    () => {
-      isLoading.value = false;
-      console.log("게시판 목록 불러오기 실패!");
-    }
-  );
+  searchFilter.value.page = pageInfo.value.page = page;
+  loadPost();
 };
 </script>
 
 <template>
   <div class="w-[80rem] mx-auto">
-    <h1 class="text-2xl border-b-2 border-b-black">사진 공유 게시판</h1>
+    <h1 class="text-2xl border-b-2 border-b-black">씬 공유 게시판</h1>
     <div class="flex justify-center items-center gap-3 my-1">
       <div>
         <label for="searchTerm" class="block text-sm text-gray-500"
@@ -119,7 +91,7 @@ const onChangePage = (page) => {
         >
         <select
           id="searchTerm"
-          class="block w-28 h-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center"
+          class="block w-28 h-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center cursor-pointer"
           v-model.lazy="searchFilter.searchType"
         >
           <option value="title">글 제목</option>
@@ -159,14 +131,24 @@ const onChangePage = (page) => {
       </button>
     </div>
 
-    <div class="flex justify-between items-center">
-      <span class="cursor-pointer hover:text-gray-600" @click="onWritePost">
-        🖉 새 글 작성
-      </span>
+    <div class="flex justify-end items-center px-2 gap-5">
+      <button class="flex justify-center items-center" @click="onWritePost">
+        <svg
+          class="w-5 h-5 fill-gray-400"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 576 512"
+        >
+          <path
+            d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 125.7-86.8 86.8c-10.3 10.3-17.5 23.1-21 37.2l-18.7 74.9c-2.3 9.2-1.8 18.8 1.3 27.5L64 512c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128zM549.8 235.7l14.4 14.4c15.6 15.6 15.6 40.9 0 56.6l-29.4 29.4-71-71 29.4-29.4c15.6-15.6 40.9-15.6 56.6 0zM311.9 417L441.1 287.8l71 71L382.9 487.9c-4.1 4.1-9.2 7-14.9 8.4l-60.1 15c-5.5 1.4-11.2-.2-15.2-4.2s-5.6-9.7-4.2-15.2l15-60.1c1.4-5.6 4.3-10.8 8.4-14.9z"
+          />
+        </svg>
+
+        <p class="mx-1 hover:text-gray-500">새 글 작성</p>
+      </button>
 
       <select
         id="sortType"
-        class="w-24 h-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center"
+        class="w-24 h-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center cursor-pointer"
         v-model="searchFilter.sortType"
         @change="onSearch"
       >
@@ -185,7 +167,7 @@ const onChangePage = (page) => {
 
       <template v-else>
         <div
-          class="w-60 mx-auto bg-white border-2 border-gray-200 rounded-md shadow-md border-transparent hover:cursor-pointer hover:border-main-300 transform duration-200 ease-in-out hover:scale-[1.02]"
+          class="w-60 mx-auto bg-white border-2 border-gray-200 rounded-md shadow-md border-transparent hover:cursor-pointer hover:border-main-300 transform duration-200 ease-in-out hover:scale-[1.02] select-none"
           v-for="post in pageInfo.items"
           :key="post.no"
           @click="onPickPost(post.no)"

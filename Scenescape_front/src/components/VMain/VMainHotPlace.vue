@@ -1,6 +1,6 @@
 <script setup>
 import attractionAPI from "@/api/attraction";
-import imageLoader from "@/utils/imageLoader";
+import imageLoader from "@/utils/image-loader";
 import { ref, onMounted } from "vue";
 
 const hotPlaces = ref([]);

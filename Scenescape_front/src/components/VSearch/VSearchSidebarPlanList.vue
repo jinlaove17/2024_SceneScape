@@ -70,7 +70,7 @@ const onDeletePlan = (index) => {
         <div
           v-for="(plan, index) in planList"
           :key="plan.no"
-          class="w-80 h-24 mx-auto text-sm bg-white border border-gray-200 rounded-lg drop-shadow-lg p-2 my-2 hover:border-main-300 hover:scale-[1.02] transform duration-200 ease-in-out"
+          class="w-80 h-28 mx-auto text-sm bg-white border border-gray-200 rounded-lg drop-shadow-lg p-3 my-2 hover:border-main-300 hover:scale-[1.02] transform duration-200 ease-in-out"
         >
           <div class="flex justify-center h-full">
             <div
@@ -86,7 +86,9 @@ const onDeletePlan = (index) => {
               <div
                 class="flex justify-between items-center text-end mr-3 text-xs text-gray-500"
               >
-                <p>{{ plan.attractions.length }}개의 씬</p>
+                <p class="text-main-300">
+                  {{ plan.attractions.length }}개의 씬
+                </p>
                 <p>
                   시작일: {{ plan.startDate }} &nbsp; 종료일: {{ plan.endDate }}
                 </p>

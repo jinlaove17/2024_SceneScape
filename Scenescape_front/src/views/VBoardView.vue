@@ -69,7 +69,7 @@ const onPickPost = (postNo) => {
 };
 
 const onWritePost = () => {
-  if (userInfo.value.id === "") {
+  if (!userInfo.value.id) {
     alert("로그인 후 이용 가능합니다.");
     userStore.setRedirectPath({
       name: router.currentRoute.value.name,
@@ -239,7 +239,7 @@ const onChangePage = (page) => {
       </template>
     </div>
 
-    <div class="flex justify-center mb-3">
+    <div v-if="isPostExist" class="flex justify-center my-10">
       <VPagenation
         :pageSize="PAGE_SIZE"
         :navigationSize="NAVIGATION_SIZE"

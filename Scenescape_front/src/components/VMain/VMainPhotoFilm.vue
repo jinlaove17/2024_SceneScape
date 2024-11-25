@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted } from "vue";
 import imageLoader from "@/utils/image-loader";
 
 const FILM_FRAME_SIZE = 320;

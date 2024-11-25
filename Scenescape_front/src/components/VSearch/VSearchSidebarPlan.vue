@@ -26,7 +26,7 @@ const mode = ref(MODE_LIST);
 const selectedPlan = ref({});
 
 const onGoForm = (plan) => {
-  if (!userInfo.id) {
+  if (!userInfo.value.id) {
     alert("로그인 후 이용 가능합니다.");
     userStore.setRedirectPath({
       name: router.currentRoute.value.name,

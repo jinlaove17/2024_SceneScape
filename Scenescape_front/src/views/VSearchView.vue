@@ -1,9 +1,24 @@
 <script setup>
-import { ref, provide, watchEffect } from "vue";
+import { ref, provide, watchEffect, onMounted, onUnmounted } from "vue";
+
+import { useLayoutStore } from "@/stores/layout";
+import { storeToRefs } from "pinia";
 
 import VSearchKakaoMap from "@/components/VSearch/VSearchKakaoMap.vue";
 import VSearchSidebarPlan from "@/components/VSearch/VSearchSidebarPlan.vue";
 import VSearchSidebarSearch from "@/components/VSearch/VSearchSidebarSearch.vue";
+
+// SearchView에서는 footer 제거
+const layoutStore = useLayoutStore();
+const { isFooterVisible } = storeToRefs(layoutStore);
+
+onMounted(() => {
+  isFooterVisible.value = false;
+});
+
+onUnmounted(() => {
+  isFooterVisible.value = true;
+});
 
 // 지도 관련
 const searchMap = ref(null);

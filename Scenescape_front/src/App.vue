@@ -1,8 +1,15 @@
 <script setup>
 import { RouterView } from "vue-router";
+
+import { useLayoutStore } from "./stores/layout";
+
 import VHeader from "@/components/VHeader.vue";
 import VFooter from "@/components/VFooter.vue";
 import VChatBotButton from "./components/VChatBot/VChatBotButton.vue";
+import { storeToRefs } from "pinia";
+
+const layoutStore = useLayoutStore();
+const { isFooterVisible } = storeToRefs(layoutStore);
 </script>
 
 <template>
@@ -15,9 +22,9 @@ import VChatBotButton from "./components/VChatBot/VChatBotButton.vue";
       <RouterView />
     </main>
 
-    <!-- <footer>
+    <footer v-if="isFooterVisible">
       <VFooter />
-    </footer> -->
+    </footer>
 
     <VChatBotButton />
   </div>

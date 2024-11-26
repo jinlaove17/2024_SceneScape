@@ -6,9 +6,14 @@ const inputParams = ref({
   id: "",
   email: "",
 });
+const isSended = ref(false);
 const errorMsg = ref("");
 
 const onFindPassword = () => {
+  isSended.value = true;
+  setTimeout(() => {
+    isSended.value = false;
+  }, 3_000);
   userAPI.findPassword(
     inputParams.value,
     () => {
@@ -71,6 +76,8 @@ const onFindPassword = () => {
       <div class="text-end">
         <button
           class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-main-400 rounded-lg hover:bg-main-500"
+          @click="onFindPassword"
+          :disabled="isSended"
         >
           비밀번호 찾기
         </button>

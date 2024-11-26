@@ -137,14 +137,14 @@ const handleReply = (replyData) => {
       ></textarea>
       <div class="flex justify-end items-center">
         <button
-          class="w-24 h-10 mx-1 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+          class="w-24 h-10 mx-1 text-sm font-medium text-white bg-main-400 rounded-lg hover:bg-main-500"
           type="button"
           @click="onSubmitReply"
         >
           작성하기
         </button>
         <button
-          class="w-24 h-10 mx-1 text-sm font-medium text-white bg-red-300 rounded-lg hover:bg-red-400"
+          class="w-24 h-10 mx-1 text-sm font-medium text-white bg-red-400 rounded-lg hover:bg-red-500"
           type="button"
           @click="onCancelReply"
         >

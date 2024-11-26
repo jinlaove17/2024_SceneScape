@@ -66,6 +66,7 @@ const loadPost = () => {
 };
 
 const onSearch = () => {
+  searchFilter.value.page = pageInfo.value.page = 1;
   loadPost();
 };
 
@@ -195,7 +196,7 @@ const onChangePage = (page) => {
             :src="post.thumbnailUrl"
           />
           <div class="p-2 text-sm">
-            <p class="text-xs text-main-400">
+            <p class="text-xs text-main-500 text-end">
               {{ post.sceneTitle }} > {{ post.attractionTitle }}
             </p>
             <h1 class="text-lg truncate" :title="post.title">

@@ -183,7 +183,7 @@ const commentTree = computed(() => {
       </div>
       <div v-else-if="post">
         <div class="flex flex-col justify-center">
-          <p class="text-sm text-main-300" :title="post.sceneTitle">
+          <p class="text-sm text-main-500" :title="post.sceneTitle">
             {{ post.sceneTitle }} > {{ post.attractionTitle }}
           </p>
           <h1 class="text-2xl border-b py-2 border-b-gray-200">
@@ -347,7 +347,7 @@ const commentTree = computed(() => {
               v-model="newComment"
             ></textarea>
             <button
-              class="w-24 h-10 text-sm rounded-md bg-main-300 hover:bg-main-400 text-white"
+              class="w-24 h-10 text-sm rounded-md bg-main-400 hover:bg-main-500 text-white"
               @click="submitComment({ content: newComment })"
               :disabled="newComment.length === 0"
             >

@@ -129,19 +129,19 @@ const onLogout = () => {
 
       <div class="relative py-3">
         <p
-          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-300 select-none"
+          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-500 select-none"
           @mouseenter="isHoveredNav = true"
         >
           나의 여행
         </p>
         <p
-          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-300 select-none"
+          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-500 select-none"
           @mouseenter="isHoveredNav = true"
         >
           게시판
         </p>
         <p
-          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-300 select-none"
+          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-500 select-none"
           @mouseenter="isHoveredNav = true"
         >
           고객센터

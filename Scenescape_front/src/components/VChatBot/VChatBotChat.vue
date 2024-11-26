@@ -276,7 +276,7 @@ const mode = ref("light");
             <button
               v-for="option in message.options"
               :key="option"
-              class="h-10 p-2 m-1 bg-main-300 text-white text-sm rounded-lg hover:bg-main-400"
+              class="h-10 p-2 m-1 bg-main-400 text-white text-sm rounded-lg hover:bg-main-500"
               @click="handleOptionClick(option)"
             >
               {{ option }}

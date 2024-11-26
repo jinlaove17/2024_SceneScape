@@ -19,9 +19,7 @@ const onGoFindPassword = () => {
 const onLogin = () => {
   loginUser(
     inputParams.value,
-    () => {
-      console.log("로그인 성공!");
-    },
+    () => {},
     () => {
       alert("아이디 혹은 비밀번호를 확인해주세요.");
     }

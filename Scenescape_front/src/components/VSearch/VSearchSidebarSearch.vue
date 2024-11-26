@@ -22,8 +22,6 @@ const route = useRoute();
 const router = useRouter();
 
 onMounted(() => {
-  console.log("마운트");
-
   attractionAPI.getSceneTitles(
     ({ data }) => {
       sceneTitleList.value = data;
@@ -46,7 +44,6 @@ onMounted(() => {
         }
         areaInfoList.value.push(area);
       });
-      console.log(areaInfoList.value);
     },
     () => {
       console.log("areaInfoList 로드 실패!");
@@ -210,7 +207,6 @@ const onSearchByScene = () => {
     { sceneTitle: selectedScene.value.title },
     ({ data }) => {
       searchResult.value = data;
-      console.log(data);
       updateMarkers(searchResult.value.items);
     },
     (error) => {
@@ -313,9 +309,7 @@ const onUpdateLikeCount = (item) => {
 
   attractionAPI.updateLikeCount(
     item.no,
-    () => {
-      console.log("updateLikeCount 성공");
-    },
+    () => {},
     () => {
       console.log("updateLikeCount 실패");
     }

@@ -38,5 +38,5 @@ build/
 target/
 bin/
 .DS_Store
-
+.metadata
 **/media

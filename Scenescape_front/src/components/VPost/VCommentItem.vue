@@ -91,15 +91,13 @@ const handleReply = (replyData) => {
 
         <div class="flex items-center self-start gap-3">
           <div class="text-gray-500 text-sm">
-            {{
-              props.comment.created
-                ? (() => {
-                    return dayjs
-                      .tz(props.comment.created, "Asia/Seoul")
-                      .format("YYYY-MM-DD HH:mm");
-                  })()
-                : "알 수 없음"
-            }}
+            <div class="text-gray-500 text-sm">
+              {{
+                props.comment.created
+                  ? dayjs.utc(props.comment.created).format("YYYY-MM-DD HH:mm")
+                  : "알 수 없음"
+              }}
+            </div>
           </div>
           <!-- <button
             class="text-sm text-gray-400"
@@ -137,14 +135,14 @@ const handleReply = (replyData) => {
       ></textarea>
       <div class="flex justify-end items-center">
         <button
-          class="w-24 h-10 mx-1 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+          class="w-24 h-10 mx-1 text-sm font-medium text-white bg-main-400 rounded-lg hover:bg-main-500"
           type="button"
           @click="onSubmitReply"
         >
           작성하기
         </button>
         <button
-          class="w-24 h-10 mx-1 text-sm font-medium text-white bg-red-300 rounded-lg hover:bg-red-400"
+          class="w-24 h-10 mx-1 text-sm font-medium text-white bg-red-400 rounded-lg hover:bg-red-500"
           type="button"
           @click="onCancelReply"
         >

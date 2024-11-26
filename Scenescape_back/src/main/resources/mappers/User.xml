@@ -26,12 +26,6 @@
 		where id = #{id}
 	</select>
 
-	<select id="countByNickname">
-		select count(*)
-		from users
-		where nickname = #{nickname}
-	</select>
-
 	<select id="select">
 		select *
 		from users

@@ -110,7 +110,32 @@ const CONTENT_LIST = [
   },
 ];
 
+// 사이드 바 탭 관련
 const sideBarIndex = ref(0);
+
+const onChangeSideBarIndex = (index) => {
+  switch (index) {
+    case 0: // 상세 검색
+      isDetailSearchBarActive.value = true;
+
+      if (sideBarIndex.value != 1) {
+        updateMarkers(searchResult.value.items);
+      }
+      break;
+    case 1: // 씬 검색
+      isSceneSearchBarActive.value = true;
+
+      if (sideBarIndex.value != 0) {
+        updateMarkers(searchResult.value.items);
+      }
+      break;
+    case 2: // 좋아요 목록
+      onLoadLikeAttractions();
+      break;
+  }
+
+  sideBarIndex.value = index;
+};
 
 const isDetailSearchBarActive = ref(true);
 const isSceneSearchBarActive = ref(true);
@@ -196,10 +221,10 @@ const onLoadLikeAttractions = () => {
   attractionAPI.getLikeAttractions(
     likeResult.value.page,
     ({ data }) => {
-      console.log("여길보세요", data);
       likeResult.value.totalCount = data.totalCount;
       likeResult.value.items = data.items;
       searchResult.value.likes = likeResult.value.items.map((item) => item.no);
+      updateMarkers(likeResult.value.items);
     },
     () => {
       console.log("likeAttractions 로드 실패!");
@@ -370,10 +395,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
   >
     <button
       class="w-16 h-16 group flex flex-col justify-center items-center"
-      @click="
-        sideBarIndex = 0;
-        isDetailSearchBarActive = true;
-      "
+      @click="onChangeSideBarIndex(0)"
     >
       <svg
         class="w-7 h-7 mb-1 group-hover:fill-main-400"
@@ -396,10 +418,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
 
     <button
       class="w-16 h-16 group flex flex-col justify-center items-center"
-      @click="
-        sideBarIndex = 1;
-        isSceneSearchBarActive = true;
-      "
+      @click="onChangeSideBarIndex(1)"
     >
       <svg
         class="w-7 h-7 mb-1 group-hover:fill-main-400"
@@ -422,10 +441,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
 
     <button
       class="w-16 h-16 group flex flex-col justify-center items-center"
-      @click="
-        sideBarIndex = 2;
-        onLoadLikeAttractions();
-      "
+      @click="onChangeSideBarIndex(2)"
     >
       <svg
         class="w-7 h-7 mb-1 group-hover:fill-main-400"

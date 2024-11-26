@@ -50,7 +50,19 @@ public class PostController {
 
     @Transactional
     @GetMapping("/{no}")
-    public ResponseEntity<PostDetailDTO> getPost(@PathVariable("no") int postNo, HttpSession session) {
+    @Operation(
+        summary = "게시글 상세 조회",
+        description = "게시글 번호를 사용하여 게시글과 댓글을 조회합니다."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "게시글 상세 조회 성공"),
+        @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음")
+    })
+    public ResponseEntity<PostDetailDTO> getPost(
+        @Parameter(description = "게시글 번호", example = "1", required = true)
+        @PathVariable("no") int postNo,
+        HttpSession session
+    ) {
         // 조회 수 증가
         postService.updateViewCount(postNo);
 
@@ -156,6 +168,16 @@ public class PostController {
 	}
 
 	@PutMapping("/{no}")
+    @Operation(
+            summary = "게시글 수",
+            description = "게시글 제목, 본문, 컨텐츠 이름, 여행지 이름을 수정합니다."
+        )
+        @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "게시글 상세 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음"),
+            @ApiResponse(responseCode = "401", description = "로그인 필요"),
+            @ApiResponse(responseCode = "403", description = "작성자가 아님")
+        })
 	public ResponseEntity<Integer> updatePost(@PathVariable("no") int postNo, @RequestBody PostDTO newPost,
 			HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
@@ -193,16 +215,27 @@ public class PostController {
 		return ResponseEntity.ok(postNo);
 	}
 
-	@DeleteMapping("/{no}")
-	public ResponseEntity<Map<String, Object>> deletePost(@PathVariable("no") int postNo,
-			HttpSession session) {
+    @DeleteMapping("/{no}")
+    @Operation(
+        summary = "게시글 삭제",
+        description = "게시글 번호를 사용하여 게시글을 삭제합니다."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "게시글 삭제 성공"),
+        @ApiResponse(responseCode = "401", description = "로그인 필요"),
+        @ApiResponse(responseCode = "403", description = "작성자가 아님"),
+        @ApiResponse(responseCode = "404", description = "게시글을 찾을 수 없음")
+    })
+    public ResponseEntity<?> deletePost(
+        @Parameter(description = "게시글 번호", example = "1", required = true)
+        @PathVariable("no") int postNo,
+        HttpSession session
+    ) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
-		Map<String, Object> response = new HashMap<>();
 
 		// 세션 유효성 확인
 		if (userInfo == null) {
-			response.put("errorMsg", "로그인 정보가 없습니다.");
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 
 		String userId = userInfo.getId();
@@ -210,19 +243,17 @@ public class PostController {
 		// 게시글 가져오기
 		PostDTO post = postService.getPost(postNo);
 		if (post == null) {
-			response.put("errorMsg", "게시글을 찾을 수 없습니다.");
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 
 		// 작성자 확인
 		if (post.getUserId() == null || !userId.equals(post.getUserId())) {
-			response.put("errorMsg", "게시글의 작성자가 아닙니다.");
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 		}
 
 		postService.deletePost(postNo);
 		
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 	
 	@PutMapping("/like/{no}")

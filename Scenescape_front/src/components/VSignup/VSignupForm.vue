@@ -8,7 +8,6 @@ const inputParams = ref({
   id: "",
   pwd: "",
   pwdCheck: "",
-  nickname: "",
   email: "",
 });
 const showPwd = ref(false);
@@ -50,39 +49,13 @@ const checkValidPwdCheck = () => {
     pwdCheckInfo.value = "비밀번호가 일치하지 않습니다.";
     isValidPwdCheck.value = false;
   } else {
-    pwdCheckInfo.value = "";
+    pwdCheckInfo.value = "비밀번호가 일치합니다.";
     isValidPwdCheck.value = true;
   }
 };
 
-// 닉네임 유효성 검사
-const isValidNickname = ref(false);
-const nicknameInfo = ref("");
-const checkValidNickname = () => {
-  const regex = /^[가-힣a-zA-Z0-9]+$/;
-
-  if (
-    inputParams.value.nickname.length < 2 ||
-    inputParams.value.nickname.length > 8
-  ) {
-    nicknameInfo.value = "닉네임은 2자 이상 8자 이하여야 합니다!";
-    isValidNickname.value = false;
-  } else if (!regex.test(inputParams.value.nickname)) {
-    nicknameInfo.value = "닉네임은 한글, 영문, 숫자로만 구성되어야 합니다.";
-    isValidNickname.value = false;
-  } else {
-    nicknameInfo.value = "";
-    isValidNickname.value = true;
-  }
-};
-
 const isValid = () => {
-  return (
-    isValidId.value &&
-    isValidPwd.value &&
-    isValidPwdCheck.value &&
-    isValidNickname.value
-  );
+  return isValidId.value && isValidPwd.value && isValidPwdCheck.value;
 };
 
 const onSignup = () => {
@@ -93,7 +66,8 @@ const onSignup = () => {
       alert("회원가입 되었습니다.");
     },
     (error) => {
-      console.log(error);
+      idInfo.value = error.response.data.errorMsg;
+      isValidId.value = false;
     }
   );
 };
@@ -109,6 +83,7 @@ watch(
   () => inputParams.value.pwd,
   () => {
     checkValidPwd();
+    checkValidPwdCheck();
   }
 );
 
@@ -116,13 +91,6 @@ watch(
   () => inputParams.value.pwdCheck,
   () => {
     checkValidPwdCheck();
-  }
-);
-
-watch(
-  () => inputParams.value.nickname,
-  () => {
-    checkValidNickname();
   }
 );
 </script>
@@ -145,7 +113,7 @@ watch(
       />
       <label
         for="userId"
-        class="peer-focus:font-medium absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-main-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5"
+        class="peer-focus:font-medium absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-main-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5"
       >
         아이디
       </label>
@@ -171,7 +139,7 @@ watch(
       />
       <label
         for="userPwd"
-        class="peer-focus:font-medium absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-main-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5"
+        class="peer-focus:font-medium absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-main-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5"
       >
         비밀번호
       </label>
@@ -219,7 +187,7 @@ watch(
       />
       <label
         for="userPwdCheck"
-        class="peer-focus:font-medium absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-main-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5"
+        class="peer-focus:font-medium absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-main-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5"
       >
         비밀번호 확인
       </label>
@@ -235,31 +203,6 @@ watch(
     <div class="relative z-0 w-full mb-5">
       <input
         class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
-        type="text"
-        name="userNickname"
-        id="userNickname"
-        placeholder=""
-        required
-        v-model.lazy="inputParams.nickname"
-      />
-      <label
-        for="userNickname"
-        class="peer-focus:font-medium absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-main-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5"
-      >
-        닉네임
-      </label>
-      <p
-        v-show="!isValidNickname"
-        class="text-sm"
-        :class="isValidNickname ? 'text-main-400' : 'text-red-500'"
-      >
-        {{ nicknameInfo }}
-      </p>
-    </div>
-
-    <div class="relative z-0 w-full mb-5">
-      <input
-        class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
         type="email"
         name="userEmail"
         id="userEmail"
@@ -269,7 +212,7 @@ watch(
       />
       <label
         for="userEmail"
-        class="peer-focus:font-medium absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-main-300 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5"
+        class="peer-focus:font-medium absolute text-gray-500 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-main-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5"
       >
         이메일
       </label>
@@ -277,7 +220,7 @@ watch(
 
     <div class="text-end">
       <button
-        class="w-24 mt-2 ml-3 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+        class="w-24 mt-2 ml-3 px-3 py-2 text-sm font-medium text-white bg-main-400 rounded-lg hover:bg-main-500"
         :disabled="!isValid()"
       >
         회원가입

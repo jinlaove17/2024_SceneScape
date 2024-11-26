@@ -111,7 +111,7 @@ const onLogout = () => {
         </RouterLink>
       </div>
       <div v-else class="text-sm text-end border-b-2 border-gray-200 py-3">
-        <span class="mx-3">{{ userInfo.nickname }}님 환영합니다.</span>
+        <span class="mx-3">{{ userInfo.id }}님 환영합니다.</span>
         <RouterLink
           :to="{ name: 'mypage' }"
           class="text-gray-500 hover:text-gray-700 mx-3"
@@ -153,7 +153,7 @@ const onLogout = () => {
           <div class="flex flex-col items-center w-36">
             <RouterLink
               :to="{ name: 'search' }"
-              class="text-gray-600 hover:text-main-400 text-md pt-3"
+              class="text-gray-600 hover:text-main-500 text-md pt-3"
               @click="boardStore.resetSearchFilter"
             >
               여행 플래너
@@ -162,13 +162,13 @@ const onLogout = () => {
           <div class="flex flex-col items-center w-36">
             <RouterLink
               :to="{ name: 'board' }"
-              class="text-gray-600 hover:text-main-400 text-md pt-3"
+              class="text-gray-600 hover:text-main-500 text-md pt-3"
             >
               씬 공유 게시판
             </RouterLink>
           </div>
           <div class="flex flex-col items-center w-36">
-            <a class="text-gray-600 hover:text-main-400 text-md pt-3" href="#">
+            <a class="text-gray-600 hover:text-main-500 text-md pt-3" href="#">
               개발자 커피 사주기
             </a>
           </div>

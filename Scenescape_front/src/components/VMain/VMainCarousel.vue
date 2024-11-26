@@ -6,7 +6,7 @@ const AUTO_SLIDE_TIME = 8_000;
 
 const carouselContents = ref([
   {
-    title: "강릉 주문진",
+    title: "강릉 주문진 영진해변",
     desc: `
     "너와 함께한 모든 시간이 눈부셨다.<br />
     날이 좋아서, 날이 좋지 않아서, 날이 적당해서.<br />
@@ -15,7 +15,7 @@ const carouselContents = ref([
     img: "Guardian.jpg",
   },
   {
-    title: "경북 안동",
+    title: "경북 안동 만휴정",
     desc: `
     "바다보러 갑시다.<br/ >
     귀하가 본 엄청난 바다.<br />
@@ -109,7 +109,7 @@ const prev = (isClicked) => {
         />
         <div class="absolute left-32 top-24">
           <p class="text-2xl text-white">이곳은 어떠세요?</p>
-          <h1 class="text-5xl mt-3 mb-14">{{ content.title }} 여행</h1>
+          <h1 class="text-5xl mt-3 mb-14">{{ content.title }}</h1>
           <p class="text-lg text-gray-100 ps-4" v-html="content.desc"></p>
         </div>
       </div>

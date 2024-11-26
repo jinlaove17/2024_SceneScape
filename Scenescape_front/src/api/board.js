@@ -21,7 +21,7 @@ const searchByFilter = (filter, success, fail) => {
     }
   }
 
-  console.log(queryParams.toString());
+  console.log("/posts?" + queryParams.toString());
   boardAPI
     .get("/posts?" + queryParams.toString())
     .then(success)

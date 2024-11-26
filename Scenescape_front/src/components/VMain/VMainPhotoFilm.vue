@@ -20,19 +20,22 @@ watch(
   async (newHotPlaces) => {
     if (!newHotPlaces.length) return;
 
-    const attractionTitleList = newHotPlaces.map((item) => item.title);
+    const attractionTitleList = newHotPlaces.map((item) => ({
+      sceneTitle: item.sceneTitle,
+      attractionTitle: item.title,
+    }));
 
     // 2줄만 나타나도록 마지막 원소 제거
     attractionTitleList.pop();
 
     filmList.value = await Promise.all(
       attractionTitleList.map(
-        (title) =>
+        (item) =>
           new Promise((resolve) => {
             boardAPI.searchByFilter(
               {
-                searchType: "attractionTitle",
-                searchKeyword: title,
+                searchType: ["sceneTitle", "attractionTitle"],
+                searchKeyword: [item.sceneTitle, item.attractionTitle],
                 pageSize: 6,
                 offset: 0,
               },

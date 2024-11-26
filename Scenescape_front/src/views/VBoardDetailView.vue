@@ -48,7 +48,6 @@ onMounted(() => {
       comments.value = data.comments;
       commentsCount.value = comments.value.length;
       likeStatus.value = data.likeStatus;
-      console.log(data);
       isLoading.value = false;
       clearTimeout(skeletonTimeout);
     },

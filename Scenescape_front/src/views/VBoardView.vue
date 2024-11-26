@@ -37,6 +37,7 @@ const isPostExist = computed(() => pageInfo.value.items.length > 0);
 const isLoading = ref(true);
 
 onMounted(() => {
+  pageInfo.value.page = searchFilter.value.page;
   loadPost();
 });
 
@@ -55,7 +56,6 @@ const loadPost = () => {
       isLoading.value = false; // 로딩 완료
       pageInfo.value.totalCount = data.totalResults;
       pageInfo.value.items = data.results;
-      console.log(data);
     },
     () => {
       clearTimeout(skeletonTimeout); // 실패 시에도 타이머 제거
@@ -71,6 +71,9 @@ const onSearch = () => {
 };
 
 const onPickPost = (postNo) => {
+  // 현재 페이지 상태 정보 저장
+  searchFilter.value.page = pageInfo.value.page;
+
   router.push({
     name: "board_detail",
     params: { no: postNo },
@@ -142,7 +145,7 @@ const onChangePage = (page) => {
       </div>
 
       <button
-        class="w-24 h-10 mt-5 mx-1 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+        class="w-24 h-10 mt-5 mx-1 text-sm font-medium text-white bg-main-400 rounded-lg hover:bg-main-500"
         type="button"
         @click="onSearch"
       >

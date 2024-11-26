@@ -129,19 +129,19 @@ const onLogout = () => {
 
       <div class="relative py-3">
         <p
-          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-500 select-none"
+          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-300 select-none"
           @mouseenter="isHoveredNav = true"
         >
           나의 여행
         </p>
         <p
-          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-500 select-none"
+          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-300 select-none"
           @mouseenter="isHoveredNav = true"
         >
           게시판
         </p>
         <p
-          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-500 select-none"
+          class="inline-block w-36 text-center text-lg font-bold border-b-2 border-transparent hover:border-main-300 select-none"
           @mouseenter="isHoveredNav = true"
         >
           고객센터
@@ -153,7 +153,7 @@ const onLogout = () => {
           <div class="flex flex-col items-center w-36">
             <RouterLink
               :to="{ name: 'search' }"
-              class="text-gray-600 hover:text-main-400 text-md pt-3"
+              class="text-gray-600 hover:text-main-500 text-md pt-3"
               @click="boardStore.resetSearchFilter"
             >
               여행 플래너
@@ -162,13 +162,13 @@ const onLogout = () => {
           <div class="flex flex-col items-center w-36">
             <RouterLink
               :to="{ name: 'board' }"
-              class="text-gray-600 hover:text-main-400 text-md pt-3"
+              class="text-gray-600 hover:text-main-500 text-md pt-3"
             >
               씬 공유 게시판
             </RouterLink>
           </div>
           <div class="flex flex-col items-center w-36">
-            <a class="text-gray-600 hover:text-main-400 text-md pt-3" href="#">
+            <a class="text-gray-600 hover:text-main-500 text-md pt-3" href="#">
               개발자 커피 사주기
             </a>
           </div>

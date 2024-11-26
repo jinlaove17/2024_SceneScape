@@ -24,7 +24,6 @@ onMounted(() => {
       ({ data }) => {
         planParams.value = data;
         includedAttractions.value = data.attractions;
-        console.log(includedAttractions.value);
         updatePathMarkers(includedAttractions.value);
       },
       (error) => {
@@ -102,12 +101,12 @@ const dragStartIndex = ref(null);
 
 const onDragStart = (evt) => {
   dragStartIndex.value = evt.oldDraggableIndex;
-  console.log("Drag started at index:", dragStartIndex.value);
+  // console.log("Drag started at index:", dragStartIndex.value);
 };
 
 const onDragEnd = (evt) => {
   const dragEndIndex = evt.newDraggableIndex;
-  console.log("Drag ended at index:", dragEndIndex.value);
+  // console.log("Drag ended at index:", dragEndIndex.value);
 
   if (
     dragStartIndex.value !== null &&
@@ -125,7 +124,7 @@ const onDragEnd = (evt) => {
 
     // 마커 업데이트
     updatePathMarkers(includedAttractions.value);
-    console.log("Updated attractions:", includedAttractions.value);
+    // console.log("Updated attractions:", includedAttractions.value);
   }
 
   dragStartIndex.value = null;

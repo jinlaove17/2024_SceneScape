@@ -49,11 +49,6 @@ const onSubmitReply = () => {
     return;
   }
 
-  console.log("Reply Data:", {
-    parentNo: props.comment.no,
-    content: replyContent.value,
-  });
-
   // 부모 컴포넌트로 이벤트 전달
   emit("add-reply", {
     parentNo: props.comment.no,

@@ -27,8 +27,6 @@ const regions = [
 const chatHistory = ref(null);
 
 onMounted(() => {
-  console.log("오남운트");
-
   // 전체 드라마 제목을 로드
   attractionAPI.getSceneTitles(
     ({ data }) => {
@@ -102,8 +100,6 @@ const sendRecommendation = async (sceneTitle, region) => {
           type: "text",
           content: recommend,
         });
-
-        console.log(recommend);
       },
       (error) => {
         console.log(error);

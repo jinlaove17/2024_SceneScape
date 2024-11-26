@@ -37,7 +37,7 @@
   		</where>
 	</select>
 	
-	<select id="getLikeAttractions" parameterType="String" resultMap="attractionLikeResultMap">
+	<select id="getLikeAttractions" parameterType="map" resultMap="attractionLikeResultMap">
 	    SELECT 
 	        a.no,
 	        a.title,
@@ -60,6 +60,23 @@
 	        a.no = al.attraction_no
 	    WHERE 
 	        al.user_id = #{userId}
+	   	<!-- 페이지네이션 -->
+	    <if test="pageSize != null and pageSize > 0 and offset != null and offset >= 0">
+	        limit #{pageSize} offset #{offset}
+	    </if>
+	</select>
+	
+	<select id="countLikeAttractions" parameterType="String">
+		select 		
+			count(*)
+		from	
+			attractions a
+		inner join
+			attractionlikes al
+		on
+			a.no = al.attraction_no
+		where
+			al.user_id = #{userId}
 	</select>
 	
 	<resultMap type="AttractionDTO" id="attractionLikeResultMap">

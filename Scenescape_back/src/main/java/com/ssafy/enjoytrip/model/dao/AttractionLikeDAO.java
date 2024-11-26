@@ -18,5 +18,7 @@ public interface AttractionLikeDAO {
 	
 	List<Integer> getLikeAttractionNoList(Map<String, Object> filter);
 	
-	List<AttractionDTO> getLikeAttractions(String userId);
+	List<AttractionDTO> getLikeAttractions(Map<String, Object> filter);
+	
+	int countLikeAttractions(String userId);
 }

@@ -45,26 +45,20 @@ public class AttractionController {
 	}
 
 	@GetMapping
-	@Operation(
-	    summary = "관광지 목록 조회",
-	    description = "검색 필터와 페이지네이션 옵션을 사용해 관광지 목록을 조회합니다."
-	)
-	@ApiResponses({
-	    @ApiResponse(responseCode = "200", description = "관광지 목록 조회 성공"),
-	    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-	    @ApiResponse(responseCode = "500", description = "서버 오류")
-	})
+	@Operation(summary = "관광지 목록 조회", description = "검색 필터와 페이지네이션 옵션을 사용해 관광지 목록을 조회합니다.")
+	@ApiResponses({ @ApiResponse(responseCode = "200", description = "관광지 목록 조회 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 오류") })
 	public ResponseEntity<PagenatedAttractionDTO> getAttractions(
-	    @Parameter(description = "검색어", required = false) @RequestParam(value = "searchTerm", required = false) String searchTerm,
-	    @Parameter(description = "지역 이름", required = false) @RequestParam(value = "area", required = false) String area,
-	    @Parameter(description = "하위 지역 이름", required = false) @RequestParam(value = "subArea", required = false) String subArea,
-	    @Parameter(description = "콘텐츠 유형 (복수 선택 가능)", required = false) @RequestParam(value = "contents", required = false) String[] contents,
-	    @Parameter(description = "드라마/영화 이름", required = false) @RequestParam(value = "sceneTitle", required = false) String sceneTitle,
-	    @Parameter(description = "정렬 방식", required = false) @RequestParam(value = "sortType", required = false) String sortType,
-	    @Parameter(description = "페이지 번호", example = "1") @RequestParam(value = "page", defaultValue = "1") int page,
-	    @Parameter(description = "페이지 크기", example = "6") @RequestParam(value = "pageSize", defaultValue = "6") int pageSize,
-	    HttpSession session
-	) {
+			@Parameter(description = "검색어", required = false) @RequestParam(value = "searchTerm", required = false) String searchTerm,
+			@Parameter(description = "지역 이름", required = false) @RequestParam(value = "area", required = false) String area,
+			@Parameter(description = "하위 지역 이름", required = false) @RequestParam(value = "subArea", required = false) String subArea,
+			@Parameter(description = "콘텐츠 유형 (복수 선택 가능)", required = false) @RequestParam(value = "contents", required = false) String[] contents,
+			@Parameter(description = "드라마/영화 이름", required = false) @RequestParam(value = "sceneTitle", required = false) String sceneTitle,
+			@Parameter(description = "정렬 방식", required = false) @RequestParam(value = "sortType", required = false) String sortType,
+			@Parameter(description = "페이지 번호", example = "1") @RequestParam(value = "page", defaultValue = "1") int page,
+			@Parameter(description = "페이지 크기", example = "6") @RequestParam(value = "pageSize", defaultValue = "6") int pageSize,
+			HttpSession session) {
 		Map<String, Object> filter = new HashMap<>();
 		filter.put("searchTerm", searchTerm);
 		filter.put("area", area);
@@ -92,14 +86,14 @@ public class AttractionController {
 
 		if (userInfo != null) {
 			int[] attractionNoList = new int[attractions.size()];
-			
+
 			for (int i = 0; i < attractions.size(); ++i) {
 				attractionNoList[i] = attractions.get(i).getNo();
 			}
-			
+
 			filter.put("userId", userInfo.getId());
 			filter.put("attractionNoList", attractionNoList);
-			
+
 			List<Integer> likeAttractionNoList = attractionLikeService.getLikeAttractionNoList(filter);
 			result.setLikes(likeAttractionNoList);
 		}
@@ -108,14 +102,9 @@ public class AttractionController {
 	}
 
 	@GetMapping("/titles")
-	@Operation(
-	    summary = "관광지 제목 목록 조회",
-	    description = "모든 관광지 제목 목록을 조회합니다."
-	)
-	@ApiResponses({
-	    @ApiResponse(responseCode = "200", description = "관광지 제목 목록 조회 성공"),
-	    @ApiResponse(responseCode = "500", description = "서버 오류")
-	})
+	@Operation(summary = "관광지 제목 목록 조회", description = "모든 관광지 제목 목록을 조회합니다.")
+	@ApiResponses({ @ApiResponse(responseCode = "200", description = "관광지 제목 목록 조회 성공"),
+			@ApiResponse(responseCode = "500", description = "서버 오류") })
 	public ResponseEntity<List<SceneTitleDTO>> getSceneTitles() {
 		List<SceneTitleDTO> result = new ArrayList<>();
 		List<String> titles = attractionService.getSceneTitles();
@@ -132,23 +121,18 @@ public class AttractionController {
 
 	@Transactional
 	@PostMapping("/like/{attractionNo}")
-	@Operation(
-	    summary = "관광지 좋아요 업데이트",
-	    description = "특정 관광지의 좋아요 상태를 업데이트합니다."
-	)
-	@ApiResponses({
-	    @ApiResponse(responseCode = "200", description = "좋아요 업데이트 성공"),
-	    @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-	    @ApiResponse(responseCode = "500", description = "서버 오류")
-	})
+	@Operation(summary = "관광지 좋아요 업데이트", description = "특정 관광지의 좋아요 상태를 업데이트합니다.")
+	@ApiResponses({ @ApiResponse(responseCode = "200", description = "좋아요 업데이트 성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 오류") })
 	public ResponseEntity<Integer> updateLikeCount(
-	    @Parameter(description = "관광지 번호", required = true) @PathVariable("attractionNo") int attractionNo,
-	    HttpSession session) {
+			@Parameter(description = "관광지 번호", required = true) @PathVariable("attractionNo") int attractionNo,
+			HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
 		if (userInfo == null) {
 			return ResponseEntity.badRequest().build();
 		}
-		
+
 		String userId = userInfo.getId();
 		int result = attractionLikeService.updateLikeCount(new AttractionLikeDTO(userId, attractionNo));
 
@@ -165,19 +149,35 @@ public class AttractionController {
 
 		return ResponseEntity.badRequest().build();
 	}
-	
+
+	@Transactional
 	@GetMapping("/likes")
-	@Operation (
-			summary = "좋아요 누른 관광지 조회",
-			description = "좋아요를 누른 관광지 전체 리스트를 조회합니다."
-	)
-	public ResponseEntity<List<AttractionDTO>> getLikeAttractions (HttpSession session) {
+	@Operation(summary = "좋아요 누른 관광지 조회", description = "좋아요를 누른 관광지 전체 리스트를 조회합니다.")
+	public ResponseEntity<PagenatedAttractionDTO> getLikeAttractions(
+			@RequestParam(value = "page", defaultValue = "1") int page,
+			@RequestParam(value = "pageSize", defaultValue = "6") int pageSize, HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
-		
-		if(userInfo == null) {
+
+		if (userInfo == null) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 		
-		return ResponseEntity.ok(attractionLikeService.getLikeAttractions(userInfo.getId()));
+		int totalCount = attractionLikeService.countLikeAttractions(userInfo.getId());
+		int offset = (page - 1) * pageSize;
+		
+		Map<String, Object> filter = new HashMap<>();
+		filter.put("userId", userInfo.getId());
+		filter.put("userId", "jj");
+		filter.put("pageSize", pageSize);
+		filter.put("offset", offset);
+		
+		List<AttractionDTO> attractions = attractionLikeService.getLikeAttractions(filter);
+		PagenatedAttractionDTO result = new PagenatedAttractionDTO();
+		
+		result.setTotalCount(totalCount);
+		result.setPage(page);
+		result.setItems(attractions);
+		
+		return ResponseEntity.ok(result);
 	}
 }

@@ -36,7 +36,11 @@ public class AttractionLikeService {
 		return attractionLikeDAO.getLikeAttractionNoList(filter);
 	}
 	
-	public List<AttractionDTO> getLikeAttractions(String userId) {
-		return attractionLikeDAO.getLikeAttractions(userId);
+	public List<AttractionDTO> getLikeAttractions(Map<String, Object> filter) {
+		return attractionLikeDAO.getLikeAttractions(filter);
+	}
+	
+	public int countLikeAttractions(String userId) {
+		return attractionLikeDAO.countLikeAttractions(userId);
 	}
 }

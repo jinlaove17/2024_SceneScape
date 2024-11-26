@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.ssafy.enjoytrip.model.dto.AttractionDTO;
 import com.ssafy.enjoytrip.model.dto.AttractionLikeDTO;
 
 @Mapper
@@ -16,4 +17,6 @@ public interface AttractionLikeDAO {
 	int select(AttractionLikeDTO attractionLikeDTO);
 	
 	List<Integer> getLikeAttractionNoList(Map<String, Object> filter);
+	
+	List<AttractionDTO> getLikeAttractions(String userId);
 }

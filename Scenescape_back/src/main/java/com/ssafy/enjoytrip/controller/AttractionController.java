@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -163,5 +164,20 @@ public class AttractionController {
 		}
 
 		return ResponseEntity.badRequest().build();
+	}
+	
+	@GetMapping("/likes")
+	@Operation (
+			summary = "좋아요 누른 관광지 조회",
+			description = "좋아요를 누른 관광지 전체 리스트를 조회합니다."
+	)
+	public ResponseEntity<List<AttractionDTO>> getLikeAttractions (HttpSession session) {
+		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
+		
+		if(userInfo == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		
+		return ResponseEntity.ok(attractionLikeService.getLikeAttractions(userInfo.getId()));
 	}
 }

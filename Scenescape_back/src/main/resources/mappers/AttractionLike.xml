@@ -36,4 +36,45 @@
     		</foreach>
   		</where>
 	</select>
+	
+	<select id="getLikeAttractions" parameterType="String" resultMap="attractionLikeResultMap">
+	    SELECT 
+	        a.no,
+	        a.title,
+	        a.scene_title,
+	        a.content_type_id,
+	        a.area_code,
+	        a.si_gun_gu_code,
+	        a.address,
+	        a.latitude,
+	        a.longitude,
+	        a.overview,
+	        a.img,
+	        a.tel,
+	        a.like_count
+	    FROM 
+	        attractions a
+	    INNER JOIN 
+	        attractionlikes al
+	    ON 
+	        a.no = al.attraction_no
+	    WHERE 
+	        al.user_id = #{userId}
+	</select>
+	
+	<resultMap type="AttractionDTO" id="attractionLikeResultMap">
+		<result property="no" column="no" />
+		<result property="title" column="title" />
+		<result property="sceneTitle" column="scene_title" />
+		<result property="contentTypeID" column="content_type_id" />
+		<result property="areaCode" column="area_code" />
+		<result property="sigunguCode" column="si_gun_gu_code" />
+		<result property="address" column="address" />
+		<result property="latitude" column="latitude" />
+		<result property="longitude" column="longitude" />
+		<result property="overview" column="overview" />
+		<result property="img" column="img" />
+		<result property="tel" column="tel" />
+		<result property="likeCount" column="like_count" />
+	</resultMap>
 </mapper>

@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.enjoytrip.model.dao.AttractionLikeDAO;
-import com.ssafy.enjoytrip.model.dao.PostLikeDAO;
+import com.ssafy.enjoytrip.model.dto.AttractionDTO;
 import com.ssafy.enjoytrip.model.dto.AttractionLikeDTO;
-import com.ssafy.enjoytrip.model.dto.PostLikeDTO;
 
 @Service
 public class AttractionLikeService {
@@ -35,5 +34,9 @@ public class AttractionLikeService {
 
 	public List<Integer> getLikeAttractionNoList(Map<String, Object> filter) {
 		return attractionLikeDAO.getLikeAttractionNoList(filter);
+	}
+	
+	public List<AttractionDTO> getLikeAttractions(String userId) {
+		return attractionLikeDAO.getLikeAttractions(userId);
 	}
 }

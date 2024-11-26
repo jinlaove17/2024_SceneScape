@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { defineStore } from "pinia";
 import userAPI from "@/api/user";
@@ -7,22 +7,29 @@ export const useUserStore = defineStore(
   "user",
   () => {
     const router = useRouter();
-    const orgUserInfo = ref({
+    const redirectPath = ref({});
+    const userInfo = ref({
       id: "",
       pwd: "",
       nickname: "",
       email: "",
     });
 
-    // getter
-    const userInfo = computed(() => orgUserInfo.value);
+    const setRedirectPath = (path) => {
+      redirectPath.value = path;
+    };
 
     const loginUser = (user, success, fail) => {
       userAPI.loginUser(
         user,
         ({ data }) => {
-          orgUserInfo.value = data.userInfo;
-          router.replace({ name: "main" });
+          userInfo.value = data.userInfo;
+          if (redirectPath.value) {
+            router.push(redirectPath.value);
+            redirectPath.value = null;
+          } else {
+            router.replace({ name: "main" });
+          }
 
           if (success) {
             success();
@@ -56,7 +63,7 @@ export const useUserStore = defineStore(
       userAPI.updateUser(
         user,
         () => {
-          orgUserInfo.value = user;
+          userInfo.value = user;
           router.replace({ name: "main" });
 
           if (success) {
@@ -72,7 +79,7 @@ export const useUserStore = defineStore(
     };
     const deleteUser = (success, fail) => {
       userAPI.deleteUser(
-        orgUserInfo.value.id,
+        userInfo.value.id,
         () => {
           reset();
           router.replace({ name: "main" });
@@ -89,14 +96,16 @@ export const useUserStore = defineStore(
       );
     };
     const reset = () => {
-      orgUserInfo.value.id = "";
-      orgUserInfo.value.pwd = "";
-      orgUserInfo.value.nickname = "";
-      orgUserInfo.value.email = "";
+      userInfo.value.id = "";
+      userInfo.value.pwd = "";
+      userInfo.value.nickname = "";
+      userInfo.value.email = "";
     };
 
     return {
-      orgUserInfo,
+      redirectPath,
+      setRedirectPath,
+
       userInfo,
       loginUser,
       logoutUser,

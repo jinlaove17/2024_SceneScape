@@ -75,7 +75,7 @@ const range = (start, end) => {
         v-for="page in range(startPage, endPage)"
         :key="page"
         class="flex items-center justify-center px-2 h-8 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-        :class="page == props.pageInfo.page ? 'bg-main-100' : 'bg-white'"
+        :class="page == props.pageInfo.page ? 'bg-main-200' : 'bg-white'"
         @click="onChangePage(page)"
       >
         {{ page }}

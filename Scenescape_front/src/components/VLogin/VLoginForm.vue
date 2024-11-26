@@ -4,8 +4,8 @@ import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 
 const router = useRouter();
-const store = useUserStore();
-const { loginUser } = store;
+const userStore = useUserStore();
+const { loginUser } = userStore;
 
 const inputParams = ref({
   id: "",

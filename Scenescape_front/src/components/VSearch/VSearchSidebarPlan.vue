@@ -1,12 +1,17 @@
 <script setup>
 import { ref, computed, readonly } from "vue";
+import { useRouter } from "vue-router";
 
+import { storeToRefs } from "pinia";
 import { useUserStore } from "@/stores/user";
 
 import VSearchSidebarPlanList from "./VSearchSidebarPlanList.vue";
 import VSearchSidebarPlanForm from "./VSearchSidebarPlanForm.vue";
 
-const { userInfo } = useUserStore();
+const router = useRouter();
+
+const userStore = useUserStore();
+const { userInfo } = storeToRefs(userStore);
 
 // 애니메이션 관련
 const isOpen = ref(true);
@@ -21,8 +26,12 @@ const mode = ref(MODE_LIST);
 const selectedPlan = ref({});
 
 const onGoForm = (plan) => {
-  if (!userInfo.id) {
+  if (!userInfo.value.id) {
     alert("로그인 후 이용 가능합니다.");
+    userStore.setRedirectPath({
+      name: router.currentRoute.value.name,
+    });
+    router.push({ name: "login" });
     return;
   }
 

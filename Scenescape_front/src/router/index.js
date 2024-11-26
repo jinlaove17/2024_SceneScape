@@ -32,7 +32,7 @@ const router = createRouter({
       component: () => import("@/views/VSignupView.vue"),
     },
     {
-      path: "/search",
+      path: "/search/:title?",
       name: "search",
       component: () => import("@/views/VSearchView.vue"),
     },
@@ -42,7 +42,7 @@ const router = createRouter({
       component: () => import("@/views/VBoardView.vue"),
     },
     {
-      path: "/board/detail/:no",
+      path: "/board/:no",
       name: "board_detail",
       component: () => import("@/views/VBoardDetailView.vue"),
     },

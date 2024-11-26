@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted, inject } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 import attractionAPI from "@/api/attraction";
 import areaAPI from "@/api/area";
@@ -17,7 +18,12 @@ const NAVIGATION_SIZE = parseInt(
   import.meta.env.VITE_ATTRACTION_NAVIGATION_SIZE
 );
 
+const route = useRoute();
+const router = useRouter();
+
 onMounted(() => {
+  console.log("마운트");
+
   attractionAPI.getSceneTitles(
     ({ data }) => {
       sceneTitleList.value = data;
@@ -46,6 +52,11 @@ onMounted(() => {
       console.log("areaInfoList 로드 실패!");
     }
   );
+
+  if (route.query.title) {
+    searchTerm.value = route.query.title;
+    onDetailSearch();
+  }
 });
 
 // 프롭스 관련
@@ -209,6 +220,11 @@ const onSearchByScene = () => {
 };
 
 const onDetailSearch = () => {
+  router.push({
+    name: route.name,
+    query: { ...route.query, title: searchTerm.value },
+  });
+
   attractionAPI.searchByFilter(
     {
       searchTerm: searchTerm.value || null,
@@ -243,10 +259,13 @@ const onChangePage = (page) => {
   searchResult.value.page = page;
 
   switch (searchMode.value) {
-    case 0: // 씬 검색
+    case 0: // 상세 검색
       attractionAPI.searchByFilter(
         {
-          sceneTitle: selectedScene.value.title,
+          searchTerm: searchTerm.value || null,
+          area: selectedArea.value.areaCode || null,
+          subArea: selectedSubArea.value.subAreaCode || null,
+          contents: contents.value,
           page,
         },
         ({ data }) => {
@@ -258,13 +277,10 @@ const onChangePage = (page) => {
         }
       );
       break;
-    case 1: // 상세 검색
+    case 1: // 씬 검색
       attractionAPI.searchByFilter(
         {
-          searchTerm: searchTerm.value || null,
-          area: selectedArea.value.areaCode || null,
-          subArea: selectedSubArea.value.subAreaCode || null,
-          contents: contents.value,
+          sceneTitle: selectedScene.value.title,
           page,
         },
         ({ data }) => {
@@ -329,7 +345,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
         viewBox="0 0 512 512"
       >
         <path
-          d="M48 208l416 0 0 208c0 8.8-7.2 16-16 16L64 432c-8.8 0-16-7.2-16-16l0-208zm352-48l-64 0 80-80 32 0c8.8 0 16 7.2 16 16l-64 64zM320 80l-80 80-64 0 80-80 64 0zM160 80L80 160l-32 0 0-32L96 80l64 0zm352 80l0-64c0-35.3-28.7-64-64-64L64 32C28.7 32 0 60.7 0 96l0 64 0 24 0 24L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208 0-24 0-24z"
+          d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM288 176c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 48.8 46.5 111.6 68.6 138.6c6 7.3 16.8 7.3 22.7 0c22.1-27 68.6-89.8 68.6-138.6zm-112 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"
         />
       </svg>
 
@@ -337,7 +353,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
         class="text-xs group-hover:text-main-300"
         :class="searchMode == 0 ? 'text-main-300' : 'text-gray-300'"
       >
-        씬 검색
+        상세 검색
       </p>
     </button>
 
@@ -352,7 +368,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
         viewBox="0 0 512 512"
       >
         <path
-          d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM288 176c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 48.8 46.5 111.6 68.6 138.6c6 7.3 16.8 7.3 22.7 0c22.1-27 68.6-89.8 68.6-138.6zm-112 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"
+          d="M48 208l416 0 0 208c0 8.8-7.2 16-16 16L64 432c-8.8 0-16-7.2-16-16l0-208zm352-48l-64 0 80-80 32 0c8.8 0 16 7.2 16 16l-64 64zM320 80l-80 80-64 0 80-80 64 0zM160 80L80 160l-32 0 0-32L96 80l64 0zm352 80l0-64c0-35.3-28.7-64-64-64L64 32C28.7 32 0 60.7 0 96l0 64 0 24 0 24L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208 0-24 0-24z"
         />
       </svg>
 
@@ -360,7 +376,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
         class="text-xs group-hover:text-main-300"
         :class="searchMode == 1 ? 'text-main-300' : 'text-gray-300'"
       >
-        상세 검색
+        씬 검색
       </p>
     </button>
   </div>
@@ -399,74 +415,9 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
     </button>
 
     <div class="w-full h-full pb-3 flex flex-col items-center overflow-hidden">
-      <!-- 씬 검색 -->
-      <div v-show="searchMode === 0" class="relative w-full pb-2">
-        <div
-          class="absolute w-96 bg-gray-50 drop-shadow-md transition-all duration-300 rounded-b-xl"
-          :class="
-            isSceneSearchBarActive ? 'translate-y-0' : '-translate-y-full'
-          "
-        >
-          <div class="w-80 mx-auto">
-            <VSearchDropdown
-              :header="'컨텐츠(영화, 드라마, 예능 등)'"
-              :items="sceneTitleList"
-              :selected-item="selectedScene"
-              :use-property="'title'"
-              @change-selection="setTitle"
-            />
-
-            <div class="text-center mb-3 mx-auto">
-              <button
-                class="w-24 mt-1 mr-2 px-3 py-2 text-sm text-white bg-main-300 rounded-lg hover:bg-main-400"
-                type="button"
-                @click="onReset"
-              >
-                초기화
-              </button>
-
-              <button
-                class="w-24 mt-1 px-3 py-2 text-sm text-white bg-main-300 rounded-lg hover:bg-main-400"
-                @click="onSearchByScene"
-              >
-                검색하기
-              </button>
-            </div>
-          </div>
-
-          <button
-            class="absolute flex justify-center items-center w-12 h-5 transform left-1/2 -translate-x-1/2 rounded-b-md bg-white drop-shadow-md text-center cursor-pointer"
-            type="button"
-            @click="isSceneSearchBarActive = !isSceneSearchBarActive"
-          >
-            <svg
-              v-show="!isSceneSearchBarActive"
-              class="w-5 h-5 fill-main-300 mb-3"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 320 512"
-            >
-              <path
-                d="M182.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-9.2-9.2-11.9-22.9-6.9-34.9s16.6-19.8 29.6-19.8l256 0c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-128 128z"
-              />
-            </svg>
-
-            <svg
-              v-show="isSceneSearchBarActive"
-              class="w-5 h-5 fill-main-300 mt-2"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 320 512"
-            >
-              <path
-                d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8l256 0c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-
       <!-- 상세 검색 -->
       <div
-        v-show="searchMode === 1"
+        v-show="searchMode === 0"
         class="relative w-full pb-2 border-gray-200"
       >
         <div
@@ -572,6 +523,71 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
 
             <svg
               v-show="isNoramlSearchBarActive"
+              class="w-5 h-5 fill-main-300 mt-2"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 320 512"
+            >
+              <path
+                d="M182.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-9.2 9.2-11.9 22.9-6.9 34.9s16.6 19.8 29.6 19.8l256 0c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-128-128z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 씬 검색 -->
+      <div v-show="searchMode === 1" class="relative w-full pb-2">
+        <div
+          class="absolute w-96 bg-gray-50 drop-shadow-md transition-all duration-300 rounded-b-xl"
+          :class="
+            isSceneSearchBarActive ? 'translate-y-0' : '-translate-y-full'
+          "
+        >
+          <div class="w-80 mx-auto">
+            <VSearchDropdown
+              :header="'컨텐츠(영화, 드라마, 예능 등)'"
+              :items="sceneTitleList"
+              :selected-item="selectedScene"
+              :use-property="'title'"
+              @change-selection="setTitle"
+            />
+
+            <div class="text-center mb-3 mx-auto">
+              <button
+                class="w-24 mt-1 mr-2 px-3 py-2 text-sm text-white bg-main-300 rounded-lg hover:bg-main-400"
+                type="button"
+                @click="onReset"
+              >
+                초기화
+              </button>
+
+              <button
+                class="w-24 mt-1 px-3 py-2 text-sm text-white bg-main-300 rounded-lg hover:bg-main-400"
+                @click="onSearchByScene"
+              >
+                검색하기
+              </button>
+            </div>
+          </div>
+
+          <button
+            class="absolute flex justify-center items-center w-12 h-5 transform left-1/2 -translate-x-1/2 rounded-b-md bg-white drop-shadow-md text-center cursor-pointer"
+            type="button"
+            @click="isSceneSearchBarActive = !isSceneSearchBarActive"
+          >
+            <svg
+              v-show="!isSceneSearchBarActive"
+              class="w-5 h-5 fill-main-300 mb-3"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 320 512"
+            >
+              <path
+                d="M182.6 470.6c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-9.2-9.2-11.9-22.9-6.9-34.9s16.6-19.8 29.6-19.8l256 0c12.9 0 24.6 7.8 29.6 19.8s2.2 25.7-6.9 34.9l-128 128z"
+              />
+            </svg>
+
+            <svg
+              v-show="isSceneSearchBarActive"
               class="w-5 h-5 fill-main-300 mt-2"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 320 512"

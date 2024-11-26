@@ -1,10 +1,10 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted } from "vue";
 import imageLoader from "@/utils/image-loader";
 
 const FILM_FRAME_SIZE = 320;
 const MAX_WIDTH = 1920;
-const ANIMATION_SPEED = 1;
+const ANIMATION_SPEED = 0.5;
 
 const leftFilms = ref([
   {

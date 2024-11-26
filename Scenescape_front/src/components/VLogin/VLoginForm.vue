@@ -91,14 +91,14 @@ const onLogin = () => {
 
     <div class="text-center">
       <button
-        class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+        class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-main-400 rounded-lg hover:bg-main-500"
         type="button"
         @click="onGoFindPassword"
       >
         비밀번호 찾기
       </button>
       <button
-        class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+        class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-main-400 rounded-lg hover:bg-main-500"
         @click="onLogin"
       >
         로그인

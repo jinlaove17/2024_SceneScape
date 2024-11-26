@@ -3,7 +3,6 @@ import { localAxios } from "@/utils/http-commons";
 const userAPI = localAxios();
 
 const registerUser = (user, success, fail) => {
-  console.log(user);
   userAPI.post("/user", user).then(success).catch(fail);
 };
 

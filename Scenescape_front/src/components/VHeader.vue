@@ -111,7 +111,7 @@ const onLogout = () => {
         </RouterLink>
       </div>
       <div v-else class="text-sm text-end border-b-2 border-gray-200 py-3">
-        <span class="mx-3">{{ userInfo.nickname }}님 환영합니다.</span>
+        <span class="mx-3">{{ userInfo.id }}님 환영합니다.</span>
         <RouterLink
           :to="{ name: 'mypage' }"
           class="text-gray-500 hover:text-gray-700 mx-3"

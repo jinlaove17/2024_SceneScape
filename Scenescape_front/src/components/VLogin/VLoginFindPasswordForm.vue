@@ -6,17 +6,17 @@ const inputParams = ref({
   id: "",
   email: "",
 });
-const tempPassword = ref("");
+const errorMsg = ref("");
 
 const onFindPassword = () => {
   userAPI.findPassword(
     inputParams.value,
-    ({ data }) => {
-      tempPassword.value = data.tmpPwd;
-      alert("임시 비밀번호가 발급 되었습니다.");
-    },
     () => {
-      alert("아이디 혹은 이메일을 확인해주세요.");
+      alert("해당 이메일로 임시 비밀번호가 발급 되었습니다.");
+    },
+    (error) => {
+      console.log(error.response.data);
+      errorMsg.value = error.response.data;
     }
   );
 };
@@ -28,7 +28,7 @@ const onFindPassword = () => {
     class="w-[24rem] mx-auto border-2 rounded-lg p-8"
     @submit.prevent="onFindPassword"
   >
-    <div v-if="tempPassword === ''">
+    <div>
       <div class="relative z-0 w-full mb-5">
         <input
           class="block pt-2 px-0 w-full text-lg text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-main-300 peer"
@@ -63,21 +63,18 @@ const onFindPassword = () => {
         >
           이메일
         </label>
+        <p class="text-sm text-red-500">
+          {{ errorMsg }}
+        </p>
       </div>
 
       <div class="text-end">
         <button
-          class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+          class="w-24 mx-2 mt-3 px-3 py-2 text-sm font-medium text-white bg-main-400 rounded-lg hover:bg-main-500"
         >
           비밀번호 찾기
         </button>
       </div>
-    </div>
-    <div v-else class="text-center">
-      <p class="text-xl">
-        임시 비밀번호는
-        <span class="text-red-500">{{ tempPassword }}</span> 입니다.
-      </p>
     </div>
   </form>
 </template>

@@ -7,7 +7,7 @@ export const useUserStore = defineStore(
   "user",
   () => {
     const router = useRouter();
-    const redirectPath = ref({});
+    const redirectPath = ref(null);
     const userInfo = ref({
       id: "",
       pwd: "",
@@ -16,6 +16,7 @@ export const useUserStore = defineStore(
     });
 
     const setRedirectPath = (path) => {
+      console.log("셋리다");
       redirectPath.value = path;
     };
 
@@ -25,6 +26,7 @@ export const useUserStore = defineStore(
         ({ data }) => {
           userInfo.value = data.userInfo;
           if (redirectPath.value) {
+            console.log("이값을 봐라", redirectPath.value);
             router.push(redirectPath.value);
             redirectPath.value = null;
           } else {

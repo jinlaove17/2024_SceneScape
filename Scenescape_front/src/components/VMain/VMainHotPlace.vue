@@ -77,7 +77,7 @@ onMounted(() => {
               </span>
             </h1>
 
-            <p class="text-sm text-main-300">{{ hotPlace.sceneTitle }}</p>
+            <p class="text-sm text-main-500">{{ hotPlace.sceneTitle }}</p>
           </div>
 
           <p class="font-normal text-gray-700">{{ hotPlace.address }}</p>
@@ -92,7 +92,7 @@ onMounted(() => {
           <div class="text-end">
             <RouterLink
               :to="{ name: 'search', query: { title: hotPlace.title } }"
-              class="px-4 py-3 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400 focus:ring-4 focus:outline-none focus:ring-main-100"
+              class="px-4 py-3 text-sm font-medium text-white bg-main-400 rounded-lg hover:bg-main-500 focus:ring-4 focus:outline-none focus:ring-main-100"
             >
               상세 보기
             </RouterLink>

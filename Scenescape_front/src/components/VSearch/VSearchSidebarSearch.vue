@@ -50,6 +50,8 @@ onMounted(() => {
     }
   );
 
+  onLoadLikeAttractions();
+
   if (route.query.title) {
     searchTerm.value = route.query.title;
     onDetailSearch();
@@ -108,10 +110,10 @@ const CONTENT_LIST = [
   },
 ];
 
-const searchMode = ref(0);
+const sideBarIndex = ref(0);
 
+const isDetailSearchBarActive = ref(true);
 const isSceneSearchBarActive = ref(true);
-const isNoramlSearchBarActive = ref(true);
 
 const contentsBit = ref(0);
 const checkContent = (num) => {
@@ -180,6 +182,40 @@ const getSubAreas = (areaName) => {
   return [];
 };
 
+// 좋아요 목록
+const likeResult = ref({
+  totalCount: 0,
+  items: [],
+  page: 1,
+});
+const isLikeAttractionsExist = computed(
+  () => likeResult.value.items.length > 0
+);
+
+const onLoadLikeAttractions = () => {
+  attractionAPI.getLikeAttractions(
+    likeResult.value.page,
+    ({ data }) => {
+      console.log("여길보세요", data);
+      likeResult.value.totalCount = data.totalCount;
+      likeResult.value.items = data.items;
+      searchResult.value.likes = likeResult.value.items.map((item) => item.no);
+    },
+    () => {
+      console.log("likeAttractions 로드 실패!");
+    }
+  );
+};
+
+const onChangeLikePage = (page) => {
+  if (likeResult.value.page === page) {
+    return;
+  }
+
+  likeResult.value.page = page;
+  onLoadLikeAttractions();
+};
+
 const onReset = () => {
   searchTerm.value = "";
 
@@ -245,16 +281,16 @@ const searchResult = ref({
   likes: [],
   page: 1,
 });
-const isItemExist = computed(() => searchResult.value.items.length > 0);
+const isSearchResultExist = computed(() => searchResult.value.items.length > 0);
 
-const onChangePage = (page) => {
+const onChangeSearchPage = (page) => {
   if (searchResult.value.page === page) {
     return;
   }
 
   searchResult.value.page = page;
 
-  switch (searchMode.value) {
+  switch (sideBarIndex.value) {
     case 0: // 상세 검색
       attractionAPI.searchByFilter(
         {
@@ -309,7 +345,11 @@ const onUpdateLikeCount = (item) => {
 
   attractionAPI.updateLikeCount(
     item.no,
-    () => {},
+    () => {
+      if (sideBarIndex.value === 2) {
+        onLoadLikeAttractions();
+      }
+    },
     () => {
       console.log("updateLikeCount 실패");
     }
@@ -330,11 +370,14 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
   >
     <button
       class="w-16 h-16 group flex flex-col justify-center items-center"
-      @click="searchMode = 0"
+      @click="
+        sideBarIndex = 0;
+        isDetailSearchBarActive = true;
+      "
     >
       <svg
-        class="w-7 h-7 mb-1 group-hover:fill-main-300"
-        :class="searchMode == 0 ? 'fill-main-300' : 'fill-gray-300'"
+        class="w-7 h-7 mb-1 group-hover:fill-main-400"
+        :class="sideBarIndex == 0 ? 'fill-main-400' : 'fill-gray-300'"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 512 512"
       >
@@ -344,8 +387,8 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
       </svg>
 
       <p
-        class="text-xs group-hover:text-main-300"
-        :class="searchMode == 0 ? 'text-main-300' : 'text-gray-300'"
+        class="text-xs group-hover:text-main-400"
+        :class="sideBarIndex == 0 ? 'text-main-400' : 'text-gray-400'"
       >
         상세 검색
       </p>
@@ -353,11 +396,14 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
 
     <button
       class="w-16 h-16 group flex flex-col justify-center items-center"
-      @click="searchMode = 1"
+      @click="
+        sideBarIndex = 1;
+        isSceneSearchBarActive = true;
+      "
     >
       <svg
-        class="w-7 h-7 mb-1 group-hover:fill-main-300"
-        :class="searchMode == 1 ? 'fill-main-300' : 'fill-gray-300'"
+        class="w-7 h-7 mb-1 group-hover:fill-main-400"
+        :class="sideBarIndex == 1 ? 'fill-main-400' : 'fill-gray-300'"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 512 512"
       >
@@ -367,10 +413,36 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
       </svg>
 
       <p
-        class="text-xs group-hover:text-main-300"
-        :class="searchMode == 1 ? 'text-main-300' : 'text-gray-300'"
+        class="text-xs group-hover:text-main-400"
+        :class="sideBarIndex == 1 ? 'text-main-400' : 'text-gray-300'"
       >
         씬 검색
+      </p>
+    </button>
+
+    <button
+      class="w-16 h-16 group flex flex-col justify-center items-center"
+      @click="
+        sideBarIndex = 2;
+        onLoadLikeAttractions();
+      "
+    >
+      <svg
+        class="w-7 h-7 mb-1 group-hover:fill-main-400"
+        :class="sideBarIndex == 2 ? 'fill-main-400' : 'fill-gray-300'"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 512 512"
+      >
+        <path
+          d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"
+        />
+      </svg>
+
+      <p
+        class="text-xs group-hover:text-main-400"
+        :class="sideBarIndex == 2 ? 'text-main-400' : 'text-gray-400'"
+      >
+        좋아요 목록
       </p>
     </button>
   </div>
@@ -380,6 +452,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
     :class="openAnimation"
     @submit.prevent
   >
+    <!-- 사이드 바 버튼 -->
     <button
       class="absolute w-7 h-12 flex justify-center items-center top-1/2 transform -translate-x-full -translate-y-1/2 bg-white rounded-l-lg border border-r-transparent border-l-gray-200"
       type="button"
@@ -387,7 +460,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
     >
       <svg
         v-show="isOpen"
-        class="w-5 h-5 fill-main-300"
+        class="w-5 h-5 fill-main-400"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 256 512"
       >
@@ -398,7 +471,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
 
       <svg
         v-show="!isOpen"
-        class="w-5 h-5 fill-main-300"
+        class="w-5 h-5 fill-main-400"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 256 512"
       >
@@ -411,13 +484,13 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
     <div class="w-full h-full pb-3 flex flex-col items-center overflow-hidden">
       <!-- 상세 검색 -->
       <div
-        v-show="searchMode === 0"
+        v-show="sideBarIndex === 0"
         class="relative w-full pb-2 border-gray-200"
       >
         <div
           class="absolute w-96 bg-gray-50 drop-shadow-md transition-all duration-300 rounded-b-xl"
           :class="
-            isNoramlSearchBarActive ? 'translate-y-0' : '-translate-y-full'
+            isDetailSearchBarActive ? 'translate-y-0' : '-translate-y-full'
           "
         >
           <div class="group relative w-80 mx-auto my-3">
@@ -432,7 +505,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
               v-model.lazy="searchTerm"
             />
             <svg
-              class="absolute left-3 top-8 w-5 h-5 fill-gray-300 peer-focus-within:fill-main-300"
+              class="absolute left-3 top-8 w-5 h-5 fill-gray-300 peer-focus-within:fill-main-400"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 512 512"
             >
@@ -468,8 +541,8 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
                 class="relative flex justify-center items-center w-20 h-8 pt-1 cursor-pointer border-2 rounded-md bg-white text-xs"
                 :class="
                   checkContent(index)
-                    ? 'border-main-200 text-main-200'
-                    : 'border-gray-200 text-gray-400'
+                    ? 'border-main-300 text-main-500'
+                    : 'border-gray-200 text-gray-500'
                 "
               >
                 <input
@@ -485,7 +558,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
 
           <div class="text-center mb-3">
             <button
-              class="w-24 mt-2 mr-2 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+              class="w-24 mt-2 mr-2 px-3 py-2 text-sm font-medium text-white bg-main-400 rounded-lg hover:bg-main-500"
               type="button"
               @click="onReset"
             >
@@ -493,7 +566,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
             </button>
 
             <button
-              class="w-24 mt-1 px-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+              class="w-24 mt-1 px-3 py-2 text-sm font-medium text-white bg-main-400 rounded-lg hover:bg-main-500"
               @click="onDetailSearch"
             >
               검색하기
@@ -502,11 +575,11 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
           <button
             class="absolute flex justify-center items-center w-12 h-5 transform left-1/2 -translate-x-1/2 rounded-b-md bg-white drop-shadow-md text-center cursor-pointer"
             type="button"
-            @click="isNoramlSearchBarActive = !isNoramlSearchBarActive"
+            @click="isDetailSearchBarActive = !isDetailSearchBarActive"
           >
             <svg
-              v-show="!isNoramlSearchBarActive"
-              class="w-5 h-5 fill-main-300 mb-3"
+              v-show="!isDetailSearchBarActive"
+              class="w-5 h-5 fill-main-400 mb-3"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 320 512"
             >
@@ -516,8 +589,8 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
             </svg>
 
             <svg
-              v-show="isNoramlSearchBarActive"
-              class="w-5 h-5 fill-main-300 mt-2"
+              v-show="isDetailSearchBarActive"
+              class="w-5 h-5 fill-main-400 mt-2"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 320 512"
             >
@@ -530,7 +603,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
       </div>
 
       <!-- 씬 검색 -->
-      <div v-show="searchMode === 1" class="relative w-full pb-2">
+      <div v-show="sideBarIndex === 1" class="relative w-full pb-2">
         <div
           class="absolute w-96 bg-gray-50 drop-shadow-md transition-all duration-300 rounded-b-xl"
           :class="
@@ -548,7 +621,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
 
             <div class="text-center mb-3 mx-auto">
               <button
-                class="w-24 mt-1 mr-2 px-3 py-2 text-sm text-white bg-main-300 rounded-lg hover:bg-main-400"
+                class="w-24 mt-1 mr-2 px-3 py-2 text-sm text-white bg-main-400 rounded-lg hover:bg-main-500"
                 type="button"
                 @click="onReset"
               >
@@ -556,7 +629,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
               </button>
 
               <button
-                class="w-24 mt-1 px-3 py-2 text-sm text-white bg-main-300 rounded-lg hover:bg-main-400"
+                class="w-24 mt-1 px-3 py-2 text-sm text-white bg-main-400 rounded-lg hover:bg-main-500"
                 @click="onSearchByScene"
               >
                 검색하기
@@ -571,7 +644,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
           >
             <svg
               v-show="!isSceneSearchBarActive"
-              class="w-5 h-5 fill-main-300 mb-3"
+              class="w-5 h-5 fill-main-400 mb-3"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 320 512"
             >
@@ -582,7 +655,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
 
             <svg
               v-show="isSceneSearchBarActive"
-              class="w-5 h-5 fill-main-300 mt-2"
+              class="w-5 h-5 fill-main-400 mt-2"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 320 512"
             >
@@ -596,10 +669,11 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
 
       <!-- 관광지 목록 -->
       <div
+        v-show="sideBarIndex <= 1"
         class="flex flex-col items-center w-96 flex-grow text-sm mt-2"
-        :class="isItemExist ? '' : 'justify-center'"
+        :class="isSearchResultExist ? '' : 'justify-center'"
       >
-        <template v-if="isItemExist">
+        <template v-if="isSearchResultExist">
           <div
             v-for="item in searchResult.items"
             :key="item.no"
@@ -617,7 +691,7 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
                 <p class="text-gray-400">
                   {{ areaMapper.areaCodeToName(item.contentTypeId) }}
                 </p>
-                <p class="text-main-400 mr-2">{{ item.sceneTitle }}</p>
+                <p class="text-main-500 mr-2">{{ item.sceneTitle }}</p>
               </div>
               <p class="text-base truncate" :title="item.title">
                 {{ item.title }}
@@ -693,13 +767,102 @@ const insertAttractionToPlan = inject("insertAttractionToPlan");
         </div>
       </div>
 
+      <!-- 좋아요 목록 -->
+      <div
+        v-show="sideBarIndex > 1"
+        class="flex flex-col items-center w-96 flex-grow text-sm mt-2"
+        :class="isLikeAttractionsExist ? '' : 'justify-center'"
+      >
+        <template v-if="isLikeAttractionsExist">
+          <div
+            v-for="item in likeResult.items"
+            :key="item.no"
+            class="flex justify-center items-center w-full h-[120px] px-2 py-2 bg-white border-b hover:bg-gray-100"
+          >
+            <img
+              class="w-24 h-24 mr-2 object-cover"
+              :src="
+                !item.img ? imageLoader.getImageUrl('Danbam.jpg') : item.img
+              "
+            />
+
+            <div class="flex-grow overflow-hidden text-overflow-ellipsis">
+              <div class="flex justify-between text-xs">
+                <p class="text-gray-400">
+                  {{ areaMapper.areaCodeToName(item.contentTypeId) }}
+                </p>
+                <p class="text-main-500 mr-2">{{ item.sceneTitle }}</p>
+              </div>
+              <p class="text-base truncate" :title="item.title">
+                {{ item.title }}
+              </p>
+              <p class="text-gray-800 truncate">{{ item.address }}</p>
+              <p class="text-gray-800">TEL: {{ item.tel || "-" }}</p>
+              <p class="text-gray-800 truncate" :title="item.overview">
+                {{ item.overview }}
+              </p>
+            </div>
+
+            <div class="flex flex-col justify-center items-center">
+              <div class="flex flex-col justify-center items-center">
+                <svg
+                  class="w-5 h-5 fill-red-300 hover:scale-110 cursor-pointer"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  @click="onUpdateLikeCount(item)"
+                >
+                  <path
+                    d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"
+                  />
+                </svg>
+
+                <p class="text-xs text-red-300">{{ item.likeCount }}</p>
+              </div>
+
+              <svg
+                class="w-5 h-5 mb-2 fill-blue-300 hover:scale-110 cursor-pointer"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 384 512"
+                @click="panTo(item.latitude, item.longitude)"
+              >
+                <path
+                  d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
+                />
+              </svg>
+
+              <svg
+                v-if="props.planMode > 0"
+                class="w-5 h-5 mb-2 fill-violet-300 hover:scale-110 cursor-pointer"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 448 512"
+                @click="insertAttractionToPlan(item)"
+              >
+                <path
+                  d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L64 64C28.7 64 0 92.7 0 128l0 16 0 48L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-256 0-48 0-16c0-35.3-28.7-64-64-64l-40 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L152 64l0-40zM48 192l352 0 0 256c0 8.8-7.2 16-16 16L64 464c-8.8 0-16-7.2-16-16l0-256zm176 40c-13.3 0-24 10.7-24 24l0 48-48 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l48 0 0 48c0 13.3 10.7 24 24 24s24-10.7 24-24l0-48 48 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-48 0 0-48c0-13.3-10.7-24-24-24z"
+                />
+              </svg>
+            </div>
+          </div>
+        </template>
+        <div v-else class="text-center text-base text-gray-300">
+          좋아요 한 관광지가 없습니다.
+        </div>
+      </div>
+
       <!-- 페이지네이션 -->
       <VPagenation
-        v-if="isItemExist"
+        v-if="sideBarIndex <= 1 && isSearchResultExist"
         :pageSize="PAGE_SIZE"
         :navigationSize="NAVIGATION_SIZE"
         :pageInfo="searchResult"
-        @change-page="onChangePage"
+        @change-page="onChangeSearchPage"
+      />
+      <VPagenation
+        v-else-if="sideBarIndex > 1 && isLikeAttractionsExist"
+        :pageSize="PAGE_SIZE"
+        :navigationSize="NAVIGATION_SIZE"
+        :pageInfo="likeResult"
+        @change-page="onChangeLikePage"
       />
     </div>
   </form>

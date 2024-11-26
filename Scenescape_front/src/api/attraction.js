@@ -40,9 +40,17 @@ const updateLikeCount = (attractionNo, success, fail) => {
     .catch(fail);
 };
 
+const getLikeAttractions = (page, success, fail) => {
+  attractionAPI
+    .get(`/attractions/likes?page=${page}`)
+    .then(success)
+    .catch(fail);
+};
+
 export default {
   getAttractions,
   getSceneTitles,
   searchByFilter,
   updateLikeCount,
+  getLikeAttractions,
 };

@@ -22,6 +22,9 @@ watch(
 
     const attractionTitleList = newHotPlaces.map((item) => item.title);
 
+    // 2줄만 나타나도록 마지막 원소 제거
+    attractionTitleList.pop();
+
     filmList.value = await Promise.all(
       attractionTitleList.map(
         (title) =>
@@ -67,7 +70,6 @@ watch(
 
     firstFilmAnimation();
     secondFilmAnimation();
-    thirdFilmAnimation();
   },
   { immediate: true }
 );
@@ -83,9 +85,6 @@ const startAnimation = (index) => {
       break;
     case 1:
       secondFilmAnimation();
-      break;
-    case 2:
-      thirdFilmAnimation();
       break;
   }
 };
@@ -123,22 +122,6 @@ const secondFilmAnimation = () => {
   }
 
   requestAnimationFrame(secondFilmAnimation);
-};
-
-const thirdFilmAnimation = () => {
-  if (isHovered.value[2]) {
-    return;
-  }
-
-  for (let frame of filmList.value[2]) {
-    frame.shift -= ANIMATION_SPEED;
-
-    if (frame.shift <= -FILM_FRAME_SIZE) {
-      frame.shift = MAX_WIDTH;
-    }
-  }
-
-  requestAnimationFrame(thirdFilmAnimation);
 };
 </script>
 

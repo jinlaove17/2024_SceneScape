@@ -55,8 +55,6 @@ public class ImageController {
 	    @Parameter(description = "게시글 번호", required = true, example = "1001")
 	    @RequestParam("postNo") Long postNo
 	) {
-        
-        System.out.println("uploadImage: " + postNo);
 
         try {
             // 서비스에서 이미지 업로드 처리

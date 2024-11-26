@@ -86,12 +86,9 @@ public class PostController {
             @Parameter(description = "페이지 번호", example = "1") @RequestParam(value = "page", defaultValue = "1") int page,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
     	
-    	if(searchType.size() != searchKeyword.size()) {
+    	if(searchType != null && searchKeyword != null && searchType.size() != searchKeyword.size()) {
     		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     	}
-    	
-    	System.out.println(searchType);
-    	System.out.println(searchKeyword);
     	
         // 필터링 및 페이지네이션 데이터 생성
         Map<String, Object> filter = new HashMap<>();
@@ -124,11 +121,7 @@ public class PostController {
 	@PostMapping("/temp")
 	public ResponseEntity<Integer> createTempPost(HttpSession session) {
 		UserDTO userInfo = (UserDTO) session.getAttribute("userInfo");
-		String userId = "ssafy";
-		if (userInfo != null) {
-			userId = userInfo.getId();
-		}
-		int postNo = postService.createPost(new PostDTO(null, null, userId, "SCENE"));
+		int postNo = postService.createPost(new PostDTO(null, null, null, "SCENE"));
 
 		System.out.println("boardController.createTempPost: new PostNo " + postNo);
 

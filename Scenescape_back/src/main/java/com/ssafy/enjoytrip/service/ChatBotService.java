@@ -37,8 +37,6 @@ public class ChatBotService {
                 .append("좋아요 수: ").append(attraction.getLikeCount()).append("\n")
                 .append("\n");
         }
-        
-        System.out.println(userPrompt.toString());
 
         List<ChatMessage> messages = new ArrayList<>();
         messages.add(new ChatMessage("system", systemMessageContent));
@@ -47,7 +45,7 @@ public class ChatBotService {
         ChatCompletionRequest request = ChatCompletionRequest.builder()
             .model("gpt-3.5-turbo") // 또는 gpt-4
             .messages(messages)
-            .maxTokens(500)
+            .maxTokens(1000)
             .build();
 
         return chatBotService.createChatCompletion(request)

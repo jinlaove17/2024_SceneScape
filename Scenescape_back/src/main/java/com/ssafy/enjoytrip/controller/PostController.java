@@ -79,12 +79,20 @@ public class PostController {
         @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     public ResponseEntity<PagenatedPostDTO> getPostsByFilter(
-            @Parameter(description = "검색 유형", required = false) @RequestParam(value = "searchType", required = false) String searchType,
-            @Parameter(description = "검색 키워드", required = false) @RequestParam(value = "searchKeyword", required = false) String searchKeyword,
+            @Parameter(description = "검색 유형", required = false) @RequestParam(value = "searchType", required = false) List<String> searchType,
+            @Parameter(description = "검색 키워드", required = false) @RequestParam(value = "searchKeyword", required = false) List<String> searchKeyword,
             @Parameter(description = "게시글 카테고리", example = "SCENE") @RequestParam(value = "category", defaultValue = "SCENE") String category,
             @Parameter(description = "정렬 방식", required = false) @RequestParam(value = "sortType", required = false) String sortType,
             @Parameter(description = "페이지 번호", example = "1") @RequestParam(value = "page", defaultValue = "1") int page,
             @Parameter(description = "페이지 크기", example = "10") @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+    	
+    	if(searchType.size() != searchKeyword.size()) {
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    	}
+    	
+    	System.out.println(searchType);
+    	System.out.println(searchKeyword);
+    	
         // 필터링 및 페이지네이션 데이터 생성
         Map<String, Object> filter = new HashMap<>();
         filter.put("searchType", searchType);

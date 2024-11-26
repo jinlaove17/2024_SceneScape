@@ -89,93 +89,95 @@
 	</select>
 
 	<select id="selectAll" parameterType="map" resultMap="PostMap"
-		useCache="false">
-		SELECT *
-		FROM posts
-		<where>
-			is_deleted = 0
-
-			<!-- category 조건 -->
-			<if test="category != null and category != ''">
-				AND category = #{category}
-			</if>
-
-			<!-- searchType과 searchKeyword 조건 -->
-			<if
-				test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
-				<if test="category != null and category != ''">
-					AND
-				</if>
-				<choose>
-					<when test="searchType == 'title'">
-						title LIKE CONCAT('%', #{searchKeyword}, '%')
-					</when>
-					<when test="searchType == 'userId'">
-						user_id LIKE CONCAT('%', #{searchKeyword}, '%')
-					</when>
-					<when test="searchType == 'sceneTitle'">
-						scene_title LIKE CONCAT('%', #{searchKeyword}, '%')
-					</when>
-					<when test="searchType == 'attractionTitle'">
-						attraction_title LIKE CONCAT('%', #{searchKeyword}, '%')
-					</when>
-				</choose>
-			</if>
-		</where>
-
-		<!-- 정렬 조건 -->
-		<if test="sortType != null and sortType != ''">
-			ORDER BY
-			<choose>
-				<when test="sortType == 'view'">
-					view_count DESC
-				</when>
-				<when test="sortType == 'like'">
-					like_count DESC
-				</when>
-				<otherwise>
-					created DESC
-				</otherwise>
-			</choose>
-		</if>
-
-		<!-- 페이지네이션 -->
-		LIMIT #{pageSize} OFFSET #{offset}
+	        useCache="false">
+	    SELECT *
+	    FROM posts
+	    <where>
+	        is_deleted = 0
+	
+	        <!-- category 조건 -->
+	        <if test="category != null and category != ''">
+	            AND category = #{category}
+	        </if>
+	
+	        <!-- searchType과 searchKeyword 조건 -->
+	        <if test="searchType != null and searchKeyword != null">
+	            AND (
+	            <foreach item="type" index="i" collection="searchType" open="(" separator="OR" close=")">
+	                <choose>
+	                    <when test="type == 'title'">
+	                        title LIKE CONCAT('%', #{searchKeyword[${i}]}, '%')
+	                    </when>
+	                    <when test="type == 'userId'">
+	                        user_id LIKE CONCAT('%', #{searchKeyword[${i}]}, '%')
+	                    </when>
+	                    <when test="type == 'sceneTitle'">
+	                        scene_title LIKE CONCAT('%', #{searchKeyword[${i}]}, '%')
+	                    </when>
+	                    <when test="type == 'attractionTitle'">
+	                        attraction_title LIKE CONCAT('%', #{searchKeyword[${i}]}, '%')
+	                    </when>
+	                </choose>
+	            </foreach>
+	            )
+	        </if>
+	    </where>
+	
+	    <!-- 정렬 조건 -->
+	    <if test="sortType != null and sortType != ''">
+	        ORDER BY
+	        <choose>
+	            <when test="sortType == 'view'">
+	                view_count DESC
+	            </when>
+	            <when test="sortType == 'like'">
+	                like_count DESC
+	            </when>
+	            <otherwise>
+	                created DESC
+	            </otherwise>
+	        </choose>
+	    </if>
+	
+	    <!-- 페이지네이션 -->
+	    LIMIT #{pageSize} OFFSET #{offset}
 	</select>
-
+	
 	<select id="countAll" parameterType="map" resultType="int">
-		SELECT COUNT(*)
-		FROM posts
-		<where>
-			is_deleted = 0
-			<!-- category 조건 -->
-			<if test="category != null and category != ''">
-				AND category = #{category}
-			</if>
-
-			<!-- searchType과 searchKeyword 조건 -->
-			<if
-				test="searchType != null and searchType != '' and searchKeyword != null and searchKeyword != ''">
-				<if test="category != null and category != ''">
-					AND
-				</if>
-				<choose>
-					<when test="searchType == 'title'">
-						title LIKE CONCAT('%', #{searchKeyword}, '%')
-					</when>
-					<when test="searchType == 'userId'">
-						user_id LIKE CONCAT('%', #{searchKeyword}, '%')
-					</when>
-					<when test="searchType == 'sceneTitle'">
-						scene_title LIKE CONCAT('%', #{searchKeyword}, '%')
-					</when>
-					<when test="searchType == 'attractionTitle'">
-						attraction_title LIKE CONCAT('%', #{searchKeyword}, '%')
-					</when>
-				</choose>
-			</if>
-		</where>
+	    SELECT COUNT(*)
+	    FROM posts
+	    <where>
+	        is_deleted = 0
+	
+	        <!-- category 조건 -->
+	        <if test="category != null and category != ''">
+	            AND category = #{category}
+	        </if>
+	
+	        <!-- searchType과 searchKeyword 조건 -->
+	        <if test="searchType != null and searchKeyword != null">
+	            AND (
+	            <foreach item="type" index="i" collection="searchType" open="(" separator="OR" close=")">
+	                <choose>
+	                    <when test="type == 'title'">
+	                        title LIKE CONCAT('%', #{searchKeyword[${i}]}, '%')
+	                    </when>
+	                    <when test="type == 'userId'">
+	                        user_id LIKE CONCAT('%', #{searchKeyword[${i}]}, '%')
+	                    </when>
+	                    <when test="type == 'sceneTitle'">
+	                        scene_title LIKE CONCAT('%', #{searchKeyword[${i}]}, '%')
+	                    </when>
+	                    <when test="type == 'attractionTitle'">
+	                        attraction_title LIKE CONCAT('%', #{searchKeyword[${i}]}, '%')
+	                    </when>
+	                </choose>
+	            </foreach>
+	            )
+	        </if>
+	    </where>
 	</select>
+
 
 	<resultMap id="PostMap" type="PostDTO">
 		<result property="no" column="no" />

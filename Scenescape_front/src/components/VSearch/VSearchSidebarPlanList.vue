@@ -48,7 +48,7 @@ const onDeletePlan = (index) => {
         @click="$emit('goForm')"
       >
         <svg
-          class="w-10 h-10 fill-main-200 group-hover:fill-main-400"
+          class="w-10 h-10 fill-main-400 group-hover:fill-main-500"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
         >
@@ -56,7 +56,7 @@ const onDeletePlan = (index) => {
             d="M512 416c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l128 0c20.1 0 39.1 9.5 51.2 25.6l19.2 25.6c6 8.1 15.5 12.8 25.6 12.8l160 0c35.3 0 64 28.7 64 64l0 256zM232 376c0 13.3 10.7 24 24 24s24-10.7 24-24l0-64 64 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-64 0 0-64c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 64-64 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l64 0 0 64z"
           />
         </svg>
-        <p class="text-xs text-main-300 group-hover:text-main-500">
+        <p class="text-sm text-main-400 group-hover:text-main-500">
           새 계획 추가
         </p>
       </div>
@@ -80,16 +80,16 @@ const onDeletePlan = (index) => {
                 <p class="text-lg truncate">
                   {{ index + 1 }}. {{ plan.title }}
                 </p>
-                <p class="text-gray-500 truncate">{{ plan.description }}</p>
+                <p class="text-gray-700 truncate">{{ plan.description }}</p>
               </div>
 
               <div
-                class="flex justify-between items-center text-end mr-3 text-xs text-gray-500"
+                class="flex justify-between items-center text-end mr-3 text-xs"
               >
-                <p class="text-main-300">
+                <p class="text-sm text-main-500">
                   {{ plan.attractions.length }}개의 씬
                 </p>
-                <p>
+                <p class="text-gray-700">
                   시작일: {{ plan.startDate }} &nbsp; 종료일: {{ plan.endDate }}
                 </p>
               </div>
@@ -97,7 +97,7 @@ const onDeletePlan = (index) => {
 
             <div class="flex flex-col gap-4 justify-center items-center">
               <svg
-                class="w-5 h-5 fill-main-200 cursor-pointer hover:scale-110"
+                class="w-5 h-5 fill-main-400 cursor-pointer hover:scale-110"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
                 @click="$emit('goForm', plan)"
@@ -108,7 +108,7 @@ const onDeletePlan = (index) => {
               </svg>
 
               <svg
-                class="w-5 h-5 fill-gray-300 cursor-pointer hover:scale-110"
+                class="w-5 h-5 fill-gray-400 cursor-pointer hover:scale-110"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
                 @click="onDeletePlan(index)"

@@ -154,7 +154,7 @@ const clearPathMarkers = inject("clearPathMarkers");
         <div class="mb-3">
           <label for="search" class="text-sm text-gray-500"> 제목 </label>
           <input
-            class="block w-full px-3 pt-3 pb-1 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300"
+            class="block w-full px-3 pt-3 pb-1 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-500"
             type="text"
             id="search"
             placeholder="이 여행의 이름을 입력하세요..."
@@ -168,7 +168,7 @@ const clearPathMarkers = inject("clearPathMarkers");
               시작일
             </label>
             <input
-              class="w-36 text-sm p-1 border border-gray-300 focus:outline-none focus:border-main-300 border- rounded-md"
+              class="w-36 text-sm p-1 border border-gray-300 focus:outline-none focus:border-main-500 border- rounded-md"
               type="date"
               id="startDate"
               v-model.lazy="planParams.startDate"
@@ -179,7 +179,7 @@ const clearPathMarkers = inject("clearPathMarkers");
               종료일
             </label>
             <input
-              class="w-36 text-sm p-1 border border-gray-300 focus:outline-none focus:border-main-300 rounded-md"
+              class="w-36 text-sm p-1 border border-gray-300 focus:outline-none focus:border-main-400 rounded-md"
               type="date"
               id="endDate"
               v-model.lazy="planParams.endDate"
@@ -189,7 +189,7 @@ const clearPathMarkers = inject("clearPathMarkers");
 
         <label class="block text-sm text-gray-500" for="overview"> 설명 </label>
         <textarea
-          class="block p-2.5 w-full text-sm bg-white rounded-lg border border-gray-300 focus:outline-none focus:border-main-300 resize-none"
+          class="block p-2.5 w-full text-sm bg-white rounded-lg border border-gray-300 focus:outline-none focus:border-main-400 resize-none"
           id="overview"
           rows="3"
           placeholder="이 계획에 대한 설명과 지금의 감정을 남겨보세요..."
@@ -228,10 +228,10 @@ const clearPathMarkers = inject("clearPathMarkers");
             <!-- 텍스트 정보 -->
             <div class="flex-grow overflow-hidden text-overflow-ellipsis">
               <div class="flex justify-between text-xs">
-                <p class="text-gray-400">
+                <p class="text-gray-500">
                   {{ areaMapper.areaCodeToName(attraction.contentTypeId) }}
                 </p>
-                <p class="text-main-400 mr-1">{{ attraction.sceneTitle }}</p>
+                <p class="text-main-500 mr-1">{{ attraction.sceneTitle }}</p>
               </div>
 
               <p class="text-base truncate" :title="attraction.title">
@@ -241,10 +241,10 @@ const clearPathMarkers = inject("clearPathMarkers");
               <p>TEL: {{ attraction.tel || "-" }}</p>
             </div>
 
-            <div class="h-full flex flex-col justify-around mx-1">
+            <div class="h-full flex flex-col justify-center gap-4 mx-1">
               <!-- 지도 이동 버튼 -->
               <svg
-                class="w-5 h-5 fill-blue-300 hover:scale-110 cursor-pointer"
+                class="w-5 h-5 fill-blue-400 hover:scale-110 cursor-pointer"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 384 512"
                 @click="panTo(attraction.latitude, attraction.longitude)"
@@ -256,7 +256,7 @@ const clearPathMarkers = inject("clearPathMarkers");
 
               <!-- 삭제 버튼 -->
               <svg
-                class="w-5 h-5 fill-gray-300 hover:scale-110 cursor-pointer"
+                class="w-5 h-5 fill-gray-400 hover:scale-110 cursor-pointer"
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
                 @click="removeAttractionFromPlan(index)"
@@ -274,21 +274,21 @@ const clearPathMarkers = inject("clearPathMarkers");
     <div class="w-full h-14 py-5 flex justify-center items-center bg-gray-50">
       <div v-if="!props.plan">
         <button
-          class="w-24 mx-1 px-3 py-2 text-sm text-white bg-main-300 rounded-lg hover:bg-main-400"
+          class="w-24 mx-1 px-3 py-2 text-sm text-white bg-main-400 rounded-lg hover:bg-main-500"
           type="button"
           @click="onGoList"
         >
           목록으로
         </button>
         <button
-          class="w-24 mx-1 px-3 py-2 text-sm text-white bg-main-300 rounded-lg hover:bg-main-400"
+          class="w-24 mx-1 px-3 py-2 text-sm text-white bg-main-400 rounded-lg hover:bg-main-500"
           type="button"
           @click="onReset"
         >
           초기화
         </button>
         <button
-          class="w-24 mx-1 px-3 py-2 text-sm text-white bg-main-300 rounded-lg hover:bg-main-400"
+          class="w-24 mx-1 px-3 py-2 text-sm text-white bg-main-400 rounded-lg hover:bg-main-500"
           type="button"
           @click="onCreatePlan"
         >
@@ -297,14 +297,14 @@ const clearPathMarkers = inject("clearPathMarkers");
       </div>
       <div v-else>
         <button
-          class="w-24 mx-1 px-3 py-2 text-sm text-white bg-main-300 rounded-lg hover:bg-main-400"
+          class="w-24 mx-1 px-3 py-2 text-sm text-white bg-main-400 rounded-lg hover:bg-main-500"
           type="button"
           @click="onGoList"
         >
           목록으로
         </button>
         <button
-          class="w-24 mx-1 px-3 py-2 text-sm text-white bg-main-300 rounded-lg hover:bg-main-400"
+          class="w-24 mx-1 px-3 py-2 text-sm text-white bg-main-400 rounded-lg hover:bg-main-500"
           type="button"
           @click="onUpdatePlan"
         >

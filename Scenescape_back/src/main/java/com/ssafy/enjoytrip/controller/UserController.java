@@ -65,7 +65,7 @@ public class UserController {
 		@Parameter(description = "등록할 사용자 정보", required = true)
 		@RequestBody(required = true) UserDTO user
 	) {
-		String resultMsg = userService.registerUser(user.getId(), user.getPwd(), user.getNickname(), user.getEmail());
+		String resultMsg = userService.registerUser(user.getId(), user.getPwd(), user.getEmail());
 		if (resultMsg.equals("")) {
 			return ResponseEntity.ok(null);
 		}

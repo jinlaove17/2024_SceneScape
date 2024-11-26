@@ -16,9 +16,6 @@ public class UserDTO {
     @Schema(description = "사용자 비밀번호", example = "password123")
 	private String pwd;
     
-    @Schema(description = "사용자 닉네임", example = "JohnDoe")
-	private String nickname;
-    
     @Schema(description = "사용자 이메일 주소", example = "johndoe@example.com")
     @NotNull
     @Email
@@ -28,11 +25,10 @@ public class UserDTO {
 		super();
 	}
 
-	public UserDTO(String id, String pwd, String nickname, String email) {
+	public UserDTO(String id, String pwd, String email) {
 		super();
 		this.id = id;
 		this.pwd = pwd;
-		this.nickname = nickname;
 		this.email = email;
 	}
 
@@ -52,13 +48,6 @@ public class UserDTO {
 		this.pwd = pwd;
 	}
 
-	public String getNickname() {
-		return nickname;
-	}
-
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
-	}
 
 	public String getEmail() {
 		return email;
@@ -66,10 +55,5 @@ public class UserDTO {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	@Override
-	public String toString() {
-		return "UserDTO [id=" + id + ", pwd=" + pwd + ", nickname=" + nickname + ", email=" + email + "]";
 	}
 }

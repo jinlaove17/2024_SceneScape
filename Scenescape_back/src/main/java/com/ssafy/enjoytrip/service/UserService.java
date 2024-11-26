@@ -32,20 +32,15 @@ public class UserService {
 		return userDao.select(param);
 	}
 
-	public String registerUser(String id, String pwd, String nickname, String email) {
+	public String registerUser(String id, String pwd, String email) {
 		// 아이디 중복 검사
 		if (userDao.countById(id) != 0) {
 			return "이미 존재하는 아이디입니다.";
 		}
 
-		// 닉네임 중복 검사
-		if (userDao.countByNickname(nickname) != 0) {
-			return "이미 존재하는 닉네임입니다.";
-		}
-
 		// 비밀번호 암호화
 		String encryptedPwd = encryptPassword(pwd);
-		UserDTO userDto = new UserDTO(id, encryptedPwd, nickname, email);
+		UserDTO userDto = new UserDTO(id, encryptedPwd, email);
 
 		if (userDao.insert(userDto) != 0) {
 			return "";

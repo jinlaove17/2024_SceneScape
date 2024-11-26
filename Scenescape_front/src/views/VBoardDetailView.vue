@@ -120,6 +120,7 @@ const submitComment = ({ content, parentNo }) => {
       parentNo,
     },
     ({ data }) => {
+      data.created = dayjs.utc(data.created).tz("Asia/Seoul").format("YYYY-MM-DD HH:mm");
       comments.value.push(data); // 새 댓글(또는 대댓글) 추가
       console.log("createComment: ");
       console.log(data);

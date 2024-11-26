@@ -91,15 +91,13 @@ const handleReply = (replyData) => {
 
         <div class="flex items-center self-start gap-3">
           <div class="text-gray-500 text-sm">
-            {{
-              props.comment.created
-                ? (() => {
-                    return dayjs
-                      .tz(props.comment.created, "Asia/Seoul")
-                      .format("YYYY-MM-DD HH:mm");
-                  })()
-                : "알 수 없음"
-            }}
+            <div class="text-gray-500 text-sm">
+              {{
+                props.comment.created
+                  ? dayjs.utc(props.comment.created).format("YYYY-MM-DD HH:mm")
+                  : "알 수 없음"
+              }}
+            </div>
           </div>
           <!-- <button
             class="text-sm text-gray-400"

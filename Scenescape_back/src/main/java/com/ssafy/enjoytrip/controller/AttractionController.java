@@ -167,7 +167,6 @@ public class AttractionController {
 		
 		Map<String, Object> filter = new HashMap<>();
 		filter.put("userId", userInfo.getId());
-		filter.put("userId", "jj");
 		filter.put("pageSize", pageSize);
 		filter.put("offset", offset);
 		

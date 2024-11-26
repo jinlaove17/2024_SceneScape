@@ -1,147 +1,151 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import imageLoader from "@/utils/image-loader";
+import { ref, watch } from "vue";
+
+import boardAPI from "@/api/board";
 
 const FILM_FRAME_SIZE = 320;
 const MAX_WIDTH = 1920;
 const ANIMATION_SPEED = 0.5;
 
-const leftFilms = ref([
-  {
-    id: 1,
-    shift: 0,
-    img: imageLoader.getImageUrl("Guardian.jpg"),
+const props = defineProps({
+  hotPlaces: {
+    type: Array,
+    required: true,
   },
-  {
-    id: 2,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_1.jfif"),
-  },
-  {
-    id: 3,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_2.jpeg"),
-  },
-  {
-    id: 4,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_3.jfif"),
-  },
-  {
-    id: 5,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_4.jpg"),
-  },
-  {
-    id: 6,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_5.jfif"),
-  },
-  {
-    id: 7,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_6.jpg"),
-  },
-]);
-
-const rightFilms = ref([
-  {
-    id: 8,
-    shift: 0,
-    img: imageLoader.getImageUrl("Guardian.jpg"),
-  },
-  {
-    id: 9,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_1.jfif"),
-  },
-  {
-    id: 10,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_2.jpeg"),
-  },
-  {
-    id: 11,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_3.jfif"),
-  },
-  {
-    id: 12,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_4.jpg"),
-  },
-  {
-    id: 13,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_5.jfif"),
-  },
-  {
-    id: 14,
-    shift: 0,
-    img: imageLoader.getImageUrl("Sample/SamplePhoto_6.jpg"),
-  },
-]);
-
-let isHovered = ref(false);
-const startAnimation = () => {
-  isHovered.value = false;
-  toLeftAnimation();
-  toRightAnimation();
-};
-const stopAnimation = () => {
-  isHovered.value = true;
-};
-
-const toLeftAnimation = () => {
-  if (isHovered.value) {
-    return;
-  }
-
-  for (let film of leftFilms.value) {
-    film.shift -= ANIMATION_SPEED;
-
-    if (film.shift <= -FILM_FRAME_SIZE) {
-      film.shift = MAX_WIDTH;
-    }
-  }
-
-  requestAnimationFrame(toLeftAnimation);
-};
-
-const toRightAnimation = () => {
-  if (isHovered.value) {
-    return;
-  }
-
-  for (let film of rightFilms.value) {
-    film.shift += ANIMATION_SPEED;
-
-    if (film.shift >= MAX_WIDTH) {
-      film.shift = -FILM_FRAME_SIZE;
-    }
-  }
-
-  requestAnimationFrame(toRightAnimation);
-};
-
-onMounted(() => {
-  for (let i = 1; i < leftFilms.value.length; ++i) {
-    leftFilms.value[i].shift = FILM_FRAME_SIZE * i;
-  }
-
-  for (let i = 1; i < rightFilms.value.length; ++i) {
-    rightFilms.value[i].shift = FILM_FRAME_SIZE * i;
-  }
-
-  toLeftAnimation();
-  toRightAnimation();
 });
+const filmList = ref([]);
+
+watch(
+  () => props.hotPlaces,
+  async (newHotPlaces) => {
+    if (!newHotPlaces.length) return;
+
+    const attractionTitleList = newHotPlaces.map((item) => item.title);
+
+    filmList.value = await Promise.all(
+      attractionTitleList.map(
+        (title) =>
+          new Promise((resolve) => {
+            boardAPI.searchByFilter(
+              {
+                searchType: "attractionTitle",
+                searchKeyword: title,
+                pageSize: 6,
+                offset: 0,
+              },
+              ({ data }) => {
+                // 데이터 가공
+                const newFilm = data.results.map((frame) => ({
+                  no: frame.no,
+                  img: frame.thumbnailUrl,
+                  shift: 0,
+                }));
+                resolve(newFilm); // 성공 시 결과 반환
+              },
+              (error) => {
+                console.error(error);
+                resolve([]); // 에러 발생 시 빈 배열 반환
+              }
+            );
+          })
+      )
+    );
+
+    for (let i = 0; i < filmList.value.length; ++i) {
+      let j = 0;
+
+      for (; j < filmList.value[i].length; ++j) {
+        filmList.value[i][j].shift = FILM_FRAME_SIZE * j;
+      }
+
+      filmList.value[i].push({
+        no: -(i + 1),
+        img: props.hotPlaces[i].img,
+        shift: FILM_FRAME_SIZE * j,
+      });
+    }
+
+    firstFilmAnimation();
+    secondFilmAnimation();
+    thirdFilmAnimation();
+  },
+  { immediate: true }
+);
+
+let isHovered = ref([false, false, false]);
+
+const startAnimation = (index) => {
+  isHovered.value[index] = false;
+
+  switch (index) {
+    case 0:
+      firstFilmAnimation();
+      break;
+    case 1:
+      secondFilmAnimation();
+      break;
+    case 2:
+      thirdFilmAnimation();
+      break;
+  }
+};
+const stopAnimation = (index) => {
+  isHovered.value[index] = true;
+};
+
+const firstFilmAnimation = () => {
+  if (isHovered.value[0]) {
+    return;
+  }
+
+  for (let frame of filmList.value[0]) {
+    frame.shift -= ANIMATION_SPEED;
+
+    if (frame.shift <= -FILM_FRAME_SIZE) {
+      frame.shift = MAX_WIDTH;
+    }
+  }
+
+  requestAnimationFrame(firstFilmAnimation);
+};
+
+const secondFilmAnimation = () => {
+  if (isHovered.value[1]) {
+    return;
+  }
+
+  for (let frame of filmList.value[1]) {
+    frame.shift += ANIMATION_SPEED;
+
+    if (frame.shift >= MAX_WIDTH) {
+      frame.shift = -FILM_FRAME_SIZE;
+    }
+  }
+
+  requestAnimationFrame(secondFilmAnimation);
+};
+
+const thirdFilmAnimation = () => {
+  if (isHovered.value[2]) {
+    return;
+  }
+
+  for (let frame of filmList.value[2]) {
+    frame.shift -= ANIMATION_SPEED;
+
+    if (frame.shift <= -FILM_FRAME_SIZE) {
+      frame.shift = MAX_WIDTH;
+    }
+  }
+
+  requestAnimationFrame(thirdFilmAnimation);
+};
 </script>
 
 <template>
   <div class="w-[80rem] mx-auto mb-5 overflow-hidden">
     <h1 class="text-3xl">
-      📸 이곳의 <span class="text-blue-500">주인공</span>은 바로 나!
+      📸 이 장면의 <span class="text-blue-500">주인공</span>은 바로 나!
     </h1>
     <p class="text-xl text-gray-400 ps-10">
       촬영지에서 주인공이 된 사진을 공유해보세요!
@@ -149,50 +153,27 @@ onMounted(() => {
   </div>
 
   <div
-    class="relative w-full h-52 bg-black overflow-hidden"
-    @mouseenter="stopAnimation"
-    @mouseleave="startAnimation"
+    v-for="(film, index) in filmList"
+    :key="index"
+    class="relative w-full h-52 overflow-hidden"
+    @mouseenter="stopAnimation(index)"
+    @mouseleave="startAnimation(index)"
   >
     <img
-      v-for="film in leftFilms"
-      :key="film.id"
+      v-for="frame in film"
+      :key="frame.no"
       class="absolute w-80 h-full object-cover"
       :style="{
-        transform: `translateX(${film.shift}px)`,
+        transform: `translateX(${frame.shift}px)`,
       }"
-      :src="film.img"
+      :src="frame.img"
     />
     <img
-      v-for="film in leftFilms"
-      :key="film.id"
+      v-for="frame in film"
+      :key="frame.no"
       class="absolute w-80 h-full object-center"
       :style="{
-        transform: `translateX(${film.shift}px)`,
-      }"
-      src="@/assets/img/FlimFrame.png"
-    />
-  </div>
-
-  <div
-    class="relative w-full h-52 bg-black overflow-hidden"
-    @mouseenter="stopAnimation"
-    @mouseleave="startAnimation"
-  >
-    <img
-      v-for="film in rightFilms"
-      :key="film.id"
-      class="absolute w-80 h-full object-cover"
-      :style="{
-        transform: `translateX(${film.shift}px)`,
-      }"
-      :src="film.img"
-    />
-    <img
-      v-for="film in rightFilms"
-      :key="film.id"
-      class="absolute w-80 h-full object-center"
-      :style="{
-        transform: `translateX(${film.shift}px)`,
+        transform: `translateX(${frame.shift}px)`,
       }"
       src="@/assets/img/FlimFrame.png"
     />

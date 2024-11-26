@@ -1,17 +1,22 @@
 <script setup>
+import { ref, onMounted } from "vue";
+
 import attractionAPI from "@/api/attraction";
 import imageLoader from "@/utils/image-loader";
-import { ref, onMounted } from "vue";
+
+import areacodeMapper from "@/utils/areacode-mapper";
 
 const hotPlaces = ref([]);
 const medals = ["🥇", "🥈", "🥉"];
+
+const emit = defineEmits(["setHotPlaces"]);
 
 onMounted(() => {
   attractionAPI.searchByFilter(
     { sortType: "like", pageSize: 3, offset: 0 },
     ({ data }) => {
       hotPlaces.value = data.items;
-      console.log(hotPlaces.value);
+      emit("setHotPlaces", hotPlaces.value);
     },
     () => {
       console.log("상위 3개 데이터를 가져오지 못함");
@@ -24,7 +29,7 @@ onMounted(() => {
   <div class="w-[80rem] mx-auto">
     <div class="mb-5">
       <h1 class="text-3xl">
-        🔥 지금 <span class="text-rose-500">핫플레이스</span>는?
+        🔥 지금 <span class="text-rose-500">핫플레이스</span>는 어디일까요?
       </h1>
       <p class="text-xl text-gray-400 ps-10">
         현재 가장 인기 있는 세 곳을 추천해 드릴게요!
@@ -47,7 +52,7 @@ onMounted(() => {
         />
 
         <div
-          class="absolute top-2 right-3 flex flex-col justify-center items-center"
+          class="absolute top-2 left-3 flex flex-col justify-center items-center"
         >
           <svg
             class="w-5 h-5 fill-red-300"
@@ -64,10 +69,25 @@ onMounted(() => {
         </div>
 
         <div class="p-5">
-          <h1 class="mb-2 text-xl font-bold tracking-tight text-black">
-            {{ medals[index] }} {{ hotPlace.title }}
-          </h1>
-          <p class="mb-5 font-normal text-gray-700">{{ hotPlace.address }}</p>
+          <div class="flex justify-between">
+            <h1 class="mb-2 text-xl font-bold tracking-tight text-black">
+              {{ medals[index] }} {{ hotPlace.title }}
+              <span class="text-xs text-gray-400">
+                {{ areacodeMapper.areaCodeToName(hotPlace.contentTypeId) }}
+              </span>
+            </h1>
+
+            <p class="text-sm text-main-300">{{ hotPlace.sceneTitle }}</p>
+          </div>
+
+          <p class="font-normal text-gray-700">{{ hotPlace.address }}</p>
+
+          <p
+            class="mb-5 text-sm text-gray-500 truncate"
+            :title="hotPlace.overview"
+          >
+            {{ hotPlace.overview }}
+          </p>
 
           <div class="text-end">
             <RouterLink

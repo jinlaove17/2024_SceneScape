@@ -2,6 +2,8 @@
 import { ref, computed } from "vue";
 import imageLoader from "@/utils/image-loader";
 
+const AUTO_SLIDE_TIME = 8_000;
+
 const carouselContents = ref([
   {
     title: "강릉 주문진",
@@ -33,30 +35,32 @@ const carouselContents = ref([
 ]);
 
 const curIndex = ref(0);
-const showTitle = ref(false);
+let interval = setInterval(() => {
+  next();
+}, AUTO_SLIDE_TIME);
 
-const next = () => {
-  ++curIndex.value;
-  showTitle.value = false;
+const next = (isClicked) => {
+  if (isClicked) {
+    clearInterval(interval);
+    interval = setInterval(() => {
+      next();
+    }, AUTO_SLIDE_TIME);
+  }
 
-  setTimeout(() => {
-    showTitle.value = true;
-  }, 1000);
+  curIndex.value = (curIndex.value + 1) % (carouselContents.value.length + 1);
 };
-const prev = () => {
-  --curIndex.value;
-  showTitle.value = false;
+const prev = (isClicked) => {
+  if (isClicked) {
+    clearInterval(interval);
+    interval = setInterval(() => {
+      next();
+    }, AUTO_SLIDE_TIME);
+  }
 
-  setTimeout(() => {
-    showTitle.value = true;
-  }, 1000);
+  curIndex.value =
+    (curIndex.value - 1 + (carouselContents.value.length + 1)) %
+    (carouselContents.value.length + 1);
 };
-const isFirstContent = computed(() => {
-  return curIndex.value === 0;
-});
-const isLastContent = computed(() => {
-  return curIndex.value === carouselContents.value.length;
-});
 </script>
 
 <template>
@@ -113,11 +117,10 @@ const isLastContent = computed(() => {
 
     <!-- 컨트롤 버튼 -->
     <button
-      @click="prev"
+      @click="prev(true)"
       type="button"
       class="absolute bottom-5 end-24 z-30 flex items-center justify-center cursor-pointer group focus:outline-none"
       data-carousel-prev
-      :disabled="isFirstContent"
     >
       <span
         class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none"
@@ -140,11 +143,10 @@ const isLastContent = computed(() => {
       </span>
     </button>
     <button
-      @click="next"
+      @click="next(true)"
       type="button"
       class="absolute bottom-5 end-10 z-30 flex items-center justify-center cursor-pointer group focus:outline-none"
       data-carousel-next
-      :disabled="isLastContent"
     >
       <span
         class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:ring-4 group-focus:ring-white group-focus:outline-none"

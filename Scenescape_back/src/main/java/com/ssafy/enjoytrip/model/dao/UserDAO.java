@@ -17,8 +17,6 @@ public interface UserDAO {
 
 	int countById(String userId);
 	
-	int countByNickname(String userNickname);
-	
 	UserDTO select(Map<String, Object> params);
 
 	List<UserDTO> selectAll();

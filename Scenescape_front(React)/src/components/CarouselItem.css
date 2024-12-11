@@ -1,0 +1,28 @@
+.mask-radial-opacity {
+  mask-image: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 1) 45%,
+    rgba(0, 0, 0, 0) 75%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 1) 45%,
+    rgba(0, 0, 0, 0) 75%
+  );
+  mask-repeat: no-repeat;
+  mask-size: cover;
+}
+
+@keyframes zoom-in-out {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+.animate-zoom {
+  animation: zoom-in-out 15s ease-in-out infinite;
+}

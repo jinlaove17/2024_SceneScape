@@ -1,54 +1,92 @@
 import { Routes, Route } from "react-router-dom";
 
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import MyPage from "./pages/MyPage";
 import Plan from "./pages/Plan";
 import Board from "./pages/Board";
-import Footer from "./components/Footer";
+import NotFound from "./pages/NotFound";
+
+const Layout = ({ header, main, footer }) => {
+  return (
+    <div className="flex flex-col max-w-[120rem] min-h-screen mx-auto">
+      <header>{header}</header>
+      <main className="flex-1">{main}</main>
+      <footer>{footer}</footer>
+    </div>
+  );
+};
 
 const App = () => {
   return (
-    <div className="flex flex-col max-w-[120rem] min-h-screen mx-auto">
-      <header>
-        <Header />
-      </header>
-
-      <main className="flex-1">
-        <Routes>
-          <Route
-            path="/"
-            element={<Home />}
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <Layout
+            header={<Header />}
+            main={<Home />}
+            footer={<Footer />}
           />
-          <Route
-            path="/login"
-            element={<Login />}
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <Layout
+            header={<Header />}
+            main={<Login />}
+            footer={<Footer />}
           />
-          <Route
-            path="/signup"
-            element={<SignUp />}
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <Layout
+            header={<Header />}
+            main={<SignUp />}
+            footer={<Footer />}
           />
-          <Route
-            path="/mypage"
-            element={<MyPage />}
+        }
+      />
+      <Route
+        path="/mypage"
+        element={
+          <Layout
+            header={<Header />}
+            main={<MyPage />}
+            footer={<Footer />}
           />
-          <Route
-            path="/plan"
-            element={<Plan />}
+        }
+      />
+      <Route
+        path="/plan"
+        element={
+          <Layout
+            header={<Header />}
+            main={<Plan />}
           />
-          <Route
-            path="/board"
-            element={<Board />}
+        }
+      />
+      <Route
+        path="/board"
+        element={
+          <Layout
+            header={<Header />}
+            main={<Board />}
+            footer={<Footer />}
           />
-        </Routes>
-      </main>
-
-      <footer>
-        <Footer />
-      </footer>
-    </div>
+        }
+      />
+      <Route
+        path="*"
+        element={<NotFound />}
+      />
+    </Routes>
   );
 };
 

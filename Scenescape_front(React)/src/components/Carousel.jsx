@@ -1,16 +1,35 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import CarouselItem from "./CarouselItem";
 
+const AUTO_SLIDE_TIME = 8_000;
+
 const Carousel = ({ carouselContents }) => {
   const [index, setIndex] = useState(0);
+  const slideInterval = useRef(null);
+
+  useEffect(() => {
+    slideAutomatically(AUTO_SLIDE_TIME);
+    return () => clearInterval(slideInterval.current);
+  }, []);
+
+  const slideAutomatically = (slideTime) => {
+    slideInterval.current = setInterval(() => {
+      setIndex((index) => (index + 1) % carouselContents.length);
+    }, slideTime);
+  };
 
   const onClickPrevButton = () => {
+    clearInterval(slideInterval.current);
+    slideAutomatically(AUTO_SLIDE_TIME);
     setIndex(
       (index) => (index - 1 + carouselContents.length) % carouselContents.length
     );
   };
+
   const onClickNextButton = () => {
+    clearInterval(slideInterval.current);
+    slideAutomatically(AUTO_SLIDE_TIME);
     setIndex((index) => (index + 1) % carouselContents.length);
   };
 

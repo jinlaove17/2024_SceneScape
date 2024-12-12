@@ -4,6 +4,8 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import LoginForm from "./components/LoginForm";
+import FindPasswordForm from "./components/FindPasswordForm";
 import SignUp from "./pages/SignUp";
 import MyPage from "./pages/MyPage";
 import Plan from "./pages/Plan";
@@ -38,11 +40,20 @@ const App = () => {
         element={
           <Layout
             header={<Header />}
-            main={<Login />}
+            main={<Login />} // Login 페이지를 렌더링
             footer={<Footer />}
           />
         }
-      />
+      >
+        <Route
+          index
+          element={<LoginForm />}
+        />
+        <Route
+          path="find-password"
+          element={<FindPasswordForm />}
+        />
+      </Route>
       <Route
         path="/signup"
         element={

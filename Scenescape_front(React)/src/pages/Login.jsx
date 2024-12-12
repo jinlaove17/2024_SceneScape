@@ -1,5 +1,11 @@
+import { Outlet } from "react-router-dom";
+
 const Login = () => {
-  return <div className="text-4xl text-center">로그인 페이지</div>;
+  return (
+    <div>
+      <Outlet />
+    </div>
+  );
 };
 
 export default Login;

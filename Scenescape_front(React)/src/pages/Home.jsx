@@ -1,5 +1,6 @@
 import Carousel from "../components/Carousel";
 import HotPlace from "../components/HotPlace";
+import Film from "../components/Film";
 
 const carouselContents = [
   {
@@ -75,6 +76,7 @@ const Home = () => {
     <div>
       <Carousel carouselContents={carouselContents} />
       <HotPlace />
+      <Film />
     </div>
   );
 };

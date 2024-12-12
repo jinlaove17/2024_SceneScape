@@ -4,7 +4,6 @@ const medalList = ["🥇", "🥈", "🥉"];
 const dummyData = [
   {
     likeCount: 1036,
-    medal: "🥇",
     title: "영진해변",
     sceneTitle: "도깨비",
     contentTypeId: 12,
@@ -14,7 +13,6 @@ const dummyData = [
   },
   {
     likeCount: 946,
-    medal: "🥈",
     title: "만휴정",
     sceneTitle: "미스터션샤인",
     contentTypeId: 14,
@@ -25,7 +23,6 @@ const dummyData = [
   },
   {
     likeCount: 912,
-    medal: "🥉",
     title: "문화마실",
     sceneTitle: "동백꽃 필 무렵",
     contentTypeId: 25,
@@ -52,6 +49,7 @@ const HotPlace = () => {
         {dummyData.map((item, index) => (
           <HotPlaceItem
             key={index}
+            medal={medalList[index]}
             {...item}
           />
         ))}

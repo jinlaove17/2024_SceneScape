@@ -34,7 +34,7 @@ const Carousel = ({ carouselContents }) => {
   };
 
   return (
-    <div className="relative w-full h-[30rem] mx-auto mb-12 overflow-hidden select-none">
+    <div className="relative w-full max-w-[120rem] h-[30rem] mx-auto mb-12 overflow-hidden select-none">
       <div
         className="h-full flex transition-transform duration-1000"
         style={{ transform: `translateX(-${100 * index}%)` }}
@@ -46,7 +46,6 @@ const Carousel = ({ carouselContents }) => {
           />
         ))}
       </div>
-
       <button
         type="button"
         className="absolute bottom-5 end-24 z-30 flex items-center justify-center cursor-pointer group focus:outline-none"
@@ -70,7 +69,6 @@ const Carousel = ({ carouselContents }) => {
           </svg>
         </span>
       </button>
-
       <button
         type="button"
         className="absolute bottom-5 end-10 z-30 flex items-center justify-center cursor-pointer group focus:outline-none"

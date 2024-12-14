@@ -14,9 +14,9 @@ import NotFound from "./pages/NotFound";
 
 const Layout = ({ header, main, footer }) => {
   return (
-    <div className="flex flex-col max-w-[120rem] min-h-screen mx-auto">
+    <div className="flex flex-col min-w-[80rem] min-h-screen mx-auto">
       <header>{header}</header>
-      <main className="flex-1">{main}</main>
+      <main className="flex flex-col flex-1">{main}</main>
       <footer>{footer}</footer>
     </div>
   );
@@ -40,7 +40,7 @@ const App = () => {
         element={
           <Layout
             header={<Header />}
-            main={<Login />} // Login 페이지를 렌더링
+            main={<Login />}
             footer={<Footer />}
           />
         }

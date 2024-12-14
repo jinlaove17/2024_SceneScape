@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from "react";
 import getImageUrl from "../utils/get-image-url";
 
 const FILM_FRAME_SIZE = 320;
-const MAX_WIDTH = 1920;
 const ANIMATION_SPEED = 0.5;
 
 const dummyData = [
@@ -46,7 +45,9 @@ const Film = () => {
     animationRef.current = requestAnimationFrame(animate);
 
     return () => {
-      cancelAnimationFrame(animationRef.current);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
     };
   }, []);
 
@@ -55,11 +56,11 @@ const Film = () => {
       return;
     }
 
-    setFrameList(
-      frameList.map((frame) => {
+    setFrameList((prevFrameList) =>
+      prevFrameList.map((frame) => {
         frame.shift -= ANIMATION_SPEED;
         if (frame.shift <= -FILM_FRAME_SIZE) {
-          frame.shift = MAX_WIDTH;
+          frame.shift = FILM_FRAME_SIZE * (frameList.length - 1);
         }
         return frame;
       })
@@ -80,7 +81,10 @@ const Film = () => {
       </div>
 
       <div
-        className="relative w-full h-52 overflow-hidden"
+        className="relative w-full h-52 mx-auto overflow-hidden"
+        style={{
+          maxWidth: FILM_FRAME_SIZE * (frameList.length - 1),
+        }}
         onMouseEnter={() => {
           isHovered.current = true;
         }}

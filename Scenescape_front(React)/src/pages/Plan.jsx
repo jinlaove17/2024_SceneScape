@@ -1,5 +1,11 @@
+import KakaoMap from "../components/KakaoMap";
+
 const Plan = () => {
-  return <div className="text-4xl text-center">플랜 페이지</div>;
+  return (
+    <div className="flex flex-col flex-1">
+      <KakaoMap />
+    </div>
+  );
 };
 
 export default Plan;

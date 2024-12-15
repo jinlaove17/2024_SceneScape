@@ -2,7 +2,7 @@ import Carousel from "../components/Carousel";
 import HotPlace from "../components/HotPlace";
 import Film from "../components/Film";
 
-const carouselContents = [
+const carouselContentList = [
   {
     text: (
       <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-10 w-max">
@@ -73,11 +73,11 @@ const carouselContents = [
 
 const Home = () => {
   return (
-    <div>
-      <Carousel carouselContents={carouselContents} />
+    <>
+      <Carousel carouselContentList={carouselContentList} />
       <HotPlace />
       <Film />
-    </div>
+    </>
   );
 };
 

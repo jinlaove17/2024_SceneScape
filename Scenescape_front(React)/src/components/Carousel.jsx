@@ -4,7 +4,7 @@ import CarouselItem from "./CarouselItem";
 
 const AUTO_SLIDE_TIME = 8_000;
 
-const Carousel = ({ carouselContents }) => {
+const Carousel = ({ carouselContentList }) => {
   const [index, setIndex] = useState(0);
   const slideInterval = useRef(null);
 
@@ -15,7 +15,7 @@ const Carousel = ({ carouselContents }) => {
 
   const slideAutomatically = (slideTime) => {
     slideInterval.current = setInterval(() => {
-      setIndex((index) => (index + 1) % carouselContents.length);
+      setIndex((index) => (index + 1) % carouselContentList.length);
     }, slideTime);
   };
 
@@ -23,14 +23,15 @@ const Carousel = ({ carouselContents }) => {
     clearInterval(slideInterval.current);
     slideAutomatically(AUTO_SLIDE_TIME);
     setIndex(
-      (index) => (index - 1 + carouselContents.length) % carouselContents.length
+      (index) =>
+        (index - 1 + carouselContentList.length) % carouselContentList.length
     );
   };
 
   const onClickNextButton = () => {
     clearInterval(slideInterval.current);
     slideAutomatically(AUTO_SLIDE_TIME);
-    setIndex((index) => (index + 1) % carouselContents.length);
+    setIndex((index) => (index + 1) % carouselContentList.length);
   };
 
   return (
@@ -39,7 +40,7 @@ const Carousel = ({ carouselContents }) => {
         className="h-full flex transition-transform duration-1000"
         style={{ transform: `translateX(-${100 * index}%)` }}
       >
-        {carouselContents.map((item, index) => (
+        {carouselContentList.map((item, index) => (
           <CarouselItem
             key={index}
             {...item}

@@ -1,51 +1,76 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 
 import SideBar from "./SideBar";
 import TabMenu from "./TabMenu";
-import AttractionList from "./AttractionList";
+import AttractionSearcher from "./AttractionSearcher";
 
-const dummyData = [
+const contentList = [
+  "전체",
+  "이태원클라쓰",
+  "미생",
+  "스토브리그",
+  "나의 아저씨",
+  "아는 와이프",
+  "무브 투 헤븐 : 나는 유품 정리사입니다.",
+  "오징어게임",
+];
+const areaList = [
+  "전체",
+  "서울",
+  "인천",
+  "경기",
+  "부산",
+  "광주",
+  "대전",
+  "제주",
+];
+const subAreaList = [
+  "전체",
+  "강남",
+  "약수",
+  "역삼",
+  "이태원",
+  "잠실",
+  "광교",
+  "신사",
+];
+const categoryList = [
   {
-    title: "김밥천국",
-    address: "서울특별시 중구 신당동",
-    contentId: 39,
-    sceneTitle: "이태원클라쓰",
-    overview: "참치 김밥이 맛있는 신당동 맛집",
-    img: "NoImage.png",
-    likeCount: 912,
+    id: 12,
+    name: "관광지",
   },
   {
-    title: "김밥천국",
-    address: "서울특별시 중구 신당동",
-    contentId: 39,
-    sceneTitle: "이태원클라쓰",
-    overview: "참치 김밥이 맛있는 신당동 맛집",
-    img: "NoImage.png",
-    likeCount: 912,
+    id: 14,
+    name: "문화시설",
   },
   {
-    title: "김밥천국",
-    address: "서울특별시 중구 신당동",
-    contentId: 39,
-    sceneTitle: "이태원클라쓰",
-    overview: "참치 김밥이 맛있는 신당동 맛집",
-    img: "NoImage.png",
-    likeCount: 912,
+    id: 15,
+    name: "축제공연행사",
   },
   {
-    title: "김밥천국",
-    address: "서울특별시 중구 신당동",
-    contentId: 39,
-    sceneTitle: "이태원클라쓰",
-    overview: "참치 김밥이 맛있는 신당동 맛집",
-    img: "NoImage.png",
-    likeCount: 912,
+    id: 25,
+    name: "여행코스",
+  },
+  {
+    id: 28,
+    name: "레포츠",
+  },
+  {
+    id: 32,
+    name: "숙박",
+  },
+  {
+    id: 38,
+    name: "쇼핑",
+  },
+  {
+    id: 39,
+    name: "음식점",
   },
 ];
 
-const SearchSideBar = () => {
+const SearchSideBar = ({ attractionList }) => {
   const [tabIndex, setTabIndex] = useState(0);
-  const [tabContent, setTabContent] = useState(null);
   const tabMenuListRef = useRef([
     {
       text: "상세 검색",
@@ -73,17 +98,6 @@ const SearchSideBar = () => {
     },
   ]);
 
-  useEffect(() => {
-    switch (tabIndex) {
-      case 0: // 장소 검색
-        setTabContent(<AttractionList attractionList={dummyData} />);
-        break;
-      case 1: // 좋아요
-        setTabContent(<AttractionList />);
-        break;
-    }
-  }, [tabIndex]);
-
   return (
     <SideBar
       tabMenu={
@@ -94,7 +108,25 @@ const SearchSideBar = () => {
       }
       direction={"left"}
     >
-      {tabContent}
+      {/* 상세 검색 */}
+      {tabIndex === 0 && (
+        <AttractionSearcher
+          contentList={contentList}
+          areaList={areaList}
+          subAreaList={subAreaList}
+          categoryList={categoryList}
+          attractionList={attractionList}
+        />
+      )}
+      {/* 좋아요 */}
+      {tabIndex === 1 && (
+        <AttractionSearcher
+          contentList={contentList}
+          areaList={areaList}
+          subAreaList={subAreaList}
+          categoryList={categoryList}
+        />
+      )}
     </SideBar>
   );
 };

@@ -3,54 +3,25 @@ import { useState } from "react";
 import SearchDropdown from "./SearchDropdown";
 import AttractionItem from "./AttractionItem";
 
-const contentList = [
-  {
-    id: 12,
-    name: "관광지",
-  },
-  {
-    id: 14,
-    name: "문화시설",
-  },
-  {
-    id: 15,
-    name: "축제공연행사",
-  },
-  {
-    id: 25,
-    name: "여행코스",
-  },
-  {
-    id: 28,
-    name: "레포츠",
-  },
-  {
-    id: 32,
-    name: "숙박",
-  },
-  {
-    id: 38,
-    name: "쇼핑",
-  },
-  {
-    id: 39,
-    name: "음식점",
-  },
-];
-
-const AttractionList = ({ attractionList }) => {
+const AttractionSearcher = ({
+  contentList,
+  areaList,
+  subAreaList,
+  attractionList,
+  categoryList,
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [sceneTitle, setSceneTitle] = useState("");
-  const [area, setArea] = useState("");
-  const [subArea, setSubArea] = useState("");
-  const [contentsBit, setContentsBit] = useState(0);
+  const [content, setContent] = useState("전체");
+  const [area, setArea] = useState("전체");
+  const [subArea, setSubArea] = useState("전체");
+  const [categoryBit, setCategoryBit] = useState(0);
 
   const onChangeSearchTerm = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const onChangeSceneTitle = (newSceneTitle) => {
-    setSceneTitle(newSceneTitle);
+  const onChangeContent = (newContent) => {
+    setContent(newContent);
   };
 
   const onChangeArea = (newArea) => {
@@ -61,20 +32,20 @@ const AttractionList = ({ attractionList }) => {
     setSubArea(newSubArea);
   };
 
-  const checkContent = (num) => {
-    return contentsBit & (1 << num);
-  };
-
-  const onSelectContent = (num) => {
-    if (checkContent(num)) {
-      setContentsBit(contentsBit & ~(1 << num));
+  const onChangeCategory = (num) => {
+    if (checkCategory(num)) {
+      setCategoryBit(categoryBit & ~(1 << num));
     } else {
-      setContentsBit(contentsBit | (1 << num));
+      setCategoryBit(categoryBit | (1 << num));
     }
   };
 
+  const checkCategory = (num) => {
+    return categoryBit & (1 << num);
+  };
+
   return (
-    <div className="py-3">
+    <div className="flex flex-col w-full h-full py-3">
       <div className="flex flex-col gap-2 px-4 mb-3">
         <div className="relative group">
           <label
@@ -111,38 +82,22 @@ const AttractionList = ({ attractionList }) => {
 
         <SearchDropdown
           title={"컨텐츠"}
-          selected={sceneTitle}
-          itemList={[
-            "이태원클라쓰",
-            "미생",
-            "스토브리그",
-            "나의 아저씨",
-            "아는 와이프",
-            "무브 투 헤븐 : 나는 유품 정리사입니다.",
-            "오징어 게임",
-          ]}
-          onSelectItem={onChangeSceneTitle}
+          selected={content}
+          itemList={contentList}
+          onSelectItem={onChangeContent}
         />
 
         <div className="flex justify-between gap-2">
           <SearchDropdown
             title={"지역"}
             selected={area}
-            itemList={["서울", "인천", "경기", "부산", "광주", "대전", "제주"]}
+            itemList={areaList}
             onSelectItem={onChangeArea}
           />
           <SearchDropdown
             title={"세부 지역"}
             selected={subArea}
-            itemList={[
-              "강남",
-              "약수",
-              "역삼",
-              "이태원",
-              "잠실",
-              "광교",
-              "신사",
-            ]}
+            itemList={subAreaList}
             onSelectItem={onChangeSubArea}
           />
         </div>
@@ -150,12 +105,12 @@ const AttractionList = ({ attractionList }) => {
         <div className="group w-full">
           <p className="block text-sm text-gray-500">분류</p>
           <div className="w-full grid grid-cols-4 gap-1 place-items-center">
-            {contentList.map((item, index) => (
+            {categoryList.map((item, index) => (
               <label
                 key={index}
                 className={`relative flex justify-center items-center w-20 py-1 cursor-pointer border rounded-md bg-white text-xs
                 ${
-                  checkContent(index)
+                  checkCategory(index)
                     ? "border-main-300 text-main-400"
                     : "border-gray-300 text-gray-500"
                 }`}
@@ -164,7 +119,7 @@ const AttractionList = ({ attractionList }) => {
                   type="checkbox"
                   className="absolute w-0 h-0"
                   value={item.id}
-                  onClick={() => onSelectContent(index)}
+                  onClick={() => onChangeCategory(index)}
                 />
                 {item.name}
               </label>
@@ -174,25 +129,23 @@ const AttractionList = ({ attractionList }) => {
       </div>
 
       {!attractionList || attractionList.length === 0 ? (
-        <div className="text-center text-gray-300 mb-4">
+        <div className="flex justify-center items-center flex-1 text-gray-300">
           검색 결과가 없습니다.
         </div>
       ) : (
-        <>
-          <div className="mb-4">
-            {attractionList.map((item, index) => {
-              return (
-                <AttractionItem
-                  key={index}
-                  {...item}
-                />
-              );
-            })}
-          </div>
-        </>
+        <div className="mb-4">
+          {attractionList.map((item, index) => {
+            return (
+              <AttractionItem
+                key={index}
+                {...item}
+              />
+            );
+          })}
+        </div>
       )}
     </div>
   );
 };
 
-export default AttractionList;
+export default AttractionSearcher;

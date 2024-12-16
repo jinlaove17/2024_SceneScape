@@ -12,16 +12,16 @@ const AttractionItem = ({
 }) => {
   return (
     <div className="flex w-full h-[130px] px-2 py-1 bg-white border-b hover:bg-gray-100">
-      <div className="flex flex-col justify-center w-full">
-        <div className="flex items-center mb-2 ">
+      <div className="flex flex-col justify-center flex-1 overflow-hidden">
+        <div className="flex mb-2">
           <img
             className="w-20 h-20 mr-2 object-cover"
             src={getImageUrl(img)}
           />
-          <div className="flex flex-col justify-center text-sm overflow-hidden">
+          <div className="flex flex-col text-sm overflow-hidden">
             <p className="text-base truncate">{title}</p>
             <p className="text-gray-800 truncate">{address}</p>
-            <p className="text-gray-800 truncate">{overview}</p>
+            <p className="text-gray-800 line-clamp-2 break-words">{overview}</p>
           </div>
         </div>
         <div className="flex gap-2 text-xs">

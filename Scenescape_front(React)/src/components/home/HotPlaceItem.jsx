@@ -38,7 +38,7 @@ const HotPlaceItem = ({
 
         <p className="font-normal text-gray-700 truncate">{address}</p>
 
-        <p className="h-10 mb-3 text-sm text-gray-500 line-clamp-2 whitespace-normal">
+        <p className="h-10 mb-3 text-sm text-gray-500 line-clamp-2 break-words">
           {overview}
         </p>
 

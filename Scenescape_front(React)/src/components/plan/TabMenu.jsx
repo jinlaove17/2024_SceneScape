@@ -2,7 +2,7 @@ import "./TabMenu.css";
 
 const TabMenu = ({ contentList, tabIndex }) => {
   return (
-    <div className="TabMenu flex flex-col items-center w-16 h-full z-20">
+    <div className="TabMenu flex flex-col items-center w-16 h-full bg-white z-20">
       {contentList.map((item, index) => {
         return (
           <button

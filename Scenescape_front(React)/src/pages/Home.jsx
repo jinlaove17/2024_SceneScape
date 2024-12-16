@@ -1,6 +1,6 @@
-import Carousel from "../components/Carousel";
-import HotPlace from "../components/HotPlace";
-import Film from "../components/Film";
+import Carousel from "../components/home/Carousel";
+import HotPlace from "../components/home/HotPlace";
+import Film from "../components/home/Film";
 
 const carouselContentList = [
   {

@@ -1,6 +1,6 @@
-import SearchSideBar from "../components/SearchSideBar";
-import SideBar from "../components/SideBar";
-import KakaoMap from "../components/KakaoMap";
+import SearchSideBar from "../components/plan/SearchSideBar";
+import SideBar from "../components/plan/SideBar";
+import KakaoMap from "../components/plan/KakaoMap";
 
 const Plan = () => {
   return (

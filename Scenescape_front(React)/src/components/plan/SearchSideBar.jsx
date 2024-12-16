@@ -2,16 +2,53 @@ import { useState, useRef, useEffect } from "react";
 
 import SideBar from "./SideBar";
 import TabMenu from "./TabMenu";
-import PlaceSearch from "./PlaceSearch";
-import FilmingLocationSearch from "./FilmingLocationSearch";
-import LikePlace from "./LikePlace";
+import AttractionList from "./AttractionList";
+
+const dummyData = [
+  {
+    title: "김밥천국",
+    address: "서울특별시 중구 신당동",
+    contentId: 39,
+    sceneTitle: "이태원클라쓰",
+    overview: "참치 김밥이 맛있는 신당동 맛집",
+    img: "NoImage.png",
+    likeCount: 912,
+  },
+  {
+    title: "김밥천국",
+    address: "서울특별시 중구 신당동",
+    contentId: 39,
+    sceneTitle: "이태원클라쓰",
+    overview: "참치 김밥이 맛있는 신당동 맛집",
+    img: "NoImage.png",
+    likeCount: 912,
+  },
+  {
+    title: "김밥천국",
+    address: "서울특별시 중구 신당동",
+    contentId: 39,
+    sceneTitle: "이태원클라쓰",
+    overview: "참치 김밥이 맛있는 신당동 맛집",
+    img: "NoImage.png",
+    likeCount: 912,
+  },
+  {
+    title: "김밥천국",
+    address: "서울특별시 중구 신당동",
+    contentId: 39,
+    sceneTitle: "이태원클라쓰",
+    overview: "참치 김밥이 맛있는 신당동 맛집",
+    img: "NoImage.png",
+    likeCount: 912,
+  },
+];
 
 const SearchSideBar = () => {
   const [tabIndex, setTabIndex] = useState(0);
   const [tabContent, setTabContent] = useState(null);
   const tabMenuListRef = useRef([
     {
-      text: "장소 검색",
+      text: "상세 검색",
       img: (
         <svg
           className="mb-2 h-5 w-5"
@@ -23,18 +60,6 @@ const SearchSideBar = () => {
       onClick: () => setTabIndex(0),
     },
     {
-      text: "촬영지 검색",
-      img: (
-        <svg
-          className="mb-2 h-5 w-5"
-          viewBox="0 0 512 512"
-        >
-          <path d="M48 208l416 0 0 208c0 8.8-7.2 16-16 16L64 432c-8.8 0-16-7.2-16-16l0-208zm352-48l-64 0 80-80 32 0c8.8 0 16 7.2 16 16l-64 64zM320 80l-80 80-64 0 80-80 64 0zM160 80L80 160l-32 0 0-32L96 80l64 0zm352 80l0-64c0-35.3-28.7-64-64-64L64 32C28.7 32 0 60.7 0 96l0 64 0 24 0 24L0 416c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-208 0-24 0-24z" />
-        </svg>
-      ),
-      onClick: () => setTabIndex(1),
-    },
-    {
       text: "좋아요",
       img: (
         <svg
@@ -44,20 +69,17 @@ const SearchSideBar = () => {
           <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z" />
         </svg>
       ),
-      onClick: () => setTabIndex(2),
+      onClick: () => setTabIndex(1),
     },
   ]);
 
   useEffect(() => {
     switch (tabIndex) {
       case 0: // 장소 검색
-        setTabContent(<PlaceSearch />);
+        setTabContent(<AttractionList attractionList={dummyData} />);
         break;
-      case 1: // 촬영지 검색
-        setTabContent(<FilmingLocationSearch />);
-        break;
-      case 2: // 좋아요
-        setTabContent(<LikePlace />);
+      case 1: // 좋아요
+        setTabContent(<AttractionList />);
         break;
     }
   }, [tabIndex]);

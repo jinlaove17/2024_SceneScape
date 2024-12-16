@@ -1,6 +1,4 @@
-import { Link } from "react-router-dom";
-
-import getAreaName from "../utils/get-area-name";
+import getAreaName from "../../utils/get-area-name";
 
 const HotPlaceItem = ({
   likeCount,

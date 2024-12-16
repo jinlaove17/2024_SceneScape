@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-import getImageUrl from "../utils/get-image-url";
+import getImageUrl from "../../utils/get-image-url";
 
 const FILM_FRAME_SIZE = 320;
 const ANIMATION_SPEED = 0.5;

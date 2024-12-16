@@ -1,6 +1,6 @@
 import "./CarouselItem.css";
 
-import getImageUrl from "../utils/get-image-url";
+import getImageUrl from "../../utils/get-image-url";
 
 const CarouselItem = ({ text, img }) => {
   return (

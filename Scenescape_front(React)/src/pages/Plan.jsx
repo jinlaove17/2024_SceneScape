@@ -3,7 +3,6 @@ import PlanSideBar from "../components/plan/PlanSideBar";
 import KakaoMap from "../components/plan/KakaoMap";
 
 // 임시 더미 데이터
-
 const attractionList = [
   {
     title: "김밥천국",

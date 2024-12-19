@@ -98,6 +98,32 @@ const SearchSideBar = ({ attractionList }) => {
     },
   ]);
 
+  const getContent = () => {
+    switch (tabIndex) {
+      case 0: // 상세 검색
+        return (
+          <AttractionSearcher
+            contentList={contentList}
+            areaList={areaList}
+            subAreaList={subAreaList}
+            categoryList={categoryList}
+            attractionList={attractionList}
+          />
+        );
+      case 1: // 좋아요
+        return (
+          <AttractionSearcher
+            contentList={contentList}
+            areaList={areaList}
+            subAreaList={subAreaList}
+            categoryList={categoryList}
+          />
+        );
+      default:
+        return <div>컨텐츠가 없습니다.</div>;
+    }
+  };
+
   return (
     <SideBar
       tabMenu={
@@ -108,25 +134,7 @@ const SearchSideBar = ({ attractionList }) => {
       }
       direction={"left"}
     >
-      {/* 상세 검색 */}
-      {tabIndex === 0 && (
-        <AttractionSearcher
-          contentList={contentList}
-          areaList={areaList}
-          subAreaList={subAreaList}
-          categoryList={categoryList}
-          attractionList={attractionList}
-        />
-      )}
-      {/* 좋아요 */}
-      {tabIndex === 1 && (
-        <AttractionSearcher
-          contentList={contentList}
-          areaList={areaList}
-          subAreaList={subAreaList}
-          categoryList={categoryList}
-        />
-      )}
+      {getContent()}
     </SideBar>
   );
 };

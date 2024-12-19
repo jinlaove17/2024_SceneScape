@@ -45,20 +45,16 @@ const AttractionSearcher = ({
   };
 
   return (
-    <div className="flex flex-col w-full h-full py-3">
-      <div className="flex flex-col gap-2 px-4 mb-3">
+    <div className="flex flex-col w-full h-full gap-3 py-3">
+      <div className="flex flex-col gap-2 px-4">
         <div className="relative group">
-          <label
-            htmlFor="search"
-            className="block text-sm text-gray-500 group-focus-within:text-main-400"
-          >
+          <p className="block text-sm text-gray-500 group-focus-within:text-main-400">
             검색어
-          </label>
+          </p>
           <div className="flex gap-2">
             <input
               className="block flex-1 px-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300"
               type="text"
-              id="search"
               placeholder="장소명을 입력하세요..."
               onChange={onChangeSearchTerm}
             />
@@ -133,7 +129,7 @@ const AttractionSearcher = ({
           검색 결과가 없습니다.
         </div>
       ) : (
-        <div className="mb-4">
+        <div>
           {attractionList.map((item, index) => {
             return (
               <AttractionItem

@@ -11,7 +11,7 @@ const AttractionItem = ({
   likeCount,
 }) => {
   return (
-    <div className="flex w-full h-[130px] px-2 py-1 bg-white border-b hover:bg-gray-100">
+    <div className="flex w-full h-[130px] px-2 py-1 bg-white border-b hover:bg-gray-50">
       <div className="flex flex-col justify-center flex-1 overflow-hidden">
         <div className="flex mb-2">
           <img
@@ -25,10 +25,10 @@ const AttractionItem = ({
           </div>
         </div>
         <div className="flex gap-2 text-xs">
-          <p className="px-2 py-1 text-xs text-main-400 rounded-xl border border-main-300">
+          <p className="px-2 py-1 bg-white text-xs text-main-400 rounded-xl border border-main-300">
             #{getAreaName(contentId)}
           </p>
-          <p className="px-2 py-1 text-xs text-main-400 rounded-xl border border-main-300">
+          <p className="px-2 py-1 bg-white text-xs text-main-400 rounded-xl border border-main-300">
             #{sceneTitle}
           </p>
         </div>

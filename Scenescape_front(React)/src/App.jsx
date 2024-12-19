@@ -9,6 +9,8 @@ import FindPasswordForm from "./components/user/FindPasswordForm";
 import SignUp from "./pages/SignUp";
 import MyPage from "./pages/MyPage";
 import Plan from "./pages/Plan";
+import PlanList from "./components/plan/PlanList";
+import PlanForm from "./components/plan/PlanForm";
 import Board from "./pages/Board";
 import NotFound from "./pages/NotFound";
 
@@ -82,7 +84,20 @@ const App = () => {
             main={<Plan />}
           />
         }
-      />
+      >
+        <Route
+          index
+          element={<PlanList />}
+        />
+        <Route
+          path="new"
+          element={<PlanForm />}
+        />
+        <Route
+          path=":id"
+          element={<PlanForm />}
+        />
+      </Route>
       <Route
         path="/board"
         element={

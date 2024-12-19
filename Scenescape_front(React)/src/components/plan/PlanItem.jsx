@@ -1,8 +1,15 @@
+import { useNavigate } from "react-router-dom";
+
 import getAreaName from "../../utils/get-area-name";
 
-const PlanItem = ({ title, overview, sceneCount, startDate, endDate }) => {
+const PlanItem = ({ id, title, overview, sceneCount, startDate, endDate }) => {
+  const nav = useNavigate();
+
   return (
-    <div className="flex w-full h-[120px] p-2 bg-white border-b hover:bg-gray-100 cursor-pointer">
+    <div
+      className="flex w-full h-[120px] p-2 bg-white border-b hover:bg-gray-100 cursor-pointer"
+      onClick={() => nav(`${id}`)}
+    >
       <div className="flex flex-col justify-between flex-1 overflow-hidden">
         <div>
           <p className="text-xl truncate">{title}</p>

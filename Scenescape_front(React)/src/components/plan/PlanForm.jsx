@@ -5,50 +5,65 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import AttractionItem from "./AttractionItem";
-
-const attractionList = [
-  {
-    title: "김밥천국",
-    address: "서울특별시 중구 신당동",
-    contentId: 39,
-    sceneTitle: "이태원클라쓰",
-    overview: "참치 김밥이 맛있는 신당동 맛집",
-    img: "NoImage.png",
-    likeCount: 912,
-  },
-  {
-    title: "김밥천국",
-    address: "서울특별시 중구 신당동",
-    contentId: 39,
-    sceneTitle: "이태원클라쓰",
-    overview: "참치 김밥이 맛있는 신당동 맛집",
-    img: "NoImage.png",
-    likeCount: 912,
-  },
-  {
-    title: "김밥천국",
-    address: "서울특별시 중구 신당동",
-    contentId: 39,
-    sceneTitle: "이태원클라쓰",
-    overview: "참치 김밥이 맛있는 신당동 맛집",
-    img: "NoImage.png",
-    likeCount: 912,
-  },
-  {
-    title: "김밥천국",
-    address: "서울특별시 중구 신당동",
-    contentId: 39,
-    sceneTitle: "이태원클라쓰",
-    overview: "참치 김밥이 맛있는 신당동 맛집",
-    img: "NoImage.png",
-    likeCount: 912,
-  },
-];
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
 const PlanForm = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const { id } = useParams();
+  const [attractionList, setAttractionList] = useState([
+    {
+      id: 1,
+      title: "김밥천국",
+      address: "서울특별시 중구 신당동",
+      contentId: 39,
+      sceneTitle: "이태원클라쓰",
+      overview: "참치 김밥이 맛있는 신당동 맛집",
+      img: "NoImage.png",
+      likeCount: 238,
+    },
+    {
+      id: 2,
+      title: "홍콩반점",
+      address: "서울특별시 중구 약수동",
+      contentId: 39,
+      sceneTitle: "나의 아저씨",
+      overview: "34년 전통 중국집",
+      img: "NoImage.png",
+      likeCount: 523,
+    },
+    {
+      id: 3,
+      title: "KFC",
+      address: "서울특별시 강남구 역삼동",
+      contentId: 39,
+      sceneTitle: "미생",
+      overview: "빠삭한 튀김 옷이 일품인 치킨",
+      img: "NoImage.png",
+      likeCount: 152,
+    },
+    {
+      id: 4,
+      title: "해운대",
+      address: "서울특별시 관악구",
+      contentId: 39,
+      sceneTitle: "해운대",
+      overview: "영화 <해운대>에 나온 부산의 그 해변 맞습니다.",
+      img: "NoImage.png",
+      likeCount: 232,
+    },
+  ]);
+
+  const onAttractionItemDragEnd = ({ source, destination }) => {
+    if (!destination || source.index === destination.index) {
+      return;
+    }
+
+    const newAttractionList = [...attractionList];
+    const [item] = newAttractionList.splice(source.index, 1); // splice 함수의 반환 값은 삭제한 원소들이 포함된 배열임
+    newAttractionList.splice(destination.index, 0, item); // 두 번째 매개변수를 0으로 하고, 세번째 매개변수에 추가할 객체를 넣으면 중간에 삽입됨
+    setAttractionList(newAttractionList);
+  };
 
   return (
     <div className="flex flex-col w-full h-full gap-3 py-3">
@@ -130,19 +145,55 @@ const PlanForm = () => {
 
       {!attractionList || attractionList.length === 0 ? (
         <div className="flex justify-center items-center flex-1 text-gray-300">
-          검색 결과가 없습니다.
+          추가된 장소가 없습니다.
         </div>
       ) : (
-        <div>
-          {attractionList.map((item, index) => {
-            return (
-              <AttractionItem
-                key={index}
-                {...item}
-              />
-            );
-          })}
-        </div>
+        <DragDropContext onDragEnd={onAttractionItemDragEnd}>
+          <Droppable
+            droppableId="droppable"
+            direction="vertical"
+          >
+            {(provided) => {
+              return (
+                <div
+                  className="flex-1 overflow-y-auto"
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  {attractionList.map((item, index) => {
+                    return (
+                      <Draggable // 드래그 영역
+                        draggableId={`${item.id}`}
+                        index={index}
+                        key={item.id}
+                        disableInteractiveElementBlocking // ❗️상호작용 가능한 요소에서의 드래그를 차단하지 않도록 함
+                      >
+                        {(provided, snapshot) => {
+                          if (snapshot.isDragging) {
+                            // 정확한 원인은 모르겠으나, 라이브러리 자체에 offset이 들어가기 때문에, 하드코딩으로 적절히 위치를 맞춰주었다.
+                            provided.draggableProps.style.left = undefined;
+                            provided.draggableProps.style.top =
+                              provided.draggableProps.style.top - 100;
+                          }
+
+                          return (
+                            <AttractionItem
+                              {...item}
+                              innerRef={provided.innerRef}
+                              dragHandleProps={provided.dragHandleProps}
+                              draggableProps={provided.draggableProps}
+                            />
+                          );
+                        }}
+                      </Draggable>
+                    );
+                  })}
+                  {provided.placeholder}
+                </div>
+              );
+            }}
+          </Droppable>
+        </DragDropContext>
       )}
     </div>
   );

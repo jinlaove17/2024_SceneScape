@@ -9,9 +9,17 @@ const AttractionItem = ({
   overview,
   img,
   likeCount,
+  innerRef,
+  dragHandleProps,
+  draggableProps,
 }) => {
   return (
-    <div className="flex w-full h-[130px] px-2 py-1 bg-white border-b hover:bg-gray-50">
+    <div
+      className="flex w-full h-[130px] px-2 py-1 bg-white border-b hover:bg-gray-50"
+      ref={innerRef}
+      {...dragHandleProps}
+      {...draggableProps}
+    >
       <div className="flex flex-col justify-center flex-1 overflow-hidden">
         <div className="flex mb-2">
           <img
@@ -78,4 +86,6 @@ const AttractionItem = ({
   );
 };
 
+// AttractionItem에 displayName을 설정
+AttractionItem.displayName = "AttractionItem";
 export default AttractionItem;

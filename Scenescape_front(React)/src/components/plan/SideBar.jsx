@@ -17,7 +17,7 @@ const SideBar = ({ tabMenu, direction, children }) => {
       {tabMenu}
 
       <div
-        className={`absolute w-96 h-full z-10 transition-transform duration-500 bg-white border border-gray-200 drop-shadow-xl top-0 ${positionClass}`}
+        className={`absolute w-96 h-full z-10 transition-transform duration-500 bg-white border border-gray-200 shadow-xl ${positionClass}`}
       >
         <button
           className={`absolute w-7 h-12 flex justify-center items-center top-1/2 bg-white border

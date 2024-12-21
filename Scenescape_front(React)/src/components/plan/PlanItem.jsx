@@ -1,14 +1,19 @@
-import { useNavigate } from "react-router-dom";
-
-import getAreaName from "../../utils/get-area-name";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const PlanItem = ({ id, title, overview, sceneCount, startDate, endDate }) => {
   const nav = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const onClickPlanItem = () => {
+    // 기존 query string 가져와 새로운 경로로 이동하더라도 query string을 유지
+    const queryString = searchParams.toString();
+    nav(`${id}?${queryString}`);
+  };
 
   return (
     <div
       className="flex w-full h-[120px] p-2 bg-white border-b hover:bg-gray-100 cursor-pointer"
-      onClick={() => nav(`${id}`)}
+      onClick={onClickPlanItem}
     >
       <div className="flex flex-col justify-between flex-1 overflow-hidden">
         <div>

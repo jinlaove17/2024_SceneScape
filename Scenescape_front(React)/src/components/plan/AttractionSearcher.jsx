@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import SearchDropdown from "./SearchDropdown";
 import AttractionItem from "./AttractionItem";
@@ -10,26 +11,55 @@ const AttractionSearcher = ({
   attractionList,
   categoryList,
 }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [content, setContent] = useState("전체");
-  const [area, setArea] = useState("전체");
-  const [subArea, setSubArea] = useState("전체");
+  const [filter, setFilter] = useState({});
   const [categoryBit, setCategoryBit] = useState(0);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const onChangeSearchTerm = (e) => {
-    setSearchTerm(e.target.value);
-  };
+  useEffect(() => {
+    const newFilter = {
+      searchTerm: searchParams.get("searchTerm") || "",
+      content: searchParams.get("content") || "전체",
+      area: searchParams.get("area") || "전체",
+      subArea: searchParams.get("subArea") || "전체",
+      categoryList: searchParams.getAll("categoryList") || [],
+    };
+    setFilter(newFilter);
 
-  const onChangeContent = (newContent) => {
-    setContent(newContent);
-  };
+    // queryString에 categoryList가 있다면, 해당 버튼 활성화하기
+    let bit = 0;
+    for (const category of newFilter.categoryList) {
+      switch (parseInt(category)) {
+        case 12:
+          bit |= 1;
+          break;
+        case 14:
+          bit |= 1 << 1;
+          break;
+        case 15:
+          bit |= 1 << 2;
+          break;
+        case 25:
+          bit |= 1 << 3;
+          break;
+        case 28:
+          bit |= 1 << 4;
+          break;
+        case 32:
+          bit |= 1 << 5;
+          break;
+        case 38:
+          bit |= 1 << 6;
+          break;
+        case 39:
+          bit |= 1 << 7;
+          break;
+      }
+    }
+    setCategoryBit(bit);
+  }, []);
 
-  const onChangeArea = (newArea) => {
-    setArea(newArea);
-  };
-
-  const onChangeSubArea = (newSubArea) => {
-    setSubArea(newSubArea);
+  const onChangeFilter = (e) => {
+    setFilter({ ...filter, [e.target.name]: e.target.value });
   };
 
   const onChangeCategory = (num) => {
@@ -38,6 +68,34 @@ const AttractionSearcher = ({
     } else {
       setCategoryBit(categoryBit | (1 << num));
     }
+  };
+
+  const onClickSearchButton = () => {
+    const list = [];
+    for (let i = 0; i < categoryList.length; ++i) {
+      if (categoryBit & (1 << i)) {
+        list.push(categoryList[i].id);
+      }
+    }
+
+    const newFilter = { ...filter, categoryList: list };
+    setFilter(newFilter);
+
+    const queryParams = new URLSearchParams();
+    for (const key in newFilter) {
+      if (newFilter[key]) {
+        if (Array.isArray(newFilter[key])) {
+          // 배열인 경우 각 요소를 개별적으로 추가
+          newFilter[key].forEach((value) => {
+            queryParams.append(key, value);
+          });
+        } else {
+          // 배열이 아닌 경우 그대로 추가
+          queryParams.append(key, newFilter[key]);
+        }
+      }
+    }
+    setSearchParams(queryParams);
   };
 
   const checkCategory = (num) => {
@@ -55,14 +113,16 @@ const AttractionSearcher = ({
             <input
               className="block flex-1 px-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300"
               type="text"
+              name="searchTerm"
+              value={filter.searchTerm}
               placeholder="장소명을 입력하세요..."
-              onChange={onChangeSearchTerm}
+              onChange={onChangeFilter}
             />
 
             {/* <button> 태그를 사용하면, focus가 일어나서 group에 속한 요소들의 스타일이 바뀌므로, <div> 태그를 사용하여 focus가 일어나지 않도록 구현  */}
             <div
               className="w-12 py-2 text-sm text-center text-white bg-main-300 rounded-lg hover:bg-main-400 cursor-pointer"
-              onClick={() => {}}
+              onClick={onClickSearchButton}
             >
               검색
             </div>
@@ -78,23 +138,44 @@ const AttractionSearcher = ({
 
         <SearchDropdown
           title={"컨텐츠"}
-          selected={content}
+          selected={filter.content}
           itemList={contentList}
-          onSelectItem={onChangeContent}
+          onSelectItem={(item) => {
+            onChangeFilter({
+              target: {
+                name: "content",
+                value: item,
+              },
+            });
+          }}
         />
 
         <div className="flex justify-between gap-2">
           <SearchDropdown
             title={"지역"}
-            selected={area}
+            selected={filter.area}
             itemList={areaList}
-            onSelectItem={onChangeArea}
+            onSelectItem={(item) => {
+              onChangeFilter({
+                target: {
+                  name: "area",
+                  value: item,
+                },
+              });
+            }}
           />
           <SearchDropdown
             title={"세부 지역"}
-            selected={subArea}
+            selected={filter.subArea}
             itemList={subAreaList}
-            onSelectItem={onChangeSubArea}
+            onSelectItem={(item) => {
+              onChangeFilter({
+                target: {
+                  name: "subArea",
+                  value: item,
+                },
+              });
+            }}
           />
         </div>
 

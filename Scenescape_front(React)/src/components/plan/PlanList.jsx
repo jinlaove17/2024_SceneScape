@@ -1,32 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 
 import PlanItem from "./PlanItem";
 
-const planList = [
-  {
-    title: "JJ의 이태원클라쓰 탐방기",
-    overview: "박새로이 빙의하기",
-    sceneCount: 10,
-    startDate: "2024-12-11",
-    endDate: "2024-12-17",
-  },
-  {
-    title: " JJ의 나의아저씨 17화 촬영하기",
-    overview: "편안함에 이르렀나",
-    sceneCount: 3,
-    startDate: "2024-12-11",
-    endDate: "2024-12-17",
-  },
-  {
-    title: " JJ의 백승수와 야구 관람",
-    overview: "웰메이드 드라마 스토브리그",
-    sceneCount: 6,
-    startDate: "2024-12-11",
-    endDate: "2024-12-17",
-  },
-];
-
 const PlanList = () => {
+  const { planList } = useOutletContext();
   const nav = useNavigate();
 
   return (
@@ -59,12 +36,12 @@ const PlanList = () => {
         </div>
       ) : (
         <div>
-          {planList.map((item, index) => {
+          {planList.map((item) => {
             return (
               <PlanItem
-                key={index}
-                id={index + 1}
-                title={`${index + 1}. ${item.title}`}
+                key={item.id}
+                id={item.id}
+                title={`${item.id}. ${item.title}`}
                 overview={item.overview}
                 sceneCount={item.sceneCount}
                 startDate={item.startDate}

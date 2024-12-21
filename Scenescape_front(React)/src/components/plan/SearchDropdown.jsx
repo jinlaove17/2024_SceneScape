@@ -70,7 +70,7 @@ const SearchDropdown = ({ title, selected, itemList, onSelectItem }) => {
             {filteredItemList.map((item, index) => (
               <div
                 key={index}
-                className="px-4 py-1 text-gray-700 hover:bg-gray-100 active:bg-main-100 cursor-pointer rounded-md"
+                className={`px-4 py-1 text-gray-700 hover:bg-gray-100 cursor-pointer rounded-md ${item === selected && "text-main-400"}`}
                 onMouseDown={() => onSelectItem(item)}
               >
                 {item}

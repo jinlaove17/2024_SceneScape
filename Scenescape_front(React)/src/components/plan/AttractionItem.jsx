@@ -15,7 +15,7 @@ const AttractionItem = ({
 }) => {
   return (
     <div
-      className="flex w-full h-[130px] px-2 py-1 bg-white border-b hover:bg-gray-50"
+      className="flex w-full h-[130px] px-2 py-1 bg-white border-b hover:bg-gray-100"
       ref={innerRef}
       {...dragHandleProps}
       {...draggableProps}

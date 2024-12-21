@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,62 +7,42 @@ import "react-datepicker/dist/react-datepicker.css";
 import AttractionItem from "./AttractionItem";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
+let nxtId = 4;
+
 const PlanForm = () => {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const { planList, onCreatePlan, onUpdatePlan, onDeletePlan } =
+    useOutletContext();
   const { id } = useParams();
-  const [attractionList, setAttractionList] = useState([
-    {
-      id: 1,
-      title: "김밥천국",
-      address: "서울특별시 중구 신당동",
-      contentId: 39,
-      sceneTitle: "이태원클라쓰",
-      overview: "참치 김밥이 맛있는 신당동 맛집",
-      img: "NoImage.png",
-      likeCount: 238,
-    },
-    {
-      id: 2,
-      title: "홍콩반점",
-      address: "서울특별시 중구 약수동",
-      contentId: 39,
-      sceneTitle: "나의 아저씨",
-      overview: "34년 전통 중국집",
-      img: "NoImage.png",
-      likeCount: 523,
-    },
-    {
-      id: 3,
-      title: "KFC",
-      address: "서울특별시 강남구 역삼동",
-      contentId: 39,
-      sceneTitle: "미생",
-      overview: "빠삭한 튀김 옷이 일품인 치킨",
-      img: "NoImage.png",
-      likeCount: 152,
-    },
-    {
-      id: 4,
-      title: "해운대",
-      address: "서울특별시 관악구",
-      contentId: 39,
-      sceneTitle: "해운대",
-      overview: "영화 <해운대>에 나온 부산의 그 해변 맞습니다.",
-      img: "NoImage.png",
-      likeCount: 232,
-    },
-  ]);
+  // url에 id가 있다면, planList에서 해당 plan을 찾아 초기화
+  const [plan, setPlan] = useState(() => {
+    if (id) {
+      return planList.find((item) => item.id === parseInt(id));
+    }
+
+    return {
+      id: nxtId++,
+      title: "",
+      overview: "",
+      sceneCount: 0,
+      startDate: "",
+      endDate: "",
+      attractionList: [],
+    };
+  });
+
+  const convertDate = (date) => {
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  };
 
   const onAttractionItemDragEnd = ({ source, destination }) => {
     if (!destination || source.index === destination.index) {
       return;
     }
 
-    const newAttractionList = [...attractionList];
+    const newAttractionList = [...plan.attractionList];
     const [item] = newAttractionList.splice(source.index, 1); // splice 함수의 반환 값은 삭제한 원소들이 포함된 배열임
     newAttractionList.splice(destination.index, 0, item); // 두 번째 매개변수를 0으로 하고, 세번째 매개변수에 추가할 객체를 넣으면 중간에 삽입됨
-    setAttractionList(newAttractionList);
+    setPlan({ ...plan, attractionList: newAttractionList });
   };
 
   return (
@@ -82,15 +62,30 @@ const PlanForm = () => {
               className="block flex-1 px-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300"
               type="text"
               placeholder="이 계획의 제목을 입력하세요..."
-              // onChange={onChangeSearchTerm}
+              value={plan.title}
+              onChange={(e) => setPlan({ ...plan, title: e.target.value })}
             />
 
             {/* <button> 태그를 사용하면, focus가 일어나서 group에 속한 요소들의 스타일이 바뀌므로, <div> 태그를 사용하여 focus가 일어나지 않도록 구현  */}
             <div
               className="w-12 py-2 text-sm text-center text-white bg-main-300 rounded-lg hover:bg-main-400 cursor-pointer"
-              onClick={() => {}}
+              onClick={() => {
+                if (id) {
+                  onUpdatePlan({
+                    ...plan,
+                    startDate: convertDate(plan.startDate),
+                    endDate: convertDate(plan.endDate),
+                  });
+                } else {
+                  onCreatePlan({
+                    ...plan,
+                    startDate: convertDate(plan.startDate),
+                    endDate: convertDate(plan.endDate),
+                  });
+                }
+              }}
             >
-              생성
+              {id ? "수정" : "생성"}
             </div>
           </div>
         </div>
@@ -102,8 +97,8 @@ const PlanForm = () => {
             </p>
             <DatePicker
               className="py-1 px-2 text-center border border-gray-300 outline-none focus:border-main-300 rounded-md"
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
+              selected={plan.startDate}
+              onChange={(date) => setPlan({ ...plan, startDate: date })}
             />
             <svg
               className="absolute top-7 left-3 w-4 h-4 fill-gray-400 group-focus-within:fill-main-300"
@@ -118,8 +113,8 @@ const PlanForm = () => {
             </p>
             <DatePicker
               className="py-1 px-2 text-center border border-gray-300 outline-none focus:border-main-300 rounded-md"
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
+              selected={plan.endDate}
+              onChange={(date) => setPlan({ ...plan, endDate: date })}
             />
             <svg
               className="absolute top-7 left-3 w-4 h-4 fill-gray-400 group-focus-within:fill-main-300"
@@ -138,12 +133,12 @@ const PlanForm = () => {
             className="block p-2.5 w-full bg-white rounded-lg border border-gray-300 focus:outline-none focus:border-main-300 resize-none"
             rows="3"
             placeholder="이 계획에 대한 설명과 지금의 감정을 남겨보세요..."
-            //   v-model.lazy="planParams.description"
+            onChange={(e) => setPlan({ ...plan, overview: e.target.value })}
           ></textarea>
         </div>
       </div>
 
-      {!attractionList || attractionList.length === 0 ? (
+      {plan.attractionList.length === 0 ? (
         <div className="flex justify-center items-center flex-1 text-gray-300">
           추가된 장소가 없습니다.
         </div>
@@ -160,7 +155,7 @@ const PlanForm = () => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
-                  {attractionList.map((item, index) => {
+                  {plan.attractionList.map((item, index) => {
                     return (
                       <Draggable // 드래그 영역
                         draggableId={`${item.id}`}

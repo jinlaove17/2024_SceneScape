@@ -48,7 +48,7 @@ const PlanForm = () => {
     nav(`/plan?${queryString}`);
   };
 
-  const onAttractionItemDragEnd = ({ source, destination }) => {
+  const onDragEndAttractionItem = ({ source, destination }) => {
     if (!destination || source.index === destination.index) {
       return;
     }
@@ -57,6 +57,13 @@ const PlanForm = () => {
     const [item] = newAttractionList.splice(source.index, 1); // splice 함수의 반환 값은 삭제한 원소들이 포함된 배열임
     newAttractionList.splice(destination.index, 0, item); // 두 번째 매개변수를 0으로 하고, 세번째 매개변수에 추가할 객체를 넣으면 중간에 삽입됨
     setCurPlan({ ...curPlan, attractionList: newAttractionList });
+  };
+
+  const onClickDeleteAttractionButton = (item) => {
+    setCurPlan({
+      ...curPlan,
+      attractionList: curPlan.attractionList.filter((plan) => plan !== item),
+    });
   };
 
   return (
@@ -162,7 +169,7 @@ const PlanForm = () => {
           추가된 장소가 없습니다.
         </div>
       ) : (
-        <DragDropContext onDragEnd={onAttractionItemDragEnd}>
+        <DragDropContext onDragEnd={onDragEndAttractionItem}>
           <Droppable
             droppableId="droppable"
             direction="vertical"
@@ -194,9 +201,35 @@ const PlanForm = () => {
                             <AttractionItem
                               {...item}
                               innerRef={provided.innerRef}
-                              dragHandleProps={provided.dragHandleProps}
+                              isDragging={snapshot.isDragging}
+                              dragPoint={
+                                <button
+                                  className="w-5 h-5 fill-gray-400 self-center"
+                                  type="button"
+                                  {...provided.dragHandleProps}
+                                >
+                                  <svg viewBox="0 0 448 512">
+                                    <path d="M0 88C0 74.7 10.7 64 24 64l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 112C10.7 112 0 101.3 0 88zM0 248c0-13.3 10.7-24 24-24l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 272c-13.3 0-24-10.7-24-24zM448 408c0 13.3-10.7 24-24 24L24 432c-13.3 0-24-10.7-24-24s10.7-24 24-24l400 0c13.3 0 24 10.7 24 24z" />
+                                  </svg>
+                                </button>
+                              }
                               draggableProps={provided.draggableProps}
-                            />
+                            >
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onClickDeleteAttractionButton(item);
+                                }}
+                              >
+                                <svg
+                                  className="w-5 h-5 fill-gray-300 hover:scale-110"
+                                  viewBox="0 0 448 512"
+                                >
+                                  <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
+                                </svg>
+                              </button>
+                            </AttractionItem>
                           );
                         }}
                       </Draggable>

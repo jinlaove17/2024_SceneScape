@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import SearchDropdown from "./SearchDropdown";
@@ -8,9 +8,10 @@ const AttractionSearcher = ({
   contentList,
   areaList,
   subAreaList,
-  attractionList,
   categoryList,
+  attractionList,
 }) => {
+  const isMounted = useRef(false);
   const [filter, setFilter] = useState({});
   const [categoryBit, setCategoryBit] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -57,6 +58,24 @@ const AttractionSearcher = ({
     }
     setCategoryBit(bit);
   }, []);
+
+  useEffect(() => {
+    // 초기 렌더링에서는 실행하지 않는다.
+    if (!isMounted.current) {
+      isMounted.current = true;
+      return;
+    }
+
+    setFilter({
+      searchTerm: "",
+      content: "전체",
+      area: "전체",
+      subArea: "전체",
+      categoryList: [],
+    });
+    setCategoryBit(0);
+    setSearchParams(undefined);
+  }, [attractionList]);
 
   const onChangeFilter = (e) => {
     setFilter({ ...filter, [e.target.name]: e.target.value });

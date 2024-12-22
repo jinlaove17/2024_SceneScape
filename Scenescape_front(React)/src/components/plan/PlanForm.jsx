@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { useOutletContext, useParams } from "react-router-dom";
+import {
+  useOutletContext,
+  useParams,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -12,8 +17,17 @@ let nxtId = 4;
 const PlanForm = () => {
   const { planList, onCreatePlan, onUpdatePlan } = useOutletContext();
   const { id } = useParams();
-  // url에 id가 있다면, planList에서 해당 plan을 찾아 초기화
+  const nav = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const onClickBackButton = () => {
+    // 기존 query string 가져와 새로운 경로로 이동하더라도 query string을 유지
+    const queryString = searchParams.toString();
+    nav(`/plan?${queryString}`);
+  };
+
   const [plan, setPlan] = useState(() => {
+    // url에 id가 있다면, planList에서 해당 plan을 찾아 초기화
     if (id) {
       return planList.find((item) => item.id === parseInt(id));
     }
@@ -42,9 +56,23 @@ const PlanForm = () => {
 
   return (
     <div className="flex flex-col w-full h-full gap-3 py-3">
-      <div className="px-5">
-        <h1 className="text-2xl">나의 여행 계획</h1>
-        <p className="text-gray-400">회원님이 주인공인 멋진 계획이네요!</p>
+      <div className="flex items-center px-2 gap-3">
+        <button
+          type="button"
+          onClick={onClickBackButton}
+        >
+          <svg
+            className="w-5 h-5 fill-main-300"
+            viewBox="0 0 448 512"
+          >
+            <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
+          </svg>
+        </button>
+
+        <div>
+          <h1 className="text-2xl">나의 여행 계획</h1>
+          <p className="text-gray-400">회원님이 주인공인 멋진 계획이네요!</p>
+        </div>
       </div>
 
       <div className="w-full flex flex-col gap-2 px-4">

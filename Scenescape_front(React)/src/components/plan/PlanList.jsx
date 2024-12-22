@@ -11,7 +11,7 @@ const PlanList = () => {
       <div className="flex justify-between items-center px-5">
         <div>
           <h1 className="text-2xl">나의 여행 계획</h1>
-          <p className="text-gray-400">어떤 곳으로 떠나볼까요?</p>
+          <p className="text-gray-400">회원님이 주인공인 멋진 계획들이에요.</p>
         </div>
 
         <button

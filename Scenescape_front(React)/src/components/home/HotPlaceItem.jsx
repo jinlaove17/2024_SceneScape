@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 import getAreaName from "../../utils/get-area-name";
 
 const HotPlaceItem = ({
@@ -10,8 +12,13 @@ const HotPlaceItem = ({
   overview,
   img,
 }) => {
+  const nav = useNavigate();
+
   return (
-    <div className="relative w-80 rounded-lg shadow-2xl mx-8 mb-20 transition duration-200 ease-in-out hover:scale-105 border-2 border-transparent hover:border-main-300 cursor-pointer">
+    <div
+      className="relative w-80 rounded-lg shadow-2xl mx-8 mb-20 transition duration-200 ease-in-out hover:scale-105 border-2 border-transparent hover:border-main-300 cursor-pointer"
+      onClick={() => nav(`/plan?searchTerm=${title}`)}
+    >
       <img
         className="rounded-t-md w-full h-56 object-cover"
         src={img}

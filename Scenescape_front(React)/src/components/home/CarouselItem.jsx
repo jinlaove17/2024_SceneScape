@@ -1,10 +1,27 @@
 import "./CarouselItem.css";
 
+import { useNavigate } from "react-router-dom";
+
 import getImageUrl from "../../utils/get-image-url";
 
-const CarouselItem = ({ text, img }) => {
+const CarouselItem = ({ text, img, searchTerm }) => {
+  const nav = useNavigate();
+
+  const onClickCarouselItem = () => {
+    if (!searchTerm) {
+      return;
+    }
+
+    nav(`/plan?searchTerm=${searchTerm}`);
+  };
+
   return (
-    <div className="relative min-w-full overflow-hidden">
+    <div
+      className="relative min-w-full cursor-pointer overflow-hidden"
+      onClick={() => {
+        onClickCarouselItem();
+      }}
+    >
       <img
         src={getImageUrl(img)}
         className="w-full h-full object-cover blur-md animate-zoom"

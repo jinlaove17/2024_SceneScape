@@ -170,7 +170,7 @@ const PlanForm = () => {
             {(provided) => {
               return (
                 <div
-                  className="flex-1 overflow-y-auto"
+                  className="overflow-y-auto"
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >

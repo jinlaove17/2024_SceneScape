@@ -241,7 +241,7 @@ const AttractionSearcher = ({
           검색 결과가 없습니다.
         </div>
       ) : (
-        <div>
+        <div className="overflow-y-auto">
           {attractionList.map((item, index) => {
             return (
               <AttractionItem

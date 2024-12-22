@@ -156,6 +156,7 @@ const PlanForm = () => {
             className="block p-2.5 w-full bg-white rounded-lg border border-gray-300 focus:outline-none focus:border-main-300 resize-none"
             rows="3"
             placeholder="이 계획에 대한 설명과 지금의 감정을 남겨보세요..."
+            value={plan.overview}
             onChange={(e) => setPlan({ ...plan, overview: e.target.value })}
           ></textarea>
         </div>

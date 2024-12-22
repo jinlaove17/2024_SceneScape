@@ -1,57 +1,62 @@
-import { useState } from "react";
+import { useEffect } from "react";
+
 import {
   useOutletContext,
   useParams,
-  useNavigate,
   useSearchParams,
+  useNavigate,
 } from "react-router-dom";
 
 import DatePicker from "react-datepicker";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import "react-datepicker/dist/react-datepicker.css";
 
 import AttractionItem from "./AttractionItem";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
-let nxtId = 4;
+let nextPlanId = 4;
 
 const PlanForm = () => {
-  const { planList, onCreatePlan, onUpdatePlan } = useOutletContext();
+  const { planList, curPlan, setCurPlan, onCreatePlan, onUpdatePlan } =
+    useOutletContext();
   const { id } = useParams();
-  const nav = useNavigate();
   const [searchParams] = useSearchParams();
+  const nav = useNavigate();
+
+  useEffect(() => {
+    if (id) {
+      setCurPlan(planList.find((item) => parseInt(item.id) === parseInt(id)));
+    } else {
+      setCurPlan({
+        id: nextPlanId++,
+        title: "",
+        overview: "",
+        sceneCount: 0,
+        startDate: new Date(),
+        endDate: new Date(),
+        attractionList: [],
+      });
+    }
+  }, [id]);
+
+  if (!curPlan) {
+    return <div>로딩 중입니다.</div>;
+  }
 
   const onClickBackButton = () => {
-    // 기존 query string 가져와 새로운 경로로 이동하더라도 query string을 유지
+    // 기존 QueryString을 가져와 새로운 경로로 이동하더라도 QueryString을 유지
     const queryString = searchParams.toString();
     nav(`/plan?${queryString}`);
   };
-
-  const [plan, setPlan] = useState(() => {
-    // url에 id가 있다면, planList에서 해당 plan을 찾아 초기화
-    if (id) {
-      return planList.find((item) => item.id === parseInt(id));
-    }
-
-    return {
-      id: nxtId++,
-      title: "",
-      overview: "",
-      sceneCount: 0,
-      startDate: "",
-      endDate: "",
-      attractionList: [],
-    };
-  });
 
   const onAttractionItemDragEnd = ({ source, destination }) => {
     if (!destination || source.index === destination.index) {
       return;
     }
 
-    const newAttractionList = [...plan.attractionList];
+    const newAttractionList = [...curPlan.attractionList];
     const [item] = newAttractionList.splice(source.index, 1); // splice 함수의 반환 값은 삭제한 원소들이 포함된 배열임
     newAttractionList.splice(destination.index, 0, item); // 두 번째 매개변수를 0으로 하고, 세번째 매개변수에 추가할 객체를 넣으면 중간에 삽입됨
-    setPlan({ ...plan, attractionList: newAttractionList });
+    setCurPlan({ ...curPlan, attractionList: newAttractionList });
   };
 
   return (
@@ -85,28 +90,16 @@ const PlanForm = () => {
               className="block flex-1 px-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300"
               type="text"
               placeholder="이 계획의 제목을 입력하세요..."
-              value={plan.title}
-              onChange={(e) => setPlan({ ...plan, title: e.target.value })}
+              value={curPlan.title}
+              onChange={(e) =>
+                setCurPlan({ ...curPlan, title: e.target.value })
+              }
             />
 
             {/* <button> 태그를 사용하면, focus가 일어나서 group에 속한 요소들의 스타일이 바뀌므로, <div> 태그를 사용하여 focus가 일어나지 않도록 구현  */}
             <div
               className="w-12 py-2 text-sm text-center text-white bg-main-300 rounded-lg hover:bg-main-400 cursor-pointer"
-              onClick={() => {
-                if (id) {
-                  onUpdatePlan({
-                    ...plan,
-                    startDate: plan.startDate,
-                    endDate: plan.endDate,
-                  });
-                } else {
-                  onCreatePlan({
-                    ...plan,
-                    startDate: plan.startDate,
-                    endDate: plan.endDate,
-                  });
-                }
-              }}
+              onClick={() => (id ? onUpdatePlan() : onCreatePlan())}
             >
               {id ? "수정" : "생성"}
             </div>
@@ -120,8 +113,8 @@ const PlanForm = () => {
             </p>
             <DatePicker
               className="py-1 px-2 text-center border border-gray-300 outline-none focus:border-main-300 rounded-md"
-              selected={plan.startDate}
-              onChange={(date) => setPlan({ ...plan, startDate: date })}
+              selected={curPlan.startDate}
+              onChange={(date) => setCurPlan({ ...curPlan, startDate: date })}
             />
             <svg
               className="absolute top-7 left-3 w-4 h-4 fill-gray-400 group-focus-within:fill-main-300"
@@ -136,8 +129,8 @@ const PlanForm = () => {
             </p>
             <DatePicker
               className="py-1 px-2 text-center border border-gray-300 outline-none focus:border-main-300 rounded-md"
-              selected={plan.endDate}
-              onChange={(date) => setPlan({ ...plan, endDate: date })}
+              selected={curPlan.endDate}
+              onChange={(date) => setCurPlan({ ...curPlan, endDate: date })}
             />
             <svg
               className="absolute top-7 left-3 w-4 h-4 fill-gray-400 group-focus-within:fill-main-300"
@@ -156,13 +149,15 @@ const PlanForm = () => {
             className="block p-2.5 w-full bg-white rounded-lg border border-gray-300 focus:outline-none focus:border-main-300 resize-none"
             rows="3"
             placeholder="이 계획에 대한 설명과 지금의 감정을 남겨보세요..."
-            value={plan.overview}
-            onChange={(e) => setPlan({ ...plan, overview: e.target.value })}
+            value={curPlan.overview}
+            onChange={(e) =>
+              setCurPlan({ ...curPlan, overview: e.target.value })
+            }
           ></textarea>
         </div>
       </div>
 
-      {plan.attractionList.length === 0 ? (
+      {curPlan.attractionList.length === 0 ? (
         <div className="flex justify-center items-center flex-1 text-gray-300">
           추가된 장소가 없습니다.
         </div>
@@ -179,13 +174,13 @@ const PlanForm = () => {
                   ref={provided.innerRef}
                   {...provided.droppableProps}
                 >
-                  {plan.attractionList.map((item, index) => {
+                  {curPlan.attractionList.map((item, index) => {
                     return (
                       <Draggable // 드래그 영역
-                        draggableId={`${item.id}`}
+                        draggableId={`${item.timestamp}`}
                         index={index}
-                        key={item.id}
-                        disableInteractiveElementBlocking // ❗️상호작용 가능한 요소에서의 드래그를 차단하지 않도록 함
+                        key={item.timestamp}
+                        disableInteractiveElementBlocking // 상호작용 가능한 요소에서의 드래그를 차단하지 않도록 함
                       >
                         {(provided, snapshot) => {
                           if (snapshot.isDragging) {

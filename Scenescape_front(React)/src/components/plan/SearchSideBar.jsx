@@ -69,7 +69,7 @@ const categoryList = [
   },
 ];
 
-const SearchSideBar = ({ attractionList }) => {
+const SearchSideBar = ({ attractionList, curPlan, setCurPlan }) => {
   const [tabIndex, setTabIndex] = useState(0);
   const tabMenuListRef = useRef([
     {
@@ -117,6 +117,8 @@ const SearchSideBar = ({ attractionList }) => {
             subAreaList={subAreaList}
             categoryList={categoryList}
             attractionList={tabIndex === 0 ? attractionList : []}
+            curPlan={curPlan}
+            setCurPlan={setCurPlan}
           />
         );
       }

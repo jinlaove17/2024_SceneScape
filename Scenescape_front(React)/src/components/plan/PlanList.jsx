@@ -1,10 +1,21 @@
-import { useOutletContext, useNavigate } from "react-router-dom";
+import {
+  useOutletContext,
+  useSearchParams,
+  useNavigate,
+} from "react-router-dom";
 
 import PlanItem from "./PlanItem";
 
 const PlanList = () => {
   const { planList, onDeletePlan } = useOutletContext();
+  const [searchParams] = useSearchParams();
   const nav = useNavigate();
+
+  const onClickCreatePlanButton = () => {
+    // 기존 QueryString을 가져와 새로운 경로로 이동하더라도 QueryString을 유지
+    const queryString = searchParams.toString();
+    nav(`new?${queryString}`);
+  };
 
   return (
     <div className="flex flex-col w-full h-full gap-3 py-3">
@@ -17,7 +28,7 @@ const PlanList = () => {
         <button
           className="flex flex-col items-center group"
           type="button"
-          onClick={() => nav("new")}
+          onClick={onClickCreatePlanButton}
         >
           <svg
             className="w-9 h-9 fill-main-300 group-hover:fill-main-400"
@@ -41,12 +52,8 @@ const PlanList = () => {
             return (
               <PlanItem
                 key={item.id}
-                id={item.id}
+                {...item}
                 title={`${index + 1}. ${item.title}`}
-                overview={item.overview}
-                sceneCount={item.sceneCount}
-                startDate={item.startDate}
-                endDate={item.endDate}
                 onDeletePlan={onDeletePlan}
               />
             );

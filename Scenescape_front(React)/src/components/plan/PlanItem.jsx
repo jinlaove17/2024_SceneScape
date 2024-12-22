@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 import date2String from "../../utils/convert-date";
 
@@ -11,11 +11,11 @@ const PlanItem = ({
   endDate,
   onDeletePlan,
 }) => {
-  const nav = useNavigate();
   const [searchParams] = useSearchParams();
+  const nav = useNavigate();
 
   const onClickPlanItem = () => {
-    // 기존 query string 가져와 새로운 경로로 이동하더라도 query string을 유지
+    // 기존 QueryString을 가져와 새로운 경로로 이동하더라도 QueryString을 유지
     const queryString = searchParams.toString();
     nav(`${id}?${queryString}`);
   };

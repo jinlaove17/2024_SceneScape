@@ -3,7 +3,7 @@ import { useOutletContext, useNavigate } from "react-router-dom";
 import PlanItem from "./PlanItem";
 
 const PlanList = () => {
-  const { planList } = useOutletContext();
+  const { planList, onDeletePlan } = useOutletContext();
   const nav = useNavigate();
 
   return (
@@ -14,8 +14,9 @@ const PlanList = () => {
           <p className="text-gray-400">어떤 곳으로 떠나볼까요?</p>
         </div>
 
-        <div
-          className="flex flex-col items-center cursor-pointer group"
+        <button
+          className="flex flex-col items-center group"
+          type="button"
           onClick={() => nav("new")}
         >
           <svg
@@ -27,7 +28,7 @@ const PlanList = () => {
           <p className="text-sm text-main-400 group-hover:text-main-500">
             새 계획 추가
           </p>
-        </div>
+        </button>
       </div>
 
       {!planList || planList.length === 0 ? (
@@ -36,16 +37,17 @@ const PlanList = () => {
         </div>
       ) : (
         <div>
-          {planList.map((item) => {
+          {planList.map((item, index) => {
             return (
               <PlanItem
                 key={item.id}
                 id={item.id}
-                title={`${item.id}. ${item.title}`}
+                title={`${index + 1}. ${item.title}`}
                 overview={item.overview}
                 sceneCount={item.sceneCount}
                 startDate={item.startDate}
                 endDate={item.endDate}
+                onDeletePlan={onDeletePlan}
               />
             );
           })}

@@ -10,8 +10,7 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 let nxtId = 4;
 
 const PlanForm = () => {
-  const { planList, onCreatePlan, onUpdatePlan, onDeletePlan } =
-    useOutletContext();
+  const { planList, onCreatePlan, onUpdatePlan } = useOutletContext();
   const { id } = useParams();
   // url에 id가 있다면, planList에서 해당 plan을 찾아 초기화
   const [plan, setPlan] = useState(() => {
@@ -29,10 +28,6 @@ const PlanForm = () => {
       attractionList: [],
     };
   });
-
-  const convertDate = (date) => {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-  };
 
   const onAttractionItemDragEnd = ({ source, destination }) => {
     if (!destination || source.index === destination.index) {
@@ -73,14 +68,14 @@ const PlanForm = () => {
                 if (id) {
                   onUpdatePlan({
                     ...plan,
-                    startDate: convertDate(plan.startDate),
-                    endDate: convertDate(plan.endDate),
+                    startDate: plan.startDate,
+                    endDate: plan.endDate,
                   });
                 } else {
                   onCreatePlan({
                     ...plan,
-                    startDate: convertDate(plan.startDate),
-                    endDate: convertDate(plan.endDate),
+                    startDate: plan.startDate,
+                    endDate: plan.endDate,
                   });
                 }
               }}

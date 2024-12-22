@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useSearchParams, useNavigate, Outlet } from "react-router-dom";
 
 import SideBar from "./SideBar";
 
@@ -10,8 +10,8 @@ const PlanSideBar = () => {
       title: "JJ의 이태원클라쓰 탐방기",
       overview: "박새로이 빙의하기",
       sceneCount: 10,
-      startDate: "2024-12-11",
-      endDate: "2024-12-17",
+      startDate: new Date("2024-12-11"),
+      endDate: new Date("2024-12-17"),
       attractionList: [
         {
           id: 1,
@@ -60,8 +60,8 @@ const PlanSideBar = () => {
       title: " JJ의 나의아저씨 17화 촬영하기",
       overview: "편안함에 이르렀나",
       sceneCount: 3,
-      startDate: "2024-12-11",
-      endDate: "2024-12-17",
+      startDate: new Date("2024-12-11"),
+      endDate: new Date("2024-12-17"),
       attractionList: [
         {
           id: 1,
@@ -90,11 +90,12 @@ const PlanSideBar = () => {
       title: " JJ의 백승수와 야구 관람",
       overview: "웰메이드 드라마 스토브리그",
       sceneCount: 6,
-      startDate: "2024-12-11",
-      endDate: "2024-12-17",
+      startDate: new Date("2024-12-11"),
+      endDate: new Date("2024-12-17"),
       attractionList: [],
     },
   ]);
+  const [searchParams] = useSearchParams();
   const nav = useNavigate();
 
   const onCreatePlan = (newPlan) => {
@@ -103,7 +104,9 @@ const PlanSideBar = () => {
     }
 
     setPlanList([...planList, newPlan]);
-    nav("/plan"); // /plan으로 이동
+
+    const queryString = searchParams.toString();
+    nav(`/plan/?${queryString}`);
   };
 
   const onUpdatePlan = (updatedPlan) => {
@@ -116,7 +119,9 @@ const PlanSideBar = () => {
         parseInt(item.id) === parseInt(updatedPlan.id) ? updatedPlan : item
       )
     );
-    nav("/plan"); // /plan으로 이동
+
+    const queryString = searchParams.toString();
+    nav(`/plan/?${queryString}`);
   };
 
   const onDeletePlan = (id) => {

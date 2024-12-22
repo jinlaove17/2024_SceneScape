@@ -6,9 +6,9 @@ const PlanItem = ({
   id,
   title,
   overview,
-  sceneCount,
   startDate,
   endDate,
+  attractionList,
   onDeletePlan,
 }) => {
   const [searchParams] = useSearchParams();
@@ -32,7 +32,7 @@ const PlanItem = ({
         </div>
 
         <div className="flex justify-between items-center text-end text-sm">
-          <p className="text-main-400">{sceneCount}개의 씬</p>
+          <p className="text-main-400">{attractionList.length}개의 씬</p>
           <p className="text-gray-700">
             {date2String(startDate)} ~ {date2String(endDate)}
           </p>

@@ -83,7 +83,7 @@ const PlanForm = () => {
 
         <div>
           <h1 className="text-2xl">나의 여행 계획</h1>
-          <p className="text-gray-400">회원님이 주인공인 멋진 계획이네요!</p>
+          <p className="text-gray-400">계획을 좀 더 상세히 작성해보세요!</p>
         </div>
       </div>
 
@@ -166,81 +166,86 @@ const PlanForm = () => {
 
       {curPlan.attractionList.length === 0 ? (
         <div className="flex justify-center items-center flex-1 text-gray-300">
-          추가된 장소가 없습니다.
+          추가된 씬이 없습니다.
         </div>
       ) : (
-        <DragDropContext onDragEnd={onDragEndAttractionItem}>
-          <Droppable
-            droppableId="droppable"
-            direction="vertical"
-          >
-            {(provided) => {
-              return (
-                <div
-                  className="overflow-y-auto"
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                >
-                  {curPlan.attractionList.map((item, index) => {
-                    return (
-                      <Draggable // 드래그 영역
-                        draggableId={`${item.timestamp}`}
-                        index={index}
-                        key={item.timestamp}
-                        disableInteractiveElementBlocking // 상호작용 가능한 요소에서의 드래그를 차단하지 않도록 함
-                      >
-                        {(provided, snapshot) => {
-                          if (snapshot.isDragging) {
-                            // 정확한 원인은 모르겠으나, 라이브러리 자체에 offset이 들어가기 때문에, 하드코딩으로 적절히 위치를 맞춰주었다.
-                            provided.draggableProps.style.left = undefined;
-                            provided.draggableProps.style.top =
-                              provided.draggableProps.style.top - 100;
-                          }
+        <>
+          <p className="px-4 text-sm text-main-400 text-end">
+            총 {curPlan.attractionList.length}개의 씬
+          </p>
+          <DragDropContext onDragEnd={onDragEndAttractionItem}>
+            <Droppable
+              droppableId="droppable"
+              direction="vertical"
+            >
+              {(provided) => {
+                return (
+                  <div
+                    className="overflow-y-auto"
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                  >
+                    {curPlan.attractionList.map((item, index) => {
+                      return (
+                        <Draggable // 드래그 영역
+                          draggableId={`${item.timestamp}`}
+                          index={index}
+                          key={item.timestamp}
+                          disableInteractiveElementBlocking // 상호작용 가능한 요소에서의 드래그를 차단하지 않도록 함
+                        >
+                          {(provided, snapshot) => {
+                            if (snapshot.isDragging) {
+                              // 정확한 원인은 모르겠으나, 라이브러리 자체에 offset이 들어가기 때문에, 하드코딩으로 적절히 위치를 맞춰주었다.
+                              provided.draggableProps.style.left = undefined;
+                              provided.draggableProps.style.top =
+                                provided.draggableProps.style.top - 100;
+                            }
 
-                          return (
-                            <AttractionItem
-                              {...item}
-                              innerRef={provided.innerRef}
-                              isDragging={snapshot.isDragging}
-                              dragPoint={
+                            return (
+                              <AttractionItem
+                                {...item}
+                                innerRef={provided.innerRef}
+                                isDragging={snapshot.isDragging}
+                                dragPoint={
+                                  <button
+                                    className="w-5 h-5 fill-gray-400 self-center"
+                                    type="button"
+                                    {...provided.dragHandleProps}
+                                  >
+                                    <svg viewBox="0 0 448 512">
+                                      <path d="M0 88C0 74.7 10.7 64 24 64l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 112C10.7 112 0 101.3 0 88zM0 248c0-13.3 10.7-24 24-24l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 272c-13.3 0-24-10.7-24-24zM448 408c0 13.3-10.7 24-24 24L24 432c-13.3 0-24-10.7-24-24s10.7-24 24-24l400 0c13.3 0 24 10.7 24 24z" />
+                                    </svg>
+                                  </button>
+                                }
+                                draggableProps={provided.draggableProps}
+                              >
                                 <button
-                                  className="w-5 h-5 fill-gray-400 self-center"
                                   type="button"
-                                  {...provided.dragHandleProps}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    onClickDeleteAttractionButton(item);
+                                  }}
                                 >
-                                  <svg viewBox="0 0 448 512">
-                                    <path d="M0 88C0 74.7 10.7 64 24 64l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 112C10.7 112 0 101.3 0 88zM0 248c0-13.3 10.7-24 24-24l400 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L24 272c-13.3 0-24-10.7-24-24zM448 408c0 13.3-10.7 24-24 24L24 432c-13.3 0-24-10.7-24-24s10.7-24 24-24l400 0c13.3 0 24 10.7 24 24z" />
+                                  <svg
+                                    className="w-5 h-5 fill-gray-300 hover:scale-110"
+                                    viewBox="0 0 448 512"
+                                  >
+                                    <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
                                   </svg>
                                 </button>
-                              }
-                              draggableProps={provided.draggableProps}
-                            >
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onClickDeleteAttractionButton(item);
-                                }}
-                              >
-                                <svg
-                                  className="w-5 h-5 fill-gray-300 hover:scale-110"
-                                  viewBox="0 0 448 512"
-                                >
-                                  <path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l384 0 0 320c0 35.3-28.7 64-64 64L96 512c-35.3 0-64-28.7-64-64l0-320zm96 64c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16l0 224c0 8.8 7.2 16 16 16s16-7.2 16-16l0-224c0-8.8-7.2-16-16-16z" />
-                                </svg>
-                              </button>
-                            </AttractionItem>
-                          );
-                        }}
-                      </Draggable>
-                    );
-                  })}
-                  {provided.placeholder}
-                </div>
-              );
-            }}
-          </Droppable>
-        </DragDropContext>
+                              </AttractionItem>
+                            );
+                          }}
+                        </Draggable>
+                      );
+                    })}
+                    {provided.placeholder}
+                  </div>
+                );
+              }}
+            </Droppable>
+          </DragDropContext>
+        </>
       )}
     </div>
   );

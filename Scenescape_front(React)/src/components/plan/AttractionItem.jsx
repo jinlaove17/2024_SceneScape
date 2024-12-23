@@ -17,7 +17,7 @@ const AttractionItem = ({
 }) => {
   return (
     <div
-      className={`flex gap-2 w-full h-[130px] px-2 py-1 bg-white border-b hover:bg-gray-100 ${isDragging && "bg-teal-50 border border-main-300 shadow-lg"}`}
+      className={`flex gap-2 w-full h-[130px] px-2 py-1 ${isDragging ? "bg-main-50 border border-main-300 shadow-lg" : "bg-white border-b hover:bg-gray-100"}`}
       ref={innerRef}
       {...draggableProps}
     >

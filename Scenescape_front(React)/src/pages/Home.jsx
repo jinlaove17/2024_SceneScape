@@ -4,11 +4,11 @@ import Film from "../components/home/Film";
 
 const Home = () => {
   return (
-    <>
+    <div>
       <Carousel />
       <HotPlace />
       <Film />
-    </>
+    </div>
   );
 };
 

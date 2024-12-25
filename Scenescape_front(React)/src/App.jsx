@@ -14,7 +14,7 @@ import PlanForm from "./components/plan/PlanForm";
 import Board from "./pages/Board";
 import NotFound from "./pages/NotFound";
 
-const Layout = ({ header, main, footer }) => {
+const Layout = ({ header = <Header />, main, footer = <Footer /> }) => {
   return (
     <div className="flex flex-col min-w-[80rem] h-screen mx-auto">
       <header>{header}</header>
@@ -29,23 +29,11 @@ const App = () => {
     <Routes>
       <Route
         path="/"
-        element={
-          <Layout
-            header={<Header />}
-            main={<Home />}
-            footer={<Footer />}
-          />
-        }
+        element={<Layout main={<Home />} />}
       />
       <Route
         path="/login"
-        element={
-          <Layout
-            header={<Header />}
-            main={<Login />}
-            footer={<Footer />}
-          />
-        }
+        element={<Layout main={<Login />} />}
       >
         <Route
           index
@@ -58,30 +46,18 @@ const App = () => {
       </Route>
       <Route
         path="/signup"
-        element={
-          <Layout
-            header={<Header />}
-            main={<SignUp />}
-            footer={<Footer />}
-          />
-        }
+        element={<Layout main={<SignUp />} />}
       />
       <Route
         path="/mypage"
-        element={
-          <Layout
-            header={<Header />}
-            main={<MyPage />}
-            footer={<Footer />}
-          />
-        }
+        element={<Layout main={<MyPage />} />}
       />
       <Route
         path="/plan"
         element={
           <Layout
-            header={<Header />}
             main={<Plan />}
+            footer={null}
           />
         }
       >
@@ -100,13 +76,7 @@ const App = () => {
       </Route>
       <Route
         path="/board"
-        element={
-          <Layout
-            header={<Header />}
-            main={<Board />}
-            footer={<Footer />}
-          />
-        }
+        element={<Layout main={<Board />} />}
       />
       <Route
         path="*"

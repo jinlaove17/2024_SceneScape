@@ -1,15 +1,15 @@
 const Pagenation = ({ curPage, totalItemCount, pageSize, navSize }) => {
   return (
-    <ul className="flex justify-center items-center gap-0.5 cursor-pointer text-sm">
+    <ul className="flex justify-center items-center gap-2 cursor-pointer">
       <li
-        className="flex items-center justify-center px-2 h-7 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700"
+        className="flex items-center justify-center px-2 py-1 text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700 rounded-full"
         // @click="onChangePage(1)"
       >
         처음
       </li>
 
       <li
-        className="flex items-center justify-center px-2 h-7 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+        className="flex items-center justify-center px-2 py-1 text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700 rounded-full"
         // @click="onChangePage(startPage === 1 ? 1 : startPage - 1)"
       >
         이전
@@ -17,20 +17,20 @@ const Pagenation = ({ curPage, totalItemCount, pageSize, navSize }) => {
       <li
         // v-for="page in range(startPage, endPage)"
         // :key="page"
-        className="flex items-center justify-center px-2 h-7 leading-tight border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+        className="flex items-center justify-center px-2 py-1 text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700 rounded-full"
         // :className="page == props.pageInfo.page ? 'bg-main-200' : 'bg-white'"
         // @click="onChangePage(page)"
       >
         1
       </li>
       <li
-        className="flex items-center justify-center px-2 h-7 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+        className="flex items-center justify-center px-2 py-1 text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700 rounded-full"
         // @click="onChangePage(endRange ? totalPage : endPage + 1)"
       >
         다음
       </li>
       <li
-        className="flex items-center justify-center px-2 h-7 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700"
+        className="flex items-center justify-center px-2 py-1 text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700 rounded-full"
         // @click="onChangePage(totalPage)"
       >
         끝

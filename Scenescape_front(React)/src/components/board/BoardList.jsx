@@ -4,7 +4,7 @@ const BoardList = () => {
   const [postList, setPostList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
 
   return (
-    <div>
+    <div className="mb-5">
       <div className="flex justify-center items-center gap-3 my-1">
         <div className="group">
           <p className="block text-sm text-gray-500 group-focus-within:text-main-400">
@@ -76,7 +76,7 @@ const BoardList = () => {
         </select>
       </div>
 
-      <div className="flex flex-wrap gap-4 mt-5 mb-10 px-2">
+      <div className="flex flex-wrap gap-4 mt-5 px-2">
         {postList.map((item) => {
           return (
             <div

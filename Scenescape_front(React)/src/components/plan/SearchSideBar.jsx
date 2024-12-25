@@ -69,7 +69,12 @@ const categoryList = [
   },
 ];
 
-const SearchSideBar = ({ attractionList, curPlan, setCurPlan }) => {
+const SearchSideBar = ({
+  attractionList,
+  likeAttractionList,
+  curPlan,
+  setCurPlan,
+}) => {
   const [tabIndex, setTabIndex] = useState(0);
   const tabMenuListRef = useRef([
     {
@@ -111,12 +116,13 @@ const SearchSideBar = ({ attractionList, curPlan, setCurPlan }) => {
         // 좋아요
         return (
           <AttractionSearcher
-            tabIndex={tabIndex}
             contentList={contentList}
             areaList={areaList}
             subAreaList={subAreaList}
             categoryList={categoryList}
-            attractionList={tabIndex === 0 ? attractionList : []}
+            attractionList={
+              tabIndex === 0 ? attractionList : likeAttractionList
+            }
             curPlan={curPlan}
             setCurPlan={setCurPlan}
           />

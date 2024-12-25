@@ -58,6 +58,7 @@ const Plan = () => {
       likeCount: 992,
     },
   ]);
+  const [likeAttractionList, setLikeAttractionList] = useState([]);
   const [planList, setPlanList] = useState([
     {
       id: 1,
@@ -123,6 +124,7 @@ const Plan = () => {
     <div className="flex relative h-full overflow-hidden">
       <SearchSideBar
         attractionList={attractionList}
+        likeAttractionList={likeAttractionList}
         curPlan={curPlan}
         setCurPlan={setCurPlan}
       />

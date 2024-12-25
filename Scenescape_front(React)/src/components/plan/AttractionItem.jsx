@@ -35,7 +35,7 @@ const AttractionItem = ({
             <p className="text-gray-800 line-clamp-2 break-words">{overview}</p>
           </div>
         </div>
-        <div className="flex gap-2 text-xs">
+        <div className="flex gap-2">
           <p className="px-2 py-1 bg-white text-xs text-main-400 rounded-xl border border-main-300">
             #{getAreaName(contentId)}
           </p>

@@ -12,6 +12,8 @@ import Plan from "./pages/Plan";
 import PlanList from "./components/plan/PlanList";
 import PlanForm from "./components/plan/PlanForm";
 import Board from "./pages/Board";
+import BoardList from "./components/board/BoardList";
+import BoardForm from "./components/board/BoardForm";
 import NotFound from "./pages/NotFound";
 
 const Layout = ({ header = <Header />, main, footer = <Footer /> }) => {
@@ -77,7 +79,16 @@ const App = () => {
       <Route
         path="/board"
         element={<Layout main={<Board />} />}
-      />
+      >
+        <Route
+          index
+          element={<BoardList />}
+        />
+        <Route
+          path="new"
+          element={<BoardForm />}
+        />
+      </Route>
       <Route
         path="*"
         element={<NotFound />}

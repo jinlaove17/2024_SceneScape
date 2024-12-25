@@ -51,7 +51,7 @@ const UserForm = ({
         <div className="text-end">
           {buttonList.map(({ type, text, onClick }) => (
             <button
-              className="w-24 ml-3 mt-3 py-2 text-sm font-medium text-white bg-main-300 rounded-lg hover:bg-main-400"
+              className="w-24 ml-3 mt-3 py-2 text-sm font-medium text-white bg-main-300 rounded-md hover:bg-main-400"
               key={text}
               type={type}
               onClick={onClick}

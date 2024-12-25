@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams, useMatch } from "react-router-dom";
-import SearchDropdown from "./SearchDropdown";
+import SearchDropdown from "../SearchDropdown";
 import AttractionItem from "./AttractionItem";
 
 const AttractionSearcher = ({
@@ -142,7 +142,7 @@ const AttractionSearcher = ({
           </p>
           <div className="flex gap-2">
             <input
-              className="block flex-1 px-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300"
+              className="block flex-1 px-10 border border-gray-300 rounded-md bg-white focus:outline-none focus:border-main-300"
               type="text"
               name="searchTerm"
               value={filter.searchTerm}
@@ -152,7 +152,7 @@ const AttractionSearcher = ({
 
             {/* <button> 태그를 사용하면, focus가 일어나서 group에 속한 요소들의 스타일이 바뀌므로, <div> 태그를 사용하여 focus가 일어나지 않도록 구현  */}
             <div
-              className="w-12 py-2 text-sm text-center text-white bg-main-300 rounded-lg hover:bg-main-400 cursor-pointer"
+              className="w-12 py-2 text-sm text-center text-white bg-main-300 rounded-md hover:bg-main-400 cursor-pointer"
               onClick={onClickSearchButton}
             >
               검색

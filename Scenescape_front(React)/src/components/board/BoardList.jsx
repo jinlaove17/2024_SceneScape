@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import BoardItem from "./BoardItem";
+import Pagenation from "../Pagenation";
 
 const BoardList = () => {
   const [postList, setPostList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
 
   return (
-    <div className="mb-5">
+    <div>
       <div className="flex justify-center items-center gap-3 my-1">
         <div className="group">
           <p className="block text-sm text-gray-500 group-focus-within:text-main-400">
@@ -14,7 +16,7 @@ const BoardList = () => {
           </p>
           <select
             id="searchTerm"
-            className="block w-28 min-h-9 leading-9 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center cursor-pointer"
+            className="block w-28 min-h-9 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center cursor-pointer"
             //   v-model.lazy="searchFilter.searchType"
           >
             <option value="title">글 제목</option>
@@ -62,12 +64,17 @@ const BoardList = () => {
             <path d="M0 64C0 28.7 28.7 0 64 0L224 0l0 128c0 17.7 14.3 32 32 32l128 0 0 125.7-86.8 86.8c-10.3 10.3-17.5 23.1-21 37.2l-18.7 74.9c-2.3 9.2-1.8 18.8 1.3 27.5L64 512c-35.3 0-64-28.7-64-64L0 64zm384 64l-128 0L256 0 384 128zM549.8 235.7l14.4 14.4c15.6 15.6 15.6 40.9 0 56.6l-29.4 29.4-71-71 29.4-29.4c15.6-15.6 40.9-15.6 56.6 0zM311.9 417L441.1 287.8l71 71L382.9 487.9c-4.1 4.1-9.2 7-14.9 8.4l-60.1 15c-5.5 1.4-11.2-.2-15.2-4.2s-5.6-9.7-4.2-15.2l15-60.1c1.4-5.6 4.3-10.8 8.4-14.9z" />
           </svg>
 
-          <p className="ml-1 text-gray-600 hover:text-gray-400">새 글 작성</p>
+          <Link
+            className="ml-1 text-gray-600 hover:text-gray-400"
+            to={"new"}
+          >
+            새 글 작성
+          </Link>
         </button>
 
         <select
           id="sortType"
-          className="w-24 h-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center cursor-pointer"
+          className="w-24 min-h-9 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center cursor-pointer"
           //   v-model="searchFilter.sortType"
           // @change="onSearch"
         >
@@ -77,7 +84,7 @@ const BoardList = () => {
         </select>
       </div>
 
-      <div className="flex flex-wrap gap-4 mt-5 px-2">
+      <div className="flex flex-wrap gap-4 my-2 px-2">
         {/* Skeleton */}
         {/* <div
           className="w-60 border-gray-200 rounded-md shadow-md animate-pulse"
@@ -118,6 +125,8 @@ const BoardList = () => {
           );
         })}
       </div>
+
+      <Pagenation className="my-5" />
     </div>
   );
 };

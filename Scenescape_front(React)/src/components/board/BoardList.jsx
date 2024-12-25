@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import BoardItem from "./BoardItem";
+
 const BoardList = () => {
   const [postList, setPostList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
 
@@ -48,7 +50,6 @@ const BoardList = () => {
           </svg>
         </div>
       </div>
-
       <div className="flex justify-between items-center">
         <button
           className="flex justify-center items-center"
@@ -77,30 +78,43 @@ const BoardList = () => {
       </div>
 
       <div className="flex flex-wrap gap-4 mt-5 px-2">
-        {postList.map((item) => {
-          return (
-            <div
-              className="w-60 border-gray-200 rounded-md shadow-md animate-pulse"
-              key={item}
+        {/* Skeleton */}
+        {/* <div
+          className="w-60 border-gray-200 rounded-md shadow-md animate-pulse"
+          key={item}
+        >
+          <div className="flex items-center justify-center h-48 mb-3 bg-gray-300 rounded-t-md">
+            <svg
+              className="w-full h-10 text-gray-200"
+              aria-hidden="true"
+              viewBox="0 0 16 20"
             >
-              <div className="flex items-center justify-center h-48 mb-3 bg-gray-300 rounded-t-md">
-                <svg
-                  className="w-full h-10 text-gray-200"
-                  aria-hidden="true"
-                  viewBox="0 0 16 20"
-                >
-                  <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z" />
-                  <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
-                </svg>
-              </div>
-              <div className="p-2">
-                <div className="h-2 bg-gray-200 rounded-full w-48 mb-4"></div>
-                <div className="h-2 bg-gray-200 rounded-full mb-2.5"></div>
-                <div className="h-2 bg-gray-200 rounded-full mb-2.5"></div>
-              </div>
+              <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM10.5 6a1.5 1.5 0 1 1 0 2.999A1.5 1.5 0 0 1 10.5 6Zm2.221 10.515a1 1 0 0 1-.858.485h-8a1 1 0 0 1-.9-1.43L5.6 10.039a.978.978 0 0 1 .936-.57 1 1 0 0 1 .9.632l1.181 2.981.541-1a.945.945 0 0 1 .883-.522 1 1 0 0 1 .879.529l1.832 3.438a1 1 0 0 1-.031.988Z" />
+              <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+            </svg>
+          </div>
+          <div className="p-2">
+            <div className="h-2 bg-gray-200 rounded-full w-48 mb-4"></div>
+            <div className="h-2 bg-gray-200 rounded-full mb-2.5"></div>
+            <div className="h-2 bg-gray-200 rounded-full mb-2.5"></div>
+          </div>
 
-              <span className="sr-only">Loading...</span>
-            </div>
+          <span className="sr-only">Loading...</span>
+        </div> */}
+
+        {postList.map((item, index) => {
+          return (
+            <BoardItem
+              key={index}
+              title={`테스트 게시글 (${index + 1})`}
+              author={"JJ"}
+              img={"Guardian.jpg"}
+              contentTypeId={12}
+              sceneTitle={"스토브리그"}
+              created={"2025-12-25"}
+              viewCount={8925}
+              likeCount={1522}
+            />
           );
         })}
       </div>

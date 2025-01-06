@@ -1,0 +1,13 @@
+/* 에디터 요소를 숨긴다. */
+.rc-md-navigation,
+.sec-md {
+  display: none !important;
+}
+
+.rc-md-editor {
+  border: solid 1px rgb(236, 236, 236);
+}
+
+.rc-md-editor .editor-container > .section {
+  border: none;
+}

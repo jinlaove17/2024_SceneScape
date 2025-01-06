@@ -15,6 +15,7 @@ import Board from "./pages/Board";
 import BoardList from "./components/board/BoardList";
 import BoardForm from "./components/board/BoardForm";
 import NotFound from "./pages/NotFound";
+import BoardDetail from "./components/board/BoardDetail";
 
 const Layout = ({ header = <Header />, main, footer = <Footer /> }) => {
   return (
@@ -83,6 +84,10 @@ const App = () => {
         <Route
           index
           element={<BoardList />}
+        />
+        <Route
+          path=":id"
+          element={<BoardDetail />}
         />
         <Route
           path="new"

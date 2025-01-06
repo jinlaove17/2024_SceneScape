@@ -1,11 +1,10 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 
 import BoardItem from "./BoardItem";
 import Pagenation from "../Pagenation";
 
 const BoardList = () => {
-  const [postList, setPostList] = useState([1, 2, 3, 4, 5, 6, 7, 8]);
+  const { postList } = useOutletContext();
 
   return (
     <div>
@@ -109,11 +108,12 @@ const BoardList = () => {
           <span className="sr-only">Loading...</span>
         </div> */}
 
-        {postList.map((item, index) => {
+        {postList.map((item) => {
           return (
             <BoardItem
-              key={index}
-              title={`테스트 게시글 (${index + 1})`}
+              key={item.id}
+              id={item.id}
+              title={item.title}
               author={"JJ"}
               img={"Guardian.jpg"}
               contentTypeId={12}

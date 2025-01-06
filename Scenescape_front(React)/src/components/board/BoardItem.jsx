@@ -1,7 +1,9 @@
 import getImageUrl from "../../utils/get-image-url";
 import getAreaName from "../../utils/get-area-name";
+import { Link } from "react-router-dom";
 
 const BoardItem = ({
+  id,
   title,
   author,
   img,
@@ -12,9 +14,9 @@ const BoardItem = ({
   likeCount,
 }) => {
   return (
-    <div
+    <Link
       className="w-60 bg-white border-2 border-gray-200 rounded-md shadow-md border-transparent hover:cursor-pointer hover:border-main-300 select-none group"
-      //   @click="onPickPost(post.no)"
+      to={`${id}`}
     >
       <div className="relative">
         <div className="w-full h-48 overflow-hidden rounded-t-md">
@@ -74,7 +76,7 @@ const BoardItem = ({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

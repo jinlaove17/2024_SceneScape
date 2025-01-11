@@ -20,7 +20,7 @@ const BoardItem = ({
 }) => {
   return (
     <Link
-      className="w-60 bg-white border-2 border-gray-200 rounded-md shadow-md border-transparent hover:cursor-pointer hover:border-main-300 select-none group"
+      className="w-60 h-72 bg-white border-2 border-gray-200 rounded-md shadow-md border-transparent hover:cursor-pointer hover:border-main-300 select-none group"
       to={`${no}`}
     >
       <div className="relative">
@@ -43,7 +43,7 @@ const BoardItem = ({
       </div>
 
       <div className="p-2 text-sm">
-        <h1 className="text-lg truncate">{title}</h1>
+        <h1 className="text-lg mb-2 truncate">{title}</h1>
         <p className="text-gray-700 truncate">작성자: {userId}</p>
         <div className="flex justify-between items-center text-gray-700">
           <p className="pt-1">

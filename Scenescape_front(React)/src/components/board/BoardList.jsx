@@ -53,7 +53,7 @@ const BoardList = () => {
       </div>
 
       <div className="flex justify-between items-center">
-        <button
+        <div
           className="flex justify-center items-center"
           //   @click="onWritePost"
         >
@@ -70,7 +70,7 @@ const BoardList = () => {
           >
             새 글 작성
           </Link>
-        </button>
+        </div>
 
         <select
           name="sortType"
@@ -83,7 +83,7 @@ const BoardList = () => {
         </select>
       </div>
 
-      <div className="flex flex-wrap gap-4 my-2 px-2">
+      <div className="flex flex-wrap gap-4 h-[37rem] my-2 px-2">
         {/* Skeleton */}
         {/* <div
           className="w-60 border-gray-200 rounded-md shadow-md animate-pulse"

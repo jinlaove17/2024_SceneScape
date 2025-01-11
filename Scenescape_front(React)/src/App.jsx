@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -17,6 +18,8 @@ import BoardForm from "./components/board/BoardForm";
 import NotFound from "./pages/NotFound";
 import BoardDetail from "./components/board/BoardDetail";
 
+const queryClient = new QueryClient();
+
 const Layout = ({ header = <Header />, main, footer = <Footer /> }) => {
   return (
     <div className="flex flex-col min-w-[80rem] h-screen mx-auto">
@@ -29,76 +32,80 @@ const Layout = ({ header = <Header />, main, footer = <Footer /> }) => {
 
 const App = () => {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={<Layout main={<Home />} />}
-      />
-      <Route
-        path="/login"
-        element={<Layout main={<Login />} />}
-      >
-        <Route
-          index
-          element={<LoginForm />}
-        />
-        <Route
-          path="find-password"
-          element={<FindPasswordForm />}
-        />
-      </Route>
-      <Route
-        path="/signup"
-        element={<Layout main={<SignUp />} />}
-      />
-      <Route
-        path="/mypage"
-        element={<Layout main={<MyPage />} />}
-      />
-      <Route
-        path="/plan"
-        element={
-          <Layout
-            main={<Plan />}
-            footer={null}
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={<Layout main={<Home />} />}
           />
-        }
-      >
-        <Route
-          index
-          element={<PlanList />}
-        />
-        <Route
-          path="new"
-          element={<PlanForm />}
-        />
-        <Route
-          path=":id"
-          element={<PlanForm />}
-        />
-      </Route>
-      <Route
-        path="/board"
-        element={<Layout main={<Board />} />}
-      >
-        <Route
-          index
-          element={<BoardList />}
-        />
-        <Route
-          path=":id"
-          element={<BoardDetail />}
-        />
-        <Route
-          path="new"
-          element={<BoardForm />}
-        />
-      </Route>
-      <Route
-        path="*"
-        element={<NotFound />}
-      />
-    </Routes>
+          <Route
+            path="/login"
+            element={<Layout main={<Login />} />}
+          >
+            <Route
+              index
+              element={<LoginForm />}
+            />
+            <Route
+              path="find-password"
+              element={<FindPasswordForm />}
+            />
+          </Route>
+          <Route
+            path="/signup"
+            element={<Layout main={<SignUp />} />}
+          />
+          <Route
+            path="/mypage"
+            element={<Layout main={<MyPage />} />}
+          />
+          <Route
+            path="/plan"
+            element={
+              <Layout
+                main={<Plan />}
+                footer={null}
+              />
+            }
+          >
+            <Route
+              index
+              element={<PlanList />}
+            />
+            <Route
+              path="new"
+              element={<PlanForm />}
+            />
+            <Route
+              path=":id"
+              element={<PlanForm />}
+            />
+          </Route>
+          <Route
+            path="/board"
+            element={<Layout main={<Board />} />}
+          >
+            <Route
+              index
+              element={<BoardList />}
+            />
+            <Route
+              path=":id"
+              element={<BoardDetail />}
+            />
+            <Route
+              path="new"
+              element={<BoardForm />}
+            />
+          </Route>
+          <Route
+            path="*"
+            element={<NotFound />}
+          />
+        </Routes>{" "}
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 

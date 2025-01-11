@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { registerUser } from "../../api/user";
 
 import UserForm from "./UserForm";
 
@@ -15,6 +17,18 @@ const SignUpForm = () => {
     password: "",
     passwordCheck: "",
     email: "",
+  });
+
+  const mutation = useMutation({
+    mutationFn: registerUser,
+
+    onSuccess: (data) => {
+      console.log(data);
+    },
+
+    onError: (error) => {
+      console.error(error.response.data.errorMsg);
+    },
   });
 
   const fields = [
@@ -99,7 +113,12 @@ const SignUpForm = () => {
   };
 
   const handleSubmit = (formData) => {
-    console.log("회원가입 데이터:", formData);
+    // console.log("회원가입 데이터:", formData);
+    mutation.mutate({
+      id: formData.id,
+      pwd: formData.password,
+      email: formData.email,
+    });
   };
 
   return (

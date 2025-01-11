@@ -1,57 +1,55 @@
-import getImageUrl from "../../utils/get-image-url";
-import getAreaName from "../../utils/get-area-name";
 import { Link } from "react-router-dom";
 
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 const BoardItem = ({
-  id,
+  no,
   title,
-  author,
-  img,
-  contentTypeId,
-  sceneTitle,
-  created,
+  userId,
   viewCount,
   likeCount,
+  created,
+  thumbnailUrl,
+  sceneTitle,
+  attractionTitle,
 }) => {
   return (
     <Link
       className="w-60 bg-white border-2 border-gray-200 rounded-md shadow-md border-transparent hover:cursor-pointer hover:border-main-300 select-none group"
-      to={`${id}`}
+      to={`${no}`}
     >
       <div className="relative">
         <div className="w-full h-48 overflow-hidden rounded-t-md">
           <img
             className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
-            src={getImageUrl(img)}
+            src={thumbnailUrl}
             alt="Zoom effect"
           />
         </div>
 
         <div className="absolute flex gap-2 top-2 left-2">
-          <p className="px-2 py-1 bg-white text-xs text-main-400 rounded-xl border border-main-300">
-            #{getAreaName(contentTypeId)}
-          </p>
           <p className="max-w-24 px-2 py-1 bg-white text-xs text-main-400 rounded-xl border border-main-300 truncate">
             #{sceneTitle}
+          </p>
+          <p className="px-2 py-1 bg-white text-xs text-main-400 rounded-xl border border-main-300">
+            {attractionTitle}
           </p>
         </div>
       </div>
 
       <div className="p-2 text-sm">
         <h1 className="text-lg truncate">{title}</h1>
-        <p className="text-gray-700 truncate">작성자: {author}</p>
+        <p className="text-gray-700 truncate">작성자: {userId}</p>
         <div className="flex justify-between items-center text-gray-700">
           <p className="pt-1">
-            {created}
-            {/* {{
-          post.created
-            ? (() => {
-                return dayjs
-                  .tz(post.created, "Asia/Seoul")
-                  .format("YYYY-MM-DD HH:mm");
-              })()
-            : "알 수 없음"
-        }} */}
+            {created
+              ? dayjs.tz(created, "Asia/Seoul").format("YYYY-MM-DD HH:mm")
+              : "알 수 없음"}
           </p>
           <div className="flex justify-center items-center gap-3">
             <div className="flex justify-center items-center gap-1">

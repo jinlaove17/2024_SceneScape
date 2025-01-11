@@ -4,7 +4,7 @@ import BoardItem from "./BoardItem";
 import Pagenation from "../Pagenation";
 
 const BoardList = () => {
-  const { postList } = useOutletContext();
+  const { data, filter, onChangeFilter } = useOutletContext();
 
   return (
     <div>
@@ -14,9 +14,9 @@ const BoardList = () => {
             검색 조건
           </p>
           <select
-            id="searchTerm"
+            name="searchType"
             className="block w-28 min-h-9 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center cursor-pointer"
-            //   v-model.lazy="searchFilter.searchType"
+            onChange={onChangeFilter}
           >
             <option value="title">글 제목</option>
             <option value="userId">작성자명</option>
@@ -33,9 +33,9 @@ const BoardList = () => {
             <input
               className="block flex-1 px-10 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300"
               type="text"
-              name="searchTerm"
-              // value={filter.searchTerm}
-              placeholder="장소명을 입력하세요..."
+              name="searchKeyword"
+              placeholder="장소명을 입력해 주세요."
+              onChange={onChangeFilter}
             />
             {/* <button> 태그를 사용하면, focus가 일어나서 group에 속한 요소들의 스타일이 바뀌므로, <div> 태그를 사용하여 focus가 일어나지 않도록 구현  */}
             <div className="w-20 py-2 text-sm text-center text-white bg-main-300 rounded-lg hover:bg-main-400 cursor-pointer">
@@ -51,6 +51,7 @@ const BoardList = () => {
           </svg>
         </div>
       </div>
+
       <div className="flex justify-between items-center">
         <button
           className="flex justify-center items-center"
@@ -72,10 +73,9 @@ const BoardList = () => {
         </button>
 
         <select
-          id="sortType"
+          name="sortType"
           className="w-24 min-h-9 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center cursor-pointer"
-          //   v-model="searchFilter.sortType"
-          // @change="onSearch"
+          onChange={onChangeFilter}
         >
           <option value="created">최신순</option>
           <option value="view">조회순</option>
@@ -108,25 +108,24 @@ const BoardList = () => {
           <span className="sr-only">Loading...</span>
         </div> */}
 
-        {postList.map((item) => {
+        {data.results.map((item) => {
           return (
             <BoardItem
-              key={item.id}
-              id={item.id}
-              title={item.title}
-              author={"JJ"}
-              img={"Guardian.jpg"}
-              contentTypeId={12}
-              sceneTitle={"스토브리그"}
-              created={"2025-12-25"}
-              viewCount={8925}
-              likeCount={1522}
+              key={item.no}
+              {...item}
             />
           );
         })}
       </div>
 
-      <Pagenation className="my-5" />
+      <Pagenation
+        className="my-5"
+        curPage={filter.page}
+        totalItemCount={data.totalResults}
+        pageSize={parseInt(import.meta.env.VITE_BOARD_PAGE_SIZE)}
+        navSize={parseInt(import.meta.env.VITE_BOARD_NAVIGATION_SIZE)}
+        onChangePage={onChangeFilter}
+      />
     </div>
   );
 };

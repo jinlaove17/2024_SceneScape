@@ -1,9 +1,27 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import useUserStore from "../stores/user";
+import { logoutUser } from "../api/user";
 
 const Header = () => {
   const [isHovered, setIsHovered] = useState(false);
-  let userInfo;
+  const { userInfo, logout } = useUserStore();
+  const mutation = useMutation({
+    mutationFn: logoutUser,
+
+    onSuccess: () => {
+      logout();
+    },
+
+    onError: (error) => {
+      alert(error);
+    },
+  });
+
+  const onClickLogoutButton = () => {
+    mutation.mutate();
+  };
 
   return (
     <nav
@@ -66,14 +84,17 @@ const Header = () => {
       <div className="flex flex-col flex-grow">
         {userInfo ? (
           <div className="text-sm text-end border-b-2 border-gray-200 py-3">
-            <span className="mx-3">님 환영합니다.</span>
+            <span className="mx-3">{userInfo.id}님 환영합니다.</span>
             <Link
               className="text-gray-500 hover:text-gray-700 mx-3"
               to={"/mypage"}
             >
               마이페이지
             </Link>
-            <span className="text-gray-500 hover:text-gray-700 mx-3 cursor-pointer">
+            <span
+              className="text-gray-500 hover:text-gray-700 mx-3 cursor-pointer"
+              onClick={onClickLogoutButton}
+            >
               로그아웃
             </span>
           </div>

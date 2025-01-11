@@ -22,8 +22,8 @@ const SignUpForm = () => {
   const mutation = useMutation({
     mutationFn: registerUser,
 
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: (response) => {
+      console.log(response);
     },
 
     onError: (error) => {

@@ -13,7 +13,7 @@ const Board = () => {
     page: 1,
   });
 
-  const { data, isLoading } = useQuery({
+  const { data, refetch, isLoading } = useQuery({
     queryKey: ["posts", filter.page],
     queryFn: () => getPostsByFilter(filter),
     options: {
@@ -31,7 +31,14 @@ const Board = () => {
       {isLoading ? (
         <div>로딩 중입니다.</div>
       ) : (
-        <Outlet context={{ data: data.data, filter, onChangeFilter }} />
+        <Outlet
+          context={{
+            data: data.data,
+            filter,
+            onChangeFilter,
+            onSearch: () => refetch(),
+          }}
+        />
       )}
     </div>
   );

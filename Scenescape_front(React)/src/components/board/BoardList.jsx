@@ -4,7 +4,7 @@ import BoardItem from "./BoardItem";
 import Pagenation from "../Pagenation";
 
 const BoardList = () => {
-  const { data, filter, onChangeFilter } = useOutletContext();
+  const { data, filter, onChangeFilter, onSearch } = useOutletContext();
 
   return (
     <div>
@@ -38,7 +38,10 @@ const BoardList = () => {
               onChange={onChangeFilter}
             />
             {/* <button> 태그를 사용하면, focus가 일어나서 group에 속한 요소들의 스타일이 바뀌므로, <div> 태그를 사용하여 focus가 일어나지 않도록 구현  */}
-            <div className="w-20 py-2 text-sm text-center text-white bg-main-300 rounded-lg hover:bg-main-400 cursor-pointer">
+            <div
+              className="w-20 py-2 text-sm text-center text-white bg-main-300 rounded-lg hover:bg-main-400 cursor-pointer"
+              onClick={onSearch}
+            >
               검색
             </div>
           </div>

@@ -1,13 +1,22 @@
 /* 에디터 요소를 숨긴다. */
-.rc-md-navigation,
-.sec-md {
-  display: none !important;
+.BoardDetail .rc-md-navigation,
+.BoardDetail .sec-md {
+  display: none;
 }
 
-.rc-md-editor {
-  border: solid 1px rgb(236, 236, 236);
-}
-
-.rc-md-editor .editor-container > .section {
+.BoardDetail .rc-md-editor {
   border: none;
+}
+
+.BoardDetail .rc-md-editor .editor-container > .section {
+  border: none;
+}
+
+.rc-md-editor .editor-container .sec-md .input {
+  font-size: 16px;
+}
+
+.custom-html-style p {
+  font-size: 16px;
+  margin: 0;
 }

@@ -20,7 +20,7 @@ const BoardDetail = () => {
   const post = data.results.find((item) => item.no === parseInt(id));
 
   return (
-    <div className="w-[64rem] mx-auto my-5 p-3 bg-white border border-gray-200 rounded-md">
+    <div className="BoardDetail w-[64rem] mx-auto my-5 p-3 bg-white border border-gray-200 rounded-md">
       <div className="flex flex-col justify-center">
         <p className="text-sm text-gray-400">
           {post.sceneTitle} &gt; {post.attractionTitle}

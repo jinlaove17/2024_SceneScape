@@ -18,19 +18,11 @@ const Pagenation = ({
     return Array.from(
       { length: curRangeEndPage - curRangeStartPage + 1 },
       (_, index) => {
-        console.log(curRangeStartPage + index);
         return (
           <li
             key={index}
             className={`flex items-center justify-center px-2 py-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-full ${curRangeStartPage + index === curPage && "text-main-400 hover:text-main-400"}`}
-            onClick={() =>
-              onChangePage({
-                target: {
-                  name: "page",
-                  value: curRangeStartPage + index,
-                },
-              })
-            }
+            onClick={() => onChangePage(curRangeStartPage + index)}
           >
             {curRangeStartPage + index}
           </li>
@@ -45,14 +37,7 @@ const Pagenation = ({
     >
       <li
         className="flex items-center justify-center px-2 py-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-full"
-        onClick={() =>
-          onChangePage({
-            target: {
-              name: "page",
-              value: 1,
-            },
-          })
-        }
+        onClick={() => onChangePage(1)}
       >
         처음
       </li>
@@ -60,12 +45,7 @@ const Pagenation = ({
       <li
         className="flex items-center justify-center px-2 py-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-full"
         onClick={() =>
-          onChangePage({
-            target: {
-              name: "page",
-              value: curRangeStartPage === 1 ? 1 : curRangeStartPage - 1,
-            },
-          })
+          onChangePage(curRangeStartPage === 1 ? 1 : curRangeStartPage - 1)
         }
       >
         이전
@@ -76,26 +56,14 @@ const Pagenation = ({
       <li
         className="flex items-center justify-center px-2 py-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-full"
         onClick={() =>
-          onChangePage({
-            target: {
-              name: "page",
-              value: isInEndRange ? endPage : curRangeEndPage + 1,
-            },
-          })
+          onChangePage(isInEndRange ? endPage : curRangeEndPage + 1)
         }
       >
         다음
       </li>
       <li
         className="flex items-center justify-center px-2 py-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-full"
-        onClick={() =>
-          onChangePage({
-            target: {
-              name: "page",
-              value: endPage,
-            },
-          })
-        }
+        onClick={() => onChangePage(endPage)}
       >
         끝
       </li>

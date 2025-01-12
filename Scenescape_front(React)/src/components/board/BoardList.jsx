@@ -1,10 +1,24 @@
+import { useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 
 import BoardItem from "./BoardItem";
 import Pagenation from "../Pagenation";
 
 const BoardList = () => {
-  const { data, filter, onChangeFilter, onSearch } = useOutletContext();
+  const {
+    data,
+    searchFilter,
+    sortType,
+    page,
+    onSearch,
+    onChangeSortType,
+    onChangePage,
+  } = useOutletContext();
+  const [curSearchFilter, setCurSearchFilter] = useState(searchFilter);
+
+  const onChangeSearchFilter = (e) => {
+    setCurSearchFilter({ ...curSearchFilter, [e.target.name]: e.target.value });
+  };
 
   return (
     <div>
@@ -16,7 +30,8 @@ const BoardList = () => {
           <select
             name="searchType"
             className="block w-28 min-h-9 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center cursor-pointer"
-            onChange={onChangeFilter}
+            value={curSearchFilter.searchType}
+            onChange={onChangeSearchFilter}
           >
             <option value="title">글 제목</option>
             <option value="userId">작성자명</option>
@@ -35,12 +50,21 @@ const BoardList = () => {
               type="text"
               name="searchKeyword"
               placeholder="장소명을 입력해 주세요."
-              onChange={onChangeFilter}
+              value={curSearchFilter.searchKeyword}
+              onChange={onChangeSearchFilter}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  onSearch(curSearchFilter);
+                }
+              }}
             />
             {/* <button> 태그를 사용하면, focus가 일어나서 group에 속한 요소들의 스타일이 바뀌므로, <div> 태그를 사용하여 focus가 일어나지 않도록 구현  */}
             <div
               className="w-20 py-2 text-sm text-center text-white bg-main-300 rounded-lg hover:bg-main-400 cursor-pointer"
-              onClick={onSearch}
+              onClick={() => {
+                console.log("검색!");
+                onSearch(curSearchFilter);
+              }}
             >
               검색
             </div>
@@ -56,10 +80,7 @@ const BoardList = () => {
       </div>
 
       <div className="flex justify-between items-center">
-        <div
-          className="flex justify-center items-center"
-          //   @click="onWritePost"
-        >
+        <div className="flex justify-center items-center">
           <svg
             className="w-5 h-5 fill-gray-300"
             viewBox="0 0 576 512"
@@ -78,7 +99,8 @@ const BoardList = () => {
         <select
           name="sortType"
           className="w-24 min-h-9 border border-gray-300 rounded-lg bg-white focus:outline-none focus:border-main-300 text-center cursor-pointer"
-          onChange={onChangeFilter}
+          value={sortType}
+          onChange={onChangeSortType}
         >
           <option value="created">최신순</option>
           <option value="view">조회순</option>
@@ -111,24 +133,32 @@ const BoardList = () => {
           <span className="sr-only">Loading...</span>
         </div> */}
 
-        {data.results.map((item) => {
-          return (
-            <BoardItem
-              key={item.no}
-              {...item}
-            />
-          );
-        })}
+        {data.results && data.results.length > 0 ? (
+          data.results.map((item) => {
+            return (
+              <BoardItem
+                key={item.no}
+                {...item}
+              />
+            );
+          })
+        ) : (
+          <div className="flex-1 text-gray-300 text-lg text-center">
+            게시글이 존재하지 않습니다.
+          </div>
+        )}
       </div>
 
-      <Pagenation
-        className="my-5"
-        curPage={filter.page}
-        totalItemCount={data.totalResults}
-        pageSize={parseInt(import.meta.env.VITE_BOARD_PAGE_SIZE)}
-        navSize={parseInt(import.meta.env.VITE_BOARD_NAVIGATION_SIZE)}
-        onChangePage={onChangeFilter}
-      />
+      {data.results && data.results.length > 0 && (
+        <Pagenation
+          className="my-5"
+          curPage={page}
+          totalItemCount={data.totalResults}
+          pageSize={parseInt(import.meta.env.VITE_BOARD_PAGE_SIZE)}
+          navSize={parseInt(import.meta.env.VITE_BOARD_NAVIGATION_SIZE)}
+          onChangePage={onChangePage}
+        />
+      )}
     </div>
   );
 };
